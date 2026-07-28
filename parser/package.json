@@ -1,0 +1,24 @@
+{
+    "name": "@codex-obscura-nomina/parser",
+    "type": "module",
+    "version": "0.0.0",
+    "files": [ "dist" ],
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "scripts": {
+        "test": "node --import @bleed-believer/cli --test --",
+        "build:clear": "rm -rf ./dist",
+        "build:source": "bleed build --config ./tsconfig.build.json",
+        "build:*.d.ts": "tsc --project ./tsconfig.build.json",
+        "build": "node --run build:clear && node --run build:source && node --run build:*.d.ts"
+    },
+    "devDependencies": {
+        "@bleed-believer/cli": "^1.1.0",
+        "@types/node": "^26.1.2",
+        "typescript": "^7.0.2"
+    }
+}
