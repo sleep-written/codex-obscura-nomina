@@ -11,10 +11,10 @@
     },
     "scripts": {
         "test": "node --import @bleed-believer/cli --test --",
+        "build": "node --run build:clear && node --run build:source && node --run build:*.d.ts",
         "build:clear": "rm -rf ./dist",
         "build:source": "bleed build --config ./tsconfig.build.json",
-        "build:*.d.ts": "tsc --project ./tsconfig.build.json",
-        "build": "node --run build:clear && node --run build:source && node --run build:*.d.ts"
+        "build:*.d.ts": "tsc --project ./tsconfig.build.json"
     },
     "devDependencies": {
         "@bleed-believer/cli": "^1.1.0",
