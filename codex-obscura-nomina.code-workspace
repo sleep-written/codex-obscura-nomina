@@ -1,7 +1,8 @@
 {
     "folders": [
         { "path": "." },
+        { "path": "./memory" },
         { "path": "./client" },
-        { "path": "./parser" }
+        { "path": "./lyrics-language" }
     ]
 }

@@ -1,5 +1,5 @@
 {
-    "name": "@codex-obscura-nomina/parser",
+    "name": "@codex-obscura-nomina/lyrics-language",
     "type": "module",
     "version": "0.0.0",
     "files": [ "dist" ],
