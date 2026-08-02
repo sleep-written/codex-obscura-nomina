@@ -1,0 +1,68 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "Lyrics",
+    "scopeName": "source.lyrics",
+    "patterns": [
+        { "include": "#comment" },
+        { "include": "#stanza-title" },
+        { "include": "#song-title" },
+        { "include": "#sinalefa" },
+        { "include": "#diaeresis-on" },
+        { "include": "#diaeresis-off" },
+        { "include": "#synaeresis-on" },
+        { "include": "#synaeresis-off" },
+        { "include": "#syllable-separator" }
+    ],
+    "repository": {
+        "comment": {
+            "begin": "//",
+            "beginCaptures": {
+                "0": { "name": "punctuation.definition.comment.lyrics" }
+            },
+            "end": "$",
+            "name": "comment.line.double-slash.lyrics"
+        },
+        "song-title": {
+            "comment": "A single '#', not followed by another '#' (that's a stanza title instead).",
+            "match": "^(#)(?!#)(.*)$",
+            "captures": {
+                "1": { "name": "punctuation.definition.heading.lyrics" },
+                "2": { "name": "entity.name.section.lyrics" }
+            },
+            "name": "markup.heading.1.lyrics"
+        },
+        "stanza-title": {
+            "match": "^(#{2,})(.*)$",
+            "captures": {
+                "1": { "name": "punctuation.definition.heading.lyrics" },
+                "2": { "name": "entity.name.section.lyrics" }
+            },
+            "name": "markup.heading.2.lyrics"
+        },
+        "sinalefa": {
+            "match": "&",
+            "name": "keyword.operator.sinalefa.lyrics"
+        },
+        "diaeresis-on": {
+            "match": "\\+",
+            "name": "keyword.operator.diaeresis-on.lyrics"
+        },
+        "diaeresis-off": {
+            "match": "_",
+            "name": "keyword.operator.diaeresis-off.lyrics"
+        },
+        "synaeresis-on": {
+            "match": "%",
+            "name": "keyword.operator.synaeresis-on.lyrics"
+        },
+        "synaeresis-off": {
+            "comment": "A lone '/', not part of a '//' comment (handled by the comment rule above, which wins ties since it's listed first).",
+            "match": "/",
+            "name": "keyword.operator.synaeresis-off.lyrics"
+        },
+        "syllable-separator": {
+            "match": "-",
+            "name": "punctuation.separator.syllable.lyrics"
+        }
+    }
+}

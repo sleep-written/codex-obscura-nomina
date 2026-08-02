@@ -3,6 +3,7 @@
         { "path": "." },
         { "path": "./memory" },
         { "path": "./client" },
-        { "path": "./lyrics-language" }
+        { "path": "./lyrics-language" },
+        { "path": "./vscode-extension" }
     ]
 }

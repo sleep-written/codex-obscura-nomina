@@ -1,0 +1,52 @@
+{
+    "name": "lyrics-language-vscode",
+    "type": "module",
+    "displayName": "Codex Obscura Nomina — Lyrics",
+    "description": "Hover, outline and symbol completion for .lyrics files.",
+    "version": "0.0.0",
+    "private": true,
+    "publisher": "codex-obscura-nomina",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "main": "./dist/extension.cjs",
+    "contributes": {
+        "languages": [
+            {
+                "id": "lyrics",
+                "extensions": [
+                    ".lyrics"
+                ],
+                "aliases": [
+                    "Lyrics"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "lyrics",
+                "scopeName": "source.lyrics",
+                "path": "./syntaxes/lyrics.tmLanguage.json"
+            }
+        ]
+    },
+    "scripts": {
+        "build": "node ./esbuild.config.mjs",
+        "watch": "node ./esbuild.config.mjs --watch",
+        "test": "node --import @bleed-believer/cli --test -- 'src/**/*.test.ts'"
+    },
+    "dependencies": {
+        "@codex-obscura-nomina/lyrics-language": "file:../lyrics-language"
+    },
+    "devDependencies": {
+        "@bleed-believer/cli": "^1.1.0",
+        "@types/node": "^22.0.0",
+        "@types/vscode": "^1.85.0",
+        "esbuild": "^0.24.0",
+        "typescript": "^7.0.2"
+    }
+}

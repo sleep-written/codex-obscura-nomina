@@ -1,0 +1,6 @@
+{
+    "comments": {
+        "lineComment": "//"
+    },
+    "wordPattern": "[\\p{L}]+"
+}
