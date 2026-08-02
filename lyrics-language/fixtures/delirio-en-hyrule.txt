@@ -1,0 +1,11 @@
+// fixture de prueba para el tokenizer y el parser de AST
+# Delirio en Hyrule
+Un cucco enorme incubó la trifuerza
+Ganondorf ahora teje bufandas de Navi // nombres propios sin acentuar
+Link nada en sopa del Templo del Tiempo
+y Zelda vende paraguas en Gerudo
+
+// segunda estrofa: el coro
+## Coro Cósmico
+Trifuerza trifuerza dónde te escondiste
+Debajo del sombrero de un Deku triste

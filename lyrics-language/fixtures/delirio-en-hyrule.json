@@ -1,0 +1,2423 @@
+{
+    "title": {
+        "text": "Delirio en Hyrule",
+        "range": {
+            "start": {
+                "line": 2,
+                "column": 3
+            },
+            "end": {
+                "line": 2,
+                "column": 20
+            }
+        }
+    },
+    "comments": [
+        {
+            "text": "fixture de prueba para el tokenizer y el parser de AST",
+            "range": {
+                "start": {
+                    "line": 1,
+                    "column": 4
+                },
+                "end": {
+                    "line": 1,
+                    "column": 58
+                }
+            }
+        }
+    ],
+    "stanzas": [
+        {
+            "title": null,
+            "comments": [],
+            "verses": [
+                {
+                    "comments": [],
+                    "words": [
+                        {
+                            "syllables": [
+                                {
+                                    "text": "Un",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 1
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 3
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 3,
+                                        "column": 3
+                                    },
+                                    "end": {
+                                        "line": 3,
+                                        "column": 4
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 3,
+                                    "column": 1
+                                },
+                                "end": {
+                                    "line": 3,
+                                    "column": 3
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "cuc",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 4
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 7
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "co",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 7
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 9
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 3,
+                                        "column": 9
+                                    },
+                                    "end": {
+                                        "line": 3,
+                                        "column": 10
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 3,
+                                    "column": 4
+                                },
+                                "end": {
+                                    "line": 3,
+                                    "column": 9
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "e",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 10
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 11
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "nor",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 11
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 14
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "me",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 14
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 16
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 3,
+                                        "column": 16
+                                    },
+                                    "end": {
+                                        "line": 3,
+                                        "column": 17
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 3,
+                                    "column": 10
+                                },
+                                "end": {
+                                    "line": 3,
+                                    "column": 16
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "in",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 17
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 19
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "cu",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 19
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 21
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "bó",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 21
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 23
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 3,
+                                        "column": 23
+                                    },
+                                    "end": {
+                                        "line": 3,
+                                        "column": 24
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 3,
+                                    "column": 17
+                                },
+                                "end": {
+                                    "line": 3,
+                                    "column": 23
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "la",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 24
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 26
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 3,
+                                        "column": 26
+                                    },
+                                    "end": {
+                                        "line": 3,
+                                        "column": 27
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 3,
+                                    "column": 24
+                                },
+                                "end": {
+                                    "line": 3,
+                                    "column": 26
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "tri",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 27
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 30
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "fuer",
+                                    "internalMarker": {
+                                        "kind": "diaeresis",
+                                        "active": false,
+                                        "range": {
+                                            "start": {
+                                                "line": 3,
+                                                "column": 32
+                                            },
+                                            "end": {
+                                                "line": 3,
+                                                "column": 32
+                                            }
+                                        }
+                                    },
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 30
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 34
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "za",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 3,
+                                            "column": 34
+                                        },
+                                        "end": {
+                                            "line": 3,
+                                            "column": 36
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": null,
+                            "range": {
+                                "start": {
+                                    "line": 3,
+                                    "column": 27
+                                },
+                                "end": {
+                                    "line": 3,
+                                    "column": 36
+                                }
+                            }
+                        }
+                    ],
+                    "range": {
+                        "start": {
+                            "line": 3,
+                            "column": 1
+                        },
+                        "end": {
+                            "line": 3,
+                            "column": 36
+                        }
+                    }
+                },
+                {
+                    "comments": [
+                        {
+                            "text": "nombres propios sin acentuar",
+                            "range": {
+                                "start": {
+                                    "line": 4,
+                                    "column": 42
+                                },
+                                "end": {
+                                    "line": 4,
+                                    "column": 70
+                                }
+                            }
+                        }
+                    ],
+                    "words": [
+                        {
+                            "syllables": [
+                                {
+                                    "text": "Ga",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 1
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 3
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "non",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 3
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 6
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "dorf",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 6
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 10
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 4,
+                                        "column": 10
+                                    },
+                                    "end": {
+                                        "line": 4,
+                                        "column": 11
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 4,
+                                    "column": 1
+                                },
+                                "end": {
+                                    "line": 4,
+                                    "column": 10
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "a",
+                                    "internalMarker": null,
+                                    "boundary": {
+                                        "kind": "synaeresis",
+                                        "active": false,
+                                        "range": {
+                                            "start": {
+                                                "line": 4,
+                                                "column": 12
+                                            },
+                                            "end": {
+                                                "line": 4,
+                                                "column": 12
+                                            }
+                                        }
+                                    },
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 11
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 12
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "ho",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 12
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 14
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "ra",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 14
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 16
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 4,
+                                        "column": 16
+                                    },
+                                    "end": {
+                                        "line": 4,
+                                        "column": 17
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 4,
+                                    "column": 11
+                                },
+                                "end": {
+                                    "line": 4,
+                                    "column": 16
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "te",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 17
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 19
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "je",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 19
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 21
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 4,
+                                        "column": 21
+                                    },
+                                    "end": {
+                                        "line": 4,
+                                        "column": 22
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 4,
+                                    "column": 17
+                                },
+                                "end": {
+                                    "line": 4,
+                                    "column": 21
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "bu",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 22
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 24
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "fan",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 24
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 27
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "das",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 27
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 30
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 4,
+                                        "column": 30
+                                    },
+                                    "end": {
+                                        "line": 4,
+                                        "column": 31
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 4,
+                                    "column": 22
+                                },
+                                "end": {
+                                    "line": 4,
+                                    "column": 30
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "de",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 31
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 33
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 4,
+                                        "column": 33
+                                    },
+                                    "end": {
+                                        "line": 4,
+                                        "column": 34
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 4,
+                                    "column": 31
+                                },
+                                "end": {
+                                    "line": 4,
+                                    "column": 33
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "Na",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 34
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 36
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "vi",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 4,
+                                            "column": 36
+                                        },
+                                        "end": {
+                                            "line": 4,
+                                            "column": 38
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": null,
+                            "range": {
+                                "start": {
+                                    "line": 4,
+                                    "column": 34
+                                },
+                                "end": {
+                                    "line": 4,
+                                    "column": 38
+                                }
+                            }
+                        }
+                    ],
+                    "range": {
+                        "start": {
+                            "line": 4,
+                            "column": 1
+                        },
+                        "end": {
+                            "line": 4,
+                            "column": 38
+                        }
+                    }
+                },
+                {
+                    "comments": [],
+                    "words": [
+                        {
+                            "syllables": [
+                                {
+                                    "text": "Link",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 5,
+                                            "column": 1
+                                        },
+                                        "end": {
+                                            "line": 5,
+                                            "column": 5
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 5,
+                                        "column": 5
+                                    },
+                                    "end": {
+                                        "line": 5,
+                                        "column": 6
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 5,
+                                    "column": 1
+                                },
+                                "end": {
+                                    "line": 5,
+                                    "column": 5
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "na",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 5,
+                                            "column": 6
+                                        },
+                                        "end": {
+                                            "line": 5,
+                                            "column": 8
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "da",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 5,
+                                            "column": 8
+                                        },
+                                        "end": {
+                                            "line": 5,
+                                            "column": 10
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 5,
+                                        "column": 10
+                                    },
+                                    "end": {
+                                        "line": 5,
+                                        "column": 11
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 5,
+                                    "column": 6
+                                },
+                                "end": {
+                                    "line": 5,
+                                    "column": 10
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "en",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 5,
+                                            "column": 11
+                                        },
+                                        "end": {
+                                            "line": 5,
+                                            "column": 13
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 5,
+                                        "column": 13
+                                    },
+                                    "end": {
+                                        "line": 5,
+                                        "column": 14
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 5,
+                                    "column": 11
+                                },
+                                "end": {
+                                    "line": 5,
+                                    "column": 13
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "so",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 5,
+                                            "column": 14
+                                        },
+                                        "end": {
+                                            "line": 5,
+                                            "column": 16
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "pa",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 5,
+                                            "column": 16
+                                        },
+                                        "end": {
+                                            "line": 5,
+                                            "column": 18
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 5,
+                                        "column": 18
+                                    },
+                                    "end": {
+                                        "line": 5,
+                                        "column": 19
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 5,
+                                    "column": 14
+                                },
+                                "end": {
+                                    "line": 5,
+                                    "column": 18
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "del",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 5,
+                                            "column": 19
+                                        },
+                                        "end": {
+                                            "line": 5,
+                                            "column": 22
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 5,
+                                        "column": 22
+                                    },
+                                    "end": {
+                                        "line": 5,
+                                        "column": 23
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 5,
+                                    "column": 19
+                                },
+                                "end": {
+                                    "line": 5,
+                                    "column": 22
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "Tem",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 5,
+                                            "column": 23
+                                        },
+                                        "end": {
+                                            "line": 5,
+                                            "column": 26
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "plo",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 5,
+                                            "column": 26
+                                        },
+                                        "end": {
+                                            "line": 5,
+                                            "column": 29
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 5,
+                                        "column": 29
+                                    },
+                                    "end": {
+                                        "line": 5,
+                                        "column": 30
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 5,
+                                    "column": 23
+                                },
+                                "end": {
+                                    "line": 5,
+                                    "column": 29
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "del",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 5,
+                                            "column": 30
+                                        },
+                                        "end": {
+                                            "line": 5,
+                                            "column": 33
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 5,
+                                        "column": 33
+                                    },
+                                    "end": {
+                                        "line": 5,
+                                        "column": 34
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 5,
+                                    "column": 30
+                                },
+                                "end": {
+                                    "line": 5,
+                                    "column": 33
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "Tiem",
+                                    "internalMarker": {
+                                        "kind": "diaeresis",
+                                        "active": false,
+                                        "range": {
+                                            "start": {
+                                                "line": 5,
+                                                "column": 36
+                                            },
+                                            "end": {
+                                                "line": 5,
+                                                "column": 36
+                                            }
+                                        }
+                                    },
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 5,
+                                            "column": 34
+                                        },
+                                        "end": {
+                                            "line": 5,
+                                            "column": 38
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "po",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 5,
+                                            "column": 38
+                                        },
+                                        "end": {
+                                            "line": 5,
+                                            "column": 40
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": null,
+                            "range": {
+                                "start": {
+                                    "line": 5,
+                                    "column": 34
+                                },
+                                "end": {
+                                    "line": 5,
+                                    "column": 40
+                                }
+                            }
+                        }
+                    ],
+                    "range": {
+                        "start": {
+                            "line": 5,
+                            "column": 1
+                        },
+                        "end": {
+                            "line": 5,
+                            "column": 40
+                        }
+                    }
+                },
+                {
+                    "comments": [],
+                    "words": [
+                        {
+                            "syllables": [
+                                {
+                                    "text": "y",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 6,
+                                            "column": 1
+                                        },
+                                        "end": {
+                                            "line": 6,
+                                            "column": 2
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 6,
+                                        "column": 2
+                                    },
+                                    "end": {
+                                        "line": 6,
+                                        "column": 3
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 6,
+                                    "column": 1
+                                },
+                                "end": {
+                                    "line": 6,
+                                    "column": 2
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "Zel",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 6,
+                                            "column": 3
+                                        },
+                                        "end": {
+                                            "line": 6,
+                                            "column": 6
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "da",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 6,
+                                            "column": 6
+                                        },
+                                        "end": {
+                                            "line": 6,
+                                            "column": 8
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 6,
+                                        "column": 8
+                                    },
+                                    "end": {
+                                        "line": 6,
+                                        "column": 9
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 6,
+                                    "column": 3
+                                },
+                                "end": {
+                                    "line": 6,
+                                    "column": 8
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "ven",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 6,
+                                            "column": 9
+                                        },
+                                        "end": {
+                                            "line": 6,
+                                            "column": 12
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "de",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 6,
+                                            "column": 12
+                                        },
+                                        "end": {
+                                            "line": 6,
+                                            "column": 14
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 6,
+                                        "column": 14
+                                    },
+                                    "end": {
+                                        "line": 6,
+                                        "column": 15
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 6,
+                                    "column": 9
+                                },
+                                "end": {
+                                    "line": 6,
+                                    "column": 14
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "pa",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 6,
+                                            "column": 15
+                                        },
+                                        "end": {
+                                            "line": 6,
+                                            "column": 17
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "ra",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 6,
+                                            "column": 17
+                                        },
+                                        "end": {
+                                            "line": 6,
+                                            "column": 19
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "guas",
+                                    "internalMarker": {
+                                        "kind": "diaeresis",
+                                        "active": false,
+                                        "range": {
+                                            "start": {
+                                                "line": 6,
+                                                "column": 21
+                                            },
+                                            "end": {
+                                                "line": 6,
+                                                "column": 21
+                                            }
+                                        }
+                                    },
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 6,
+                                            "column": 19
+                                        },
+                                        "end": {
+                                            "line": 6,
+                                            "column": 23
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 6,
+                                        "column": 23
+                                    },
+                                    "end": {
+                                        "line": 6,
+                                        "column": 24
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 6,
+                                    "column": 15
+                                },
+                                "end": {
+                                    "line": 6,
+                                    "column": 23
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "en",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 6,
+                                            "column": 24
+                                        },
+                                        "end": {
+                                            "line": 6,
+                                            "column": 26
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 6,
+                                        "column": 26
+                                    },
+                                    "end": {
+                                        "line": 6,
+                                        "column": 27
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 6,
+                                    "column": 24
+                                },
+                                "end": {
+                                    "line": 6,
+                                    "column": 26
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "Ge",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 6,
+                                            "column": 27
+                                        },
+                                        "end": {
+                                            "line": 6,
+                                            "column": 29
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "ru",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 6,
+                                            "column": 29
+                                        },
+                                        "end": {
+                                            "line": 6,
+                                            "column": 31
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "do",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 6,
+                                            "column": 31
+                                        },
+                                        "end": {
+                                            "line": 6,
+                                            "column": 33
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": null,
+                            "range": {
+                                "start": {
+                                    "line": 6,
+                                    "column": 27
+                                },
+                                "end": {
+                                    "line": 6,
+                                    "column": 33
+                                }
+                            }
+                        }
+                    ],
+                    "range": {
+                        "start": {
+                            "line": 6,
+                            "column": 1
+                        },
+                        "end": {
+                            "line": 6,
+                            "column": 33
+                        }
+                    }
+                }
+            ],
+            "range": {
+                "start": {
+                    "line": 3,
+                    "column": 1
+                },
+                "end": {
+                    "line": 6,
+                    "column": 33
+                }
+            }
+        },
+        {
+            "title": {
+                "text": "Coro Cósmico",
+                "range": {
+                    "start": {
+                        "line": 9,
+                        "column": 4
+                    },
+                    "end": {
+                        "line": 9,
+                        "column": 16
+                    }
+                }
+            },
+            "comments": [
+                {
+                    "text": "segunda estrofa: el coro",
+                    "range": {
+                        "start": {
+                            "line": 8,
+                            "column": 4
+                        },
+                        "end": {
+                            "line": 8,
+                            "column": 28
+                        }
+                    }
+                }
+            ],
+            "verses": [
+                {
+                    "comments": [],
+                    "words": [
+                        {
+                            "syllables": [
+                                {
+                                    "text": "Tri",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 1
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 4
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "fuer",
+                                    "internalMarker": {
+                                        "kind": "diaeresis",
+                                        "active": false,
+                                        "range": {
+                                            "start": {
+                                                "line": 10,
+                                                "column": 6
+                                            },
+                                            "end": {
+                                                "line": 10,
+                                                "column": 6
+                                            }
+                                        }
+                                    },
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 4
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 8
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "za",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 8
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 10
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 10,
+                                        "column": 10
+                                    },
+                                    "end": {
+                                        "line": 10,
+                                        "column": 11
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 10,
+                                    "column": 1
+                                },
+                                "end": {
+                                    "line": 10,
+                                    "column": 10
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "tri",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 11
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 14
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "fuer",
+                                    "internalMarker": {
+                                        "kind": "diaeresis",
+                                        "active": false,
+                                        "range": {
+                                            "start": {
+                                                "line": 10,
+                                                "column": 16
+                                            },
+                                            "end": {
+                                                "line": 10,
+                                                "column": 16
+                                            }
+                                        }
+                                    },
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 14
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 18
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "za",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 18
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 20
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 10,
+                                        "column": 20
+                                    },
+                                    "end": {
+                                        "line": 10,
+                                        "column": 21
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 10,
+                                    "column": 11
+                                },
+                                "end": {
+                                    "line": 10,
+                                    "column": 20
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "dón",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 21
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 24
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "de",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 24
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 26
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 10,
+                                        "column": 26
+                                    },
+                                    "end": {
+                                        "line": 10,
+                                        "column": 27
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 10,
+                                    "column": 21
+                                },
+                                "end": {
+                                    "line": 10,
+                                    "column": 26
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "te",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 27
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 29
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 10,
+                                        "column": 29
+                                    },
+                                    "end": {
+                                        "line": 10,
+                                        "column": 30
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 10,
+                                    "column": 27
+                                },
+                                "end": {
+                                    "line": 10,
+                                    "column": 29
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "es",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 30
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 32
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "con",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 32
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 35
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "dis",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 35
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 38
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "te",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 10,
+                                            "column": 38
+                                        },
+                                        "end": {
+                                            "line": 10,
+                                            "column": 40
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": null,
+                            "range": {
+                                "start": {
+                                    "line": 10,
+                                    "column": 30
+                                },
+                                "end": {
+                                    "line": 10,
+                                    "column": 40
+                                }
+                            }
+                        }
+                    ],
+                    "range": {
+                        "start": {
+                            "line": 10,
+                            "column": 1
+                        },
+                        "end": {
+                            "line": 10,
+                            "column": 40
+                        }
+                    }
+                },
+                {
+                    "comments": [],
+                    "words": [
+                        {
+                            "syllables": [
+                                {
+                                    "text": "De",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 1
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 3
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "ba",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 3
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 5
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "jo",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 5
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 7
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 11,
+                                        "column": 7
+                                    },
+                                    "end": {
+                                        "line": 11,
+                                        "column": 8
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 11,
+                                    "column": 1
+                                },
+                                "end": {
+                                    "line": 11,
+                                    "column": 7
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "del",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 8
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 11
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 11,
+                                        "column": 11
+                                    },
+                                    "end": {
+                                        "line": 11,
+                                        "column": 12
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 11,
+                                    "column": 8
+                                },
+                                "end": {
+                                    "line": 11,
+                                    "column": 11
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "som",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 12
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 15
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "bre",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 15
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 18
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "ro",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 18
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 20
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 11,
+                                        "column": 20
+                                    },
+                                    "end": {
+                                        "line": 11,
+                                        "column": 21
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 11,
+                                    "column": 12
+                                },
+                                "end": {
+                                    "line": 11,
+                                    "column": 20
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "de",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 21
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 23
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 11,
+                                        "column": 23
+                                    },
+                                    "end": {
+                                        "line": 11,
+                                        "column": 24
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 11,
+                                    "column": 21
+                                },
+                                "end": {
+                                    "line": 11,
+                                    "column": 23
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "un",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 24
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 26
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 11,
+                                        "column": 26
+                                    },
+                                    "end": {
+                                        "line": 11,
+                                        "column": 27
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 11,
+                                    "column": 24
+                                },
+                                "end": {
+                                    "line": 11,
+                                    "column": 26
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "De",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 27
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 29
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "ku",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 29
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 31
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": {
+                                "kind": "sinalefa",
+                                "active": false,
+                                "range": {
+                                    "start": {
+                                        "line": 11,
+                                        "column": 31
+                                    },
+                                    "end": {
+                                        "line": 11,
+                                        "column": 32
+                                    }
+                                }
+                            },
+                            "range": {
+                                "start": {
+                                    "line": 11,
+                                    "column": 27
+                                },
+                                "end": {
+                                    "line": 11,
+                                    "column": 31
+                                }
+                            }
+                        },
+                        {
+                            "syllables": [
+                                {
+                                    "text": "tris",
+                                    "internalMarker": null,
+                                    "boundary": "separator",
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 32
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 36
+                                        }
+                                    }
+                                },
+                                {
+                                    "text": "te",
+                                    "internalMarker": null,
+                                    "boundary": null,
+                                    "range": {
+                                        "start": {
+                                            "line": 11,
+                                            "column": 36
+                                        },
+                                        "end": {
+                                            "line": 11,
+                                            "column": 38
+                                        }
+                                    }
+                                }
+                            ],
+                            "trailingJoin": null,
+                            "range": {
+                                "start": {
+                                    "line": 11,
+                                    "column": 32
+                                },
+                                "end": {
+                                    "line": 11,
+                                    "column": 38
+                                }
+                            }
+                        }
+                    ],
+                    "range": {
+                        "start": {
+                            "line": 11,
+                            "column": 1
+                        },
+                        "end": {
+                            "line": 11,
+                            "column": 38
+                        }
+                    }
+                }
+            ],
+            "range": {
+                "start": {
+                    "line": 9,
+                    "column": 1
+                },
+                "end": {
+                    "line": 11,
+                    "column": 38
+                }
+            }
+        }
+    ],
+    "range": {
+        "start": {
+            "line": 2,
+            "column": 1
+        },
+        "end": {
+            "line": 11,
+            "column": 38
+        }
+    }
+}

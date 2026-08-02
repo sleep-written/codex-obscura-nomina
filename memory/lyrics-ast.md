@@ -7,7 +7,7 @@ metadata:
 
 `./lyrics-language/src/ast/` implementa el feature "ast": consume el `Token[]` que produce [[lyrics-tokenizer]] y construye un árbol (`SongNode`) que el frontend "tonto" (ver [[lyrics-app-architecture]]) puede renderizar directamente, sin interpretar símbolos, y que también sirve de base para IntelliSense en editores (ver [[vscode-extension]]).
 
-**Alcance:** solo cubre el camino `.lyrics` (ya anotado) → AST. El camino texto-plano → AST queda pendiente del motor de fonética/silabeo (todavía no implementado).
+**Alcance:** cubre el camino `.lyrics` (ya anotado) → AST vía `parseLyrics`. El camino texto-plano → AST vive en `parsePlainLyrics` (ver [[lyrics-phonetics]]), que reutiliza `parseSong` sin modificarlo — traduce texto plano a un `LyricsToken[]` equivalente en vez de construir el `SongNode` por su cuenta.
 
 **Estructura:**
 - `interfaces/position.ts` — `Position` (`{ line, column }`, 1-indexado, misma convención que `Token.line`/`Token.column`) y `Range` (`{ start, end }`, `start` inclusivo, `end` exclusivo — una columna después del último grafema).
@@ -28,4 +28,4 @@ metadata:
 
 **Why:** ver [[lyrics-language-dsl]] para el porqué del marcado obligatorio y el alcance del split `#`/`##`. La forma anidada por sílaba (en vez de un stream plano de nodos) se eligió para que el frontend "tonto" solo itere y pinte, sin tener que interpretar qué símbolo produjo qué nodo. El rango en cada nodo (agregado para dar soporte a [[vscode-extension]]) reusa la convención 1-indexada de `Token` en vez de inventar una propia, para no tener dos sistemas de coordenadas conviviendo en el mismo paquete.
 
-**How to apply:** cualquier símbolo nuevo del DSL que afecte la estructura del verso/palabra/sílaba debe reflejarse tanto en `lyrics-tokenizer.ts` (ver [[lyrics-tokenizer]]) como en `parser.ts`, incluyendo su `range` (usar los helpers `tokenRange`/`spanRange` de `parser.ts`). Nuevas clases de error van en su propio archivo `*.error.ts` junto a `lyrics-parse.error.ts`. Antes de tocar `song.ts`/`parser.ts`, correr `npm test` (46 tests a la fecha) — `parser-range.test.ts` y `locate.test.ts` cubren específicamente el tracking de rango.
+**How to apply:** cualquier símbolo nuevo del DSL que afecte la estructura del verso/palabra/sílaba debe reflejarse tanto en `lyrics-tokenizer.ts` (ver [[lyrics-tokenizer]]) como en `parser.ts`, incluyendo su `range` (usar los helpers `tokenRange`/`spanRange` de `parser.ts`). Nuevas clases de error van en su propio archivo `*.error.ts` junto a `lyrics-parse.error.ts`. Antes de tocar `song.ts`/`parser.ts`, correr `npm test` (98 tests a la fecha, incluyendo [[lyrics-phonetics]]) — `parser-range.test.ts` y `locate.test.ts` cubren específicamente el tracking de rango.

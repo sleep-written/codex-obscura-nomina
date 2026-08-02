@@ -1,0 +1,1 @@
+export { tokenizePlainLyrics } from './plain-text-tokenizer.js';

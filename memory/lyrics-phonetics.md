@@ -1,0 +1,25 @@
+---
+name: lyrics-phonetics
+description: Motor de silabeo español para texto plano → AST en ./lyrics-language (src/phonetics/, src/plain-text/), feature `parsePlainLyrics`.
+metadata:
+  type: project
+---
+
+`./lyrics-language/src/phonetics/` + `./lyrics-language/src/plain-text/` implementan el camino que [[lyrics-app-architecture]] dejaba pendiente: texto plano en español (sin sílabas separadas, sin diéresis/sinéresis/sinalefa marcadas) → `SongNode`, vía `parsePlainLyrics(source: string): SongNode` (exportada desde `src/ast/index.ts`, junto a `parseLyrics`).
+
+**Diseño de integración:** en vez de construir el AST directamente, el nuevo código traduce texto plano a un `LyricsToken[]` compatible con el que ya produce `lyricsTokenizer` sobre un `.lyrics` anotado, y lo pasa sin cambios a `parseSong` (ver [[lyrics-ast]]). Esto significa que toda la validación estructural (un solo título, sílaba no vacía, etc.) se reutiliza gratis — `parsePlainLyrics` puede lanzar `LyricsParseError` igual que `parseLyrics`.
+
+**Estructura:**
+- `src/phonetics/spanish-vowels.ts` — clasificación pura de un grafema como vocal fuerte (a,e,o) / débil (i,u,ü) / tildada, y de un par de vocales adyacentes como diptongo o hiato natural (hiato si ambas fuertes, o si la débil del par lleva tilde — "hiato acentual").
+- `src/phonetics/syllabify-word.ts` — `syllabifyWord(word: string): MarkerEvent[]`, el algoritmo de silabeo español completo (una sola palabra, sin conocer línea/columna): vocal débil 'u' muda tras g/q ante e/i (salvo `ü` ortográfica, que siempre cuenta), 'h' intermedia transparente para adyacencia vocálica, 'y' final tras vocal como semivocal, reglas clásicas de división consonántica (dígrafos ch/ll/rr nunca se separan, grupos inseparables pr/br/tr/dr/cr/gr/fr/pl/bl/cl/gl/fl van con la vocal siguiente). No cubre triptongos reales (ej. "buey"): el texto/conteo de sílabas sigue siendo correcto, pero solo el último evento interno sobrevive en el AST porque `SyllableNode.internalMarker` es singular.
+- `src/plain-text/plain-text-tokenizer.ts` — `tokenizePlainLyrics(source: string): LyricsToken[]`, el escáner de la fuente completa. Reconoce `#`/`##`/`//` literalmente igual que el DSL anotado; letras fuera de una línea de título pasan por `syllabifyWord` y se traducen a `text`/`syllable-separator`/`diaeresis-off`/`synaeresis-off`; dentro de una línea de título (`inTitleLine`, activo desde `#`/`##` hasta el próximo fin de verso/estrofa) las letras se emiten como un único `text` sin segmentar, porque de lo contrario los guiones sintéticos corromperían la reconstrucción del título (`tokensToText` en `parser.ts` concatena `.value` de todos los tokens de la línea). Puntuación/dígitos/símbolos DSL sueltos (`- & + _ % /`) se descartan en silencio, decisión de producto explícita del usuario. Nunca infiere sinalefa: los espacios siempre quedan como `word-separator`.
+
+**Regla fonética central aplicada:** el motor de texto plano nunca emite `+`/`%` (símbolos que fuerzan un estado alterado) — solo `_`/`/`, porque texto sin anotar no puede expresar una intención de alteración; el estado natural siempre gana.
+
+**Punto de diseño no obvio — tokens sintéticos de ancho cero:** los símbolos que no existen en el texto plano (`syllable-separator`, `diaeresis-off`, `synaeresis-off`) se emiten con `length: 0` en la columna del carácter siguiente real. Es seguro porque `parseWord` (en `parser.ts`) nunca lee `.value` de esos tres tipos de token, solo `tokenRange` (basado en `column`+`length`) — confirmado leyendo el código antes de implementar, no asumido.
+
+**Validación:** además de tests unitarios por caso lingüístico (diptongo, hiato, hiato acentual, u muda vs. ü, h transparente, y semivocal, dígrafos, grupos consonánticos), hay un test de regresión cruzada fuerte (`src/ast/parse-plain-lyrics.test.ts`) que deriva mecánicamente la versión en texto plano del fixture real `fixtures/delirio-en-hyrule.lyrics` y compara, palabra por palabra, que `parsePlainLyrics` reproduce exactamente las mismas sílabas que el autor anotó a mano con `parseLyrics`.
+
+**Why:** ver [[lyrics-app-architecture]] para el porqué de la separación de caminos (texto plano necesita fonética, `.lyrics` anotado no debería depender de ella). Se separó `phonetics/` (lógica pura sobre una palabra aislada) de `plain-text/` (traductor con estado de posición) porque el motor genérico `Tokenizer<T>` de [[lyrics-tokenizer]] es greedy carácter-a-carácter y no puede mirar la palabra completa para clasificar un par vocálico — por eso esta feature no es una `TokenFactory` más, es un traductor de más alto nivel.
+
+**How to apply:** cualquier ajuste a las reglas de silabeo español va en `spanish-vowels.ts`/`syllabify-word.ts` (lógica pura, testear ahí primero). Cualquier cambio a cómo se recorre la fuente completa (títulos, comentarios, puntuación, columnas) va en `plain-text-tokenizer.ts`. No tocar `lyrics-tokenizer.ts` ni `parser.ts` para esta feature — la integración es deliberadamente unidireccional (texto plano → tokens compatibles → `parseSong` sin cambios).
