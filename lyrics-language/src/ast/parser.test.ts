@@ -47,12 +47,13 @@ describe('parseLyrics', () => {
     });
 
     it('tracks sinalefa vs. plain word separators as each word\'s trailingJoin', (t: it.TestContext) => {
-        const song = parseLyrics('Buscarán a&otro contratar\n');
+        const song = parseLyrics('Buscarán|a&otro contratar\n');
         const [word1, word2, word3, word4] = song.stanzas[0].verses[0].words;
 
         t.assert.deepStrictEqual(word1.trailingJoin, { kind: 'sinalefa', active: false, range: r(1, 9, 1, 10) });
         t.assert.deepStrictEqual(word2.trailingJoin, { kind: 'sinalefa', active: true, range: r(1, 11, 1, 12) });
-        t.assert.deepStrictEqual(word3.trailingJoin, { kind: 'sinalefa', active: false, range: r(1, 16, 1, 17) });
+        // A plain space is not an alterable boundary at all, so no marker.
+        t.assert.strictEqual(word3.trailingJoin, null);
         t.assert.strictEqual(word4.trailingJoin, null);
     });
 

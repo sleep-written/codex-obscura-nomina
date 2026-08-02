@@ -1,0 +1,9 @@
+/// Tokens propios de la app, para lo que `mat.theme()` no cubre. Van aquí y
+/// no en el SCSS de un componente para que exista un solo lugar donde cambiar
+/// la identidad visual, igual que los colores del tema.
+@mixin tokens {
+  // Las notas se leen mejor en monoespaciado: las fichas quedan de anchos
+  // comparables y los contadores no bailan al cambiar de cifra. Stack del
+  // sistema a propósito — la app no debe depender de una fuente remota.
+  --app-font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', 'Roboto Mono', Menlo, Consolas, monospace;
+}

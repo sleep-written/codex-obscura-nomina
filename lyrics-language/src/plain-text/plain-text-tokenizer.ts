@@ -1,4 +1,5 @@
 import { Character } from '../tokenizer/character.js';
+import { canSinalefa } from '../phonetics/sinalefa.js';
 import { syllabifyWord } from '../phonetics/syllabify-word.js';
 import type { LyricsToken } from '../tokenizer/lyrics-tokenizer.js';
 
@@ -55,9 +56,14 @@ function syllabifyWordToTokens(word: string, line: number, startColumn: number):
  *
  * `#`/`##` titles and `//` comments are recognized literally, exactly as in
  * the annotated DSL. Any other grapheme this scanner doesn't recognize —
- * punctuation, digits, or a DSL symbol typed loose (`- & + _ % /`) — is
- * silently dropped, since plain text is by definition unannotated. Sinalefa
- * is never inferred: a run of spaces always becomes a `word-separator`.
+ * punctuation, digits, or a DSL symbol typed loose (`- & | + _ % /`) — is
+ * silently dropped, since plain text is by definition unannotated.
+ *
+ * A run of spaces becomes a `sinalefa-off` boundary when a vowel sound meets a
+ * vowel sound across it (see {@link canSinalefa}) and a plain `word-separator`
+ * otherwise — the same distinction the annotated DSL writes as `|` vs a space.
+ * The sinalefa is never *applied*, only declared possible: plain text can't
+ * express an author's decision, so `&` is never synthesized (nor is `+`/`%`).
  */
 export function tokenizePlainLyrics(source: string): LyricsToken[] {
     const chars = Character.split(source.normalize('NFC'));
@@ -65,6 +71,23 @@ export function tokenizePlainLyrics(source: string): LyricsToken[] {
 
     let i = 0;
     let inTitleLine = false;
+
+    /**
+     * The word immediately behind the cursor, or `''` if anything else came in
+     * between. Reset by every dropped grapheme too: with punctuation between
+     * two words ("salí, a") the boundary is no longer a bare word boundary, so
+     * it stays a plain separator rather than an alterable sinalefa.
+     */
+    let previousWord = '';
+
+    /** The letters starting at `from`, without consuming them. */
+    const peekWord = (from: number): string => {
+        let j = from;
+        while (j < chars.length && isLetter(chars[j].toString())) {
+            j++;
+        }
+        return chars.slice(from, j).map(ch => ch.toString()).join('');
+    };
 
     while (i < chars.length) {
         const start = chars[i];
@@ -82,6 +105,7 @@ export function tokenizePlainLyrics(source: string): LyricsToken[] {
                 line: start.row, column: start.col, length
             });
             inTitleLine = false;
+            previousWord = '';
             i = j;
             continue;
         }
@@ -92,7 +116,13 @@ export function tokenizePlainLyrics(source: string): LyricsToken[] {
                 j++;
             }
             const length = j - i;
-            tokens.push({ type: 'word-separator', value: ' '.repeat(length), line: start.row, column: start.col, length });
+            const alterable = !inTitleLine && canSinalefa(previousWord, peekWord(j));
+            tokens.push({
+                type: alterable ? 'sinalefa-off' : 'word-separator',
+                value: alterable ? '|' : ' '.repeat(length),
+                line: start.row, column: start.col, length
+            });
+            previousWord = '';
             i = j;
             continue;
         }
@@ -109,6 +139,7 @@ export function tokenizePlainLyrics(source: string): LyricsToken[] {
                 line: start.row, column: start.col, length
             });
             inTitleLine = true;
+            previousWord = '';
             i = j;
             continue;
         }
@@ -120,6 +151,7 @@ export function tokenizePlainLyrics(source: string): LyricsToken[] {
             }
             const value = chars.slice(i, j).map(ch => ch.toString()).join('');
             tokens.push({ type: 'comment', value, line: start.row, column: start.col, length: j - i });
+            previousWord = '';
             i = j;
             continue;
         }
@@ -138,11 +170,13 @@ export function tokenizePlainLyrics(source: string): LyricsToken[] {
             } else {
                 tokens.push(...syllabifyWordToTokens(word, start.row, start.col));
             }
+            previousWord = word;
             i = j;
             continue;
         }
 
         // Punctuation, digits, or a loose DSL symbol: not part of the plain-text alphabet.
+        previousWord = '';
         i++;
     }
 

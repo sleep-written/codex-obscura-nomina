@@ -23,9 +23,18 @@ describe('lyricsTokenizer', () => {
     it('recognizes an activated sinalefa in place of the space ("a&otro")', (t: it.TestContext) => {
         const tokens = lyricsTokenizer.tokenize('a&otro');
         t.assert.deepStrictEqual(tokens, [
-            { type: 'text',      value: 'a',    line: 1, column: 1, length: 1 },
-            { type: 'sinalefa',  value: '&',    line: 1, column: 2, length: 1 },
-            { type: 'text',      value: 'otro', line: 1, column: 3, length: 4 }
+            { type: 'text',        value: 'a',    line: 1, column: 1, length: 1 },
+            { type: 'sinalefa-on', value: '&',    line: 1, column: 2, length: 1 },
+            { type: 'text',        value: 'otro', line: 1, column: 3, length: 4 }
+        ]);
+    });
+
+    it('recognizes a deactivated sinalefa in place of the space ("a|otro")', (t: it.TestContext) => {
+        const tokens = lyricsTokenizer.tokenize('a|otro');
+        t.assert.deepStrictEqual(tokens, [
+            { type: 'text',         value: 'a',    line: 1, column: 1, length: 1 },
+            { type: 'sinalefa-off', value: '|',    line: 1, column: 2, length: 1 },
+            { type: 'text',         value: 'otro', line: 1, column: 3, length: 4 }
         ]);
     });
 
@@ -121,7 +130,7 @@ describe('lyricsTokenizer', () => {
             { type: 'text',            value: 'Buscarán',  line: 1, column: 1,  length: 8 },
             { type: 'word-separator',  value: ' ',         line: 1, column: 9,  length: 1 },
             { type: 'text',            value: 'a',         line: 1, column: 10, length: 1 },
-            { type: 'sinalefa',        value: '&',         line: 1, column: 11, length: 1 },
+            { type: 'sinalefa-on',     value: '&',         line: 1, column: 11, length: 1 },
             { type: 'text',            value: 'otro',      line: 1, column: 12, length: 4 },
             { type: 'word-separator',  value: ' ',         line: 1, column: 16, length: 1 },
             { type: 'text',            value: 'contratar', line: 1, column: 17, length: 9 }

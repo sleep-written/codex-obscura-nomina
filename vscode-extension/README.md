@@ -8,9 +8,9 @@ A quick reference — see the [lyrics-language README](../lyrics-language/README
 
 | Symbol | Meaning |
 |---|---|
-| ` ` (space) | Word separator; sinalefa **off** between the two words. |
+| ` ` (space) | Word separator across which no sinalefa is possible — nothing to alter. |
 | `-` | Syllable separator. |
-| `&` | Sinalefa **on** (fuses two words, e.g. `a&otro`). |
+| `&` / `\|` | Sinalefa **on** / **off** between two words that *could* fuse (e.g. `a&otro`, `a\|otro`). Both replace the space. |
 | `+` / `_` | Diéresis **on** / **off** (splits vs. keeps a vowel pair as one syllable). |
 | `%` / `/` | Sinéresis **on** / **off** (keeps vs. splits a vowel pair). |
 | `#` | Song title — first line of the file only. |
@@ -22,7 +22,7 @@ A quick reference — see the [lyrics-language README](../lyrics-language/README
 
 **Syntax highlighting** — a TextMate grammar scopes every DSL symbol, plus titles and comments. Since most color themes don't define rules for these scopes, the extension also injects a default color rule per symbol into your `editor.tokenColorCustomizations` on activation (only the scopes you haven't already customized yourself — see [Default colors](#default-colors) below).
 
-**Hover** — hovering a syllable, title, comment, or alterable marker shows what it is. On a marker (`+`/`_`/`%`/`/`/`&`/space), the hover also offers a "Cambiar a `X`" link that flips it to its paired state in one click.
+**Hover** — hovering a syllable, title, comment, or alterable marker shows what it is. On a marker (`+`/`_`/`%`/`/`/`&`/`|`), the hover also offers a "Cambiar a `X`" link that flips it to its paired state in one click.
 
 **Outline** — the document symbol tree mirrors the song structure: song → stanzas → verses, with breadcrumbs and Ctrl+Shift+O navigation.
 
@@ -32,7 +32,7 @@ A quick reference — see the [lyrics-language README](../lyrics-language/README
 
 **Formatting** (`Shift+Alt+F`) — canonicalizes the file: stanza markers collapse to exactly `##`, comments become `// text`, and runs of blank lines between stanzas collapse to exactly one.
 
-**Toggle a marker** — click the link in a marker's hover, run *Lyrics: Alternar alteración* from the Command Palette, use `Alt+T`, or trigger the `Ctrl+.` code action with the cursor on the symbol. All four alterable pairs are supported: `+`↔`_`, `%`↔`/`, `&`↔space. This never crosses between diéresis and sinéresis — they're different phenomena in the DSL, so a `_` only ever offers `+`, never `%`.
+**Toggle a marker** — click the link in a marker's hover, run *Lyrics: Alternar alteración* from the Command Palette, use `Alt+T`, or trigger the `Ctrl+.` code action with the cursor on the symbol. All three alterable pairs are supported: `+`↔`_`, `%`↔`/`, `&`↔`|`. This never crosses between diéresis and sinéresis — they're different phenomena in the DSL, so a `_` only ever offers `+`, never `%`.
 
 **Annotate plain text** — run *Lyrics: Anotar texto plano* to turn unannotated Spanish lyrics into an annotated `.lyrics` document: syllable boundaries and each vowel pair's natural diphthong/hiato state are computed automatically. Runs on the current selection, or the whole document if nothing is selected. If the target already looks like valid `.lyrics`, you're asked to confirm before re-annotating, since that would discard any diéresis/sinéresis you placed by hand.
 
@@ -47,7 +47,7 @@ Both only appear in the Command Palette while a `.lyrics` file is focused.
 
 ## Default colors
 
-Since a TextMate grammar only assigns *scopes* — the color always comes from the active theme, and most themes never define a rule for an unfamiliar scope — this extension writes a small set of default colors for its scopes into your **global** `editor.tokenColorCustomizations` the first time it activates. It only adds scopes you haven't already customized yourself; any rule you've already set for one of these scopes (or added afterward) is left untouched. Defaults: dark gray for the syllable separator, green for activated markers (`&`/`+`/`%`), blue for deactivated ones (`_`/`/`).
+Since a TextMate grammar only assigns *scopes* — the color always comes from the active theme, and most themes never define a rule for an unfamiliar scope — this extension writes a small set of default colors for its scopes into your **global** `editor.tokenColorCustomizations` the first time it activates. It only adds scopes you haven't already customized yourself; any rule you've already set for one of these scopes (or added afterward) is left untouched. Defaults: dark gray for the syllable separator, green for activated markers (`&`/`+`/`%`), blue for deactivated ones (`|`/`_`/`/`).
 
 This is a deliberate, non-marketplace-friendly choice made for personal use with a single custom DSL — feel free to delete the injected rules from your settings if you'd rather theme it yourself.
 

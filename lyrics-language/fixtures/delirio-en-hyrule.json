@@ -53,20 +53,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 3,
-                                        "column": 3
-                                    },
-                                    "end": {
-                                        "line": 3,
-                                        "column": 4
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 3,
@@ -257,20 +244,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 3,
-                                        "column": 23
-                                    },
-                                    "end": {
-                                        "line": 3,
-                                        "column": 24
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 3,
@@ -300,20 +274,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 3,
-                                        "column": 26
-                                    },
-                                    "end": {
-                                        "line": 3,
-                                        "column": 27
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 3,
@@ -475,20 +436,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 4,
-                                        "column": 10
-                                    },
-                                    "end": {
-                                        "line": 4,
-                                        "column": 11
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 4,
@@ -561,20 +509,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 4,
-                                        "column": 16
-                                    },
-                                    "end": {
-                                        "line": 4,
-                                        "column": 17
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 4,
@@ -619,20 +554,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 4,
-                                        "column": 21
-                                    },
-                                    "end": {
-                                        "line": 4,
-                                        "column": 22
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 4,
@@ -692,20 +614,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 4,
-                                        "column": 30
-                                    },
-                                    "end": {
-                                        "line": 4,
-                                        "column": 31
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 4,
@@ -735,20 +644,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 4,
-                                        "column": 33
-                                    },
-                                    "end": {
-                                        "line": 4,
-                                        "column": 34
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 4,
@@ -838,20 +734,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 5,
-                                        "column": 5
-                                    },
-                                    "end": {
-                                        "line": 5,
-                                        "column": 6
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 5,
@@ -939,20 +822,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 5,
-                                        "column": 13
-                                    },
-                                    "end": {
-                                        "line": 5,
-                                        "column": 14
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 5,
@@ -997,20 +867,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 5,
-                                        "column": 18
-                                    },
-                                    "end": {
-                                        "line": 5,
-                                        "column": 19
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 5,
@@ -1040,20 +897,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 5,
-                                        "column": 22
-                                    },
-                                    "end": {
-                                        "line": 5,
-                                        "column": 23
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 5,
@@ -1098,20 +942,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 5,
-                                        "column": 29
-                                    },
-                                    "end": {
-                                        "line": 5,
-                                        "column": 30
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 5,
@@ -1141,20 +972,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 5,
-                                        "column": 33
-                                    },
-                                    "end": {
-                                        "line": 5,
-                                        "column": 34
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 5,
@@ -1257,20 +1075,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 6,
-                                        "column": 2
-                                    },
-                                    "end": {
-                                        "line": 6,
-                                        "column": 3
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 6,
@@ -1315,20 +1120,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 6,
-                                        "column": 8
-                                    },
-                                    "end": {
-                                        "line": 6,
-                                        "column": 9
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 6,
@@ -1373,20 +1165,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 6,
-                                        "column": 14
-                                    },
-                                    "end": {
-                                        "line": 6,
-                                        "column": 15
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 6,
@@ -1459,20 +1238,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 6,
-                                        "column": 23
-                                    },
-                                    "end": {
-                                        "line": 6,
-                                        "column": 24
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 6,
@@ -1502,20 +1268,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 6,
-                                        "column": 26
-                                    },
-                                    "end": {
-                                        "line": 6,
-                                        "column": 27
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 6,
@@ -1705,20 +1458,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 10,
-                                        "column": 10
-                                    },
-                                    "end": {
-                                        "line": 10,
-                                        "column": 11
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 10,
@@ -1791,20 +1531,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 10,
-                                        "column": 20
-                                    },
-                                    "end": {
-                                        "line": 10,
-                                        "column": 21
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 10,
@@ -1849,20 +1576,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 10,
-                                        "column": 26
-                                    },
-                                    "end": {
-                                        "line": 10,
-                                        "column": 27
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 10,
@@ -2055,20 +1769,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 11,
-                                        "column": 7
-                                    },
-                                    "end": {
-                                        "line": 11,
-                                        "column": 8
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 11,
@@ -2098,20 +1799,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 11,
-                                        "column": 11
-                                    },
-                                    "end": {
-                                        "line": 11,
-                                        "column": 12
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 11,
@@ -2171,20 +1859,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 11,
-                                        "column": 20
-                                    },
-                                    "end": {
-                                        "line": 11,
-                                        "column": 21
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 11,
@@ -2257,20 +1932,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 11,
-                                        "column": 26
-                                    },
-                                    "end": {
-                                        "line": 11,
-                                        "column": 27
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 11,
@@ -2315,20 +1977,7 @@
                                     }
                                 }
                             ],
-                            "trailingJoin": {
-                                "kind": "sinalefa",
-                                "active": false,
-                                "range": {
-                                    "start": {
-                                        "line": 11,
-                                        "column": 31
-                                    },
-                                    "end": {
-                                        "line": 11,
-                                        "column": 32
-                                    }
-                                }
-                            },
+                            "trailingJoin": null,
                             "range": {
                                 "start": {
                                     "line": 11,

@@ -21,7 +21,8 @@ sus peer deps), `provideAnimationsAsync()`, ni `provideZonelessChangeDetection()
 - `src/app/pages/<pagina>/` — una carpeta por página. Hoy solo `editor`, pero habrá más.
 - `src/app/shared/` — todo lo genérico y reutilizable por cualquier página (componentes, funciones
   puras sobre el AST, servicios de navegador, y el store de la canción).
-- `src/stylings/` — SCSS global (temas y breakpoints), expuesto vía
+- `src/stylings/` — SCSS global (temas, breakpoints y `_tokens.scss` con los tokens propios que
+  `mat.theme()` no cubre, hoy `--app-font-mono`), expuesto vía
   `stylePreprocessorOptions.includePaths: ["src/stylings"]` en `angular.json`, lo que permite
   `@use 'breakpoints'` desde cualquier componente.
 

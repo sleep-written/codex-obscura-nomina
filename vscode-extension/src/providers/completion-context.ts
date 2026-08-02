@@ -67,7 +67,10 @@ export function getContextualSuggestions(ctx: CompletionContext): CompletionSugg
         );
     }
     if (isLetter(prev) && isLetter(next)) {
-        suggestions.push({ insertText: '&', label: '&', detail: 'Sinalefa — funde con la palabra siguiente' });
+        suggestions.push(
+            { insertText: '&', label: '&', detail: 'Sinalefa activada — funde con la palabra siguiente' },
+            { insertText: '|', label: '|', detail: 'Sinalefa desactivada — se podría fundir, pero no se funde' }
+        );
     }
     if (!ctx.before.includes('//') && !ctx.after.includes('//')) {
         suggestions.push({ insertText: '// ${0:nota}', label: '//', detail: 'Comentario' });

@@ -1,18 +1,57 @@
-<div class="verse">
-  @for (piece of pieces(); track $index) {
-    @switch (piece.kind) {
-      @case ('text') { <span class="verse__text">{{ piece.text }}</span> }
-      @case ('separator') { <span class="verse__sep">-</span> }
-      @case ('marker') {
+<span class="verse__num">{{ label() }}</span>
+
+<div class="verse__notes">
+  @for (note of metrics().notes; track $index) {
+    <span class="note">
+      @for (part of note.parts; track $index) {
+        @if (part.tie; as tie) {
+          <button
+            type="button"
+            class="note__tie"
+            [attr.data-kind]="tie.kind"
+            [attr.aria-pressed]="true"
+            [attr.aria-label]="'Separar en dos notas (' + kindLabel(tie) + ')'"
+            [title]="'Separar en dos notas · ' + kindLabel(tie)"
+            (click)="toggle(tie)"></button>
+        }
+        <span class="note__part">{{ part.text }}</span>
+      }
+    </span>
+
+    @let boundary = metrics().boundaries[$index];
+    @if (boundary) {
+      @if (boundary.marker; as marker) {
         <button
           type="button"
-          class="verse__marker"
-          [class.verse__marker--active]="piece.marker.active"
-          [attr.data-kind]="piece.marker.kind"
-          [attr.aria-pressed]="piece.marker.active"
-          [attr.aria-label]="piece.marker.kind"
-          (click)="toggle(piece.marker)">{{ piece.symbol }}</button>
+          class="gap gap--open"
+          [attr.data-kind]="marker.kind"
+          [attr.aria-pressed]="false"
+          [attr.aria-label]="'Unir en una sola nota (' + kindLabel(marker) + ')'"
+          [title]="'Unir en una sola nota · ' + kindLabel(marker)"
+          (click)="toggle(marker)">~</button>
+      } @else {
+        <span class="gap" [class.gap--word]="boundary.word"></span>
       }
     }
+  }
+</div>
+
+<div class="meter">
+  <span class="meter__count">{{ metrics().count }}<small>notas</small></span>
+
+  <div class="meter__track">
+    <span class="meter__slack" [style.left]="bar().slackLeft" [style.width]="bar().slackWidth"></span>
+    <span class="meter__cursor" [style.left]="bar().cursor"></span>
+    @if (bar().target; as target) {
+      <span class="meter__target" [style.left]="target"></span>
+    }
+  </div>
+
+  <span class="meter__range" [title]="'Entre ' + metrics().min + ' y ' + metrics().max + ' notas según las alteraciones'">
+    {{ metrics().min }}–{{ metrics().max }}
+  </span>
+
+  @if (status() !== 'none') {
+    <span class="meter__delta">{{ delta() }}</span>
   }
 </div>

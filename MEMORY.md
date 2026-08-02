@@ -4,6 +4,8 @@
 - [Lyrics app architecture](memory/lyrics-app-architecture.md) — scope de la app (textarea + cards), frontend "tonto" que solo renderiza un AST, por qué el .lyrics debe ser autocontenido
 - [Lyrics phonetics](memory/lyrics-phonetics.md) — motor de silabeo español, texto plano → AST vía `parsePlainLyrics`, en ./lyrics-language (`src/phonetics/`, `src/plain-text/`)
 - [Lyrics printer](memory/lyrics-printer.md) — AST→texto: `printLyrics` (.lyrics anotado) y `printPlainLyrics` (texto plano), en ./lyrics-language (`src/ast/printer.ts`)
+- [Lyrics metrics](memory/lyrics-metrics.md) — feature `metrics` de ./lyrics-language: verso→notas cantables y rango min/max de notas según las alteraciones
 - [VSCode extension](memory/vscode-extension.md) — hover/outline/completion/formatting/diagnósticos/toggle+anotar (escritura) + syntax highlighting, en ./vscode-extension
 - [Client architecture](memory/client-architecture.md) — estructura del cliente Angular 22 en ./client (pages/shared/stylings, rutas lazy, tema claro-oscuro, breakpoint por ancho, dependencia `file:`)
 - [Client editor state](memory/client-editor-state.md) — modelo de estado del editor: rawText vs AST, reconciliación por verso que preserva las alteraciones, y por qué el printer tolera estrofas parseadas por separado
+- [Client notes UI](memory/client-notes-ui.md) — lenguaje visual del editor: ficha por nota, ligadura/`~` para las alteraciones, barra de elasticidad por verso y objetivo por estrofa

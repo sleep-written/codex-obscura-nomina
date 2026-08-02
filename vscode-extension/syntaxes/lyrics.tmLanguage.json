@@ -6,7 +6,8 @@
         { "include": "#comment" },
         { "include": "#stanza-title" },
         { "include": "#song-title" },
-        { "include": "#sinalefa" },
+        { "include": "#sinalefa-on" },
+        { "include": "#sinalefa-off" },
         { "include": "#diaeresis-on" },
         { "include": "#diaeresis-off" },
         { "include": "#synaeresis-on" },
@@ -39,9 +40,14 @@
             },
             "name": "markup.heading.2.lyrics"
         },
-        "sinalefa": {
+        "sinalefa-on": {
             "match": "&",
-            "name": "keyword.operator.sinalefa.lyrics"
+            "name": "keyword.operator.sinalefa-on.lyrics"
+        },
+        "sinalefa-off": {
+            "comment": "An alterable word boundary that is currently split. A plain space is NOT this: it's a boundary that admits no sinalefa at all.",
+            "match": "\\|",
+            "name": "keyword.operator.sinalefa-off.lyrics"
         },
         "diaeresis-on": {
             "match": "\\+",

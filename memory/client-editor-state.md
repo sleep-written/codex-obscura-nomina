@@ -44,13 +44,11 @@ card = un parseo independiente".** Para nodos que el cliente crea de cero se usa
 con línea `Number.MAX_SAFE_INTEGER`, para que `classifyComments` bucketee los comentarios existentes
 como "leading" (impresos antes del título), que es su ubicación natural.
 
-**Dos cosas que el cliente copia de la librería porque no están exportadas:**
-1. El mapeo `kind + active → símbolo` (`diaeresis` → `+`/`_`, `synaeresis` → `%`//`,
-   `sinalefa` → `&`/espacio). `markerSymbol` es privado de `printer.ts`.
-2. La aritmética de offset del `internalMarker` para partir `syllable.text` al renderizar — el texto
-   de la sílaba **no contiene** el símbolo. Es el punto donde un error se ve "casi bien" (la sílaba
-   correcta, el símbolo una letra corrido), así que está cubierto por tests desde ambos caminos
-   (`parseLyrics` y `parsePlainLyrics`, donde los tokens sintéticos tienen `length: 0`).
+**El cliente ya no duplica nada de la librería** (era el caso hasta el 2026-08-02: `marker-symbol.ts`
+copiaba el mapeo `kind + active → símbolo` y `verse-pieces.ts` la aritmética de offset del
+`internalMarker`). Ambos archivos se borraron cuando esa lógica pasó a ser el feature `metrics` de la
+librería — ver [[lyrics-metrics]]. Si vuelve a aparecer la tentación de calcular algo del AST en el
+cliente, la respuesta es agregarlo a `metrics`.
 
 **El toggle muta el AST en sitio, así que hay que forzar el recálculo.** `marker.active = !active` no
 cambia ninguna referencia, por lo que un `computed()` nunca se recalcularía y la UI no reaccionaría.
@@ -58,10 +56,11 @@ Se usa `linkedSignal` (se recalcula cuando cambia el objeto verso, y además es 
 re-setear tras el toggle). El store, en paralelo, emite una referencia nueva del estado raíz para
 disparar el autoguardado.
 
-**La librería marca toda frontera entre palabras como sinalefa alterable**, no solo las vocal-vocal.
-El cliente es tonto y renderiza lo que recibe — no filtra. Como la sinalefa inactiva imprime un
-espacio (invisible), su botón necesita un ancho mínimo y un indicador sutil para seguir siendo
-descubrible y tocable.
+**Solo las fronteras vocal-vocal son alterables** (desde el 2026-08-02; antes la librería marcaba
+*toda* frontera entre palabras y el cliente ofrecía fundir "que me", que fue como se detectó el
+problema — ver [[lyrics-language-dsl]]). El cliente sigue siendo tonto: renderiza los `boundaries`
+que le da `verseMetrics` y no filtra nada. Una frontera alterable pero separada se dibuja como un
+botón angosto con `~`; una no alterable, como aire (más ancho si `boundary.word`).
 
 **Persistencia:** autoguardado en `localStorage` con debounce. El view-model es JSON puro
 (`SongNode` y compañía son interfaces, no clases), así que `JSON.stringify`/`JSON.parse` bastan. La
@@ -78,4 +77,5 @@ resuelve las dos cosas sin meterle inteligencia al frontend.
 `verse-key.ts` en `shared/lyrics/`, que son funciones puras y tienen tests — probar ahí primero. Si
 aparece un bug de "se me borraron las alteraciones al escribir", el sospechoso es `verseKey` (algo que
 debería ser parte de la identidad del verso no lo es, o al revés). Si aparece "el símbolo se ve
-corrido dentro de la sílaba", el sospechoso es el offset de `internalMarker` en `verse-pieces.ts`.
+corrido dentro de la sílaba", el sospechoso ya no está en el cliente: es el offset de
+`internalMarker` en `verse-metrics.ts` de la librería (ver [[lyrics-metrics]]).

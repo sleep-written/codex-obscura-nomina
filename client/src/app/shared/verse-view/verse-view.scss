@@ -1,27 +1,208 @@
-.verse {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
+:host {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  column-gap: 0.5rem;
+  row-gap: 0.35rem;
+  padding: 0.45rem 0.5rem 0.55rem;
+  border-radius: 0.5rem;
+  border-left: 2px solid transparent;
+  transition: background-color 120ms ease, border-color 120ms ease;
 }
 
-.verse__marker {
+:host(:hover) {
+  background-color: color-mix(in srgb, var(--mat-sys-on-surface) 4%, transparent);
+}
+
+:host([data-status='hit']) { border-left-color: var(--mat-sys-primary); }
+:host([data-status='near']) { border-left-color: var(--mat-sys-outline-variant); }
+:host([data-status='far']) { border-left-color: var(--mat-sys-error); }
+
+.verse__num {
+  grid-row: 1 / span 2;
+  padding-top: 0.3rem;
+  font-family: var(--app-font-mono);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--mat-sys-outline);
+  user-select: none;
+}
+
+// ── Notas ──────────────────────────────────────────────────────────────────
+.verse__notes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  row-gap: 0.3rem;
+}
+
+.note {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 0.35rem;
+  background-color: var(--mat-sys-surface-container-high);
+  font-family: var(--app-font-mono);
+  font-size: 0.92rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.note__part {
+  color: var(--mat-sys-on-surface);
+}
+
+// ── Alteraciones ───────────────────────────────────────────────────────────
+// `‿` dentro de una ficha: hoy fusiona, al tocarlo separa.
+// `~` entre dos fichas: hoy separa, al tocarlo fusiona.
+.note__tie,
+.gap--open {
   appearance: none;
   border: none;
   background: none;
   padding: 0;
   margin: 0;
-  min-width: 1.75rem;
-  min-height: 1.75rem;
   cursor: pointer;
-  color: var(--mat-sys-outline);
   font: inherit;
+  font-family: var(--app-font-mono);
+  line-height: 1;
+}
 
-  &.verse__marker--active {
+// La ligadura se dibuja con CSS y no con el carácter "‿": en el stack
+// monoespaciado del sistema ese glifo cae en un fallback que lo pinta igual
+// que un guión bajo, justo el símbolo que significa lo contrario en el DSL.
+.note__tie {
+  position: relative;
+  width: 0.75em;
+  height: 1.2em;
+  margin-inline: 0.05rem;
+  color: var(--mat-sys-tertiary);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 45%;
+    height: 0.4em;
+    border: 1.5px solid currentColor;
+    border-top: none;
+    border-radius: 0 0 1em 1em;
+  }
+
+  &[data-kind='sinalefa'] {
     color: var(--mat-sys-primary);
   }
+}
 
-  &[data-kind='sinalefa']:not(.verse__marker--active) {
-    min-width: 1rem;
-    border-bottom: 1px dotted var(--mat-sys-outline-variant);
+.gap--open {
+  min-width: 1.15rem;
+  height: 1.55rem;
+  border-radius: 0.3rem;
+  color: var(--mat-sys-outline-variant);
+
+  &:hover,
+  &:focus-visible {
+    color: var(--mat-sys-tertiary);
+    background-color: var(--mat-sys-surface-container-highest);
   }
+
+  &[data-kind='sinalefa'] {
+    min-width: 1.35rem;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--mat-sys-primary);
+    }
+  }
+}
+
+// Frontera no alterable: solo aire. Más ancho entre palabras que entre sílabas.
+.gap {
+  display: inline-block;
+  width: 0.2rem;
+
+  &.gap--word {
+    width: 0.6rem;
+  }
+}
+
+// ── Barra de elasticidad ───────────────────────────────────────────────────
+.meter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.68rem;
+  font-family: var(--app-font-mono);
+  color: var(--mat-sys-outline);
+}
+
+.meter__count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  min-width: 3.75rem;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--mat-sys-on-surface);
+
+  small {
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mat-sys-outline);
+  }
+
+  :host([data-status='hit']) & { color: var(--mat-sys-primary); }
+  :host([data-status='far']) & { color: var(--mat-sys-error); }
+}
+
+.meter__track {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 4rem;
+  height: 6px;
+  border-radius: 3px;
+  background-color: var(--mat-sys-surface-container-highest);
+}
+
+// Rango alcanzable [min, max]: cuánto se puede estirar o encoger el verso.
+.meter__slack {
+  position: absolute;
+  inset-block: 0;
+  border-radius: 3px;
+  background-color: color-mix(in srgb, var(--mat-sys-primary) 35%, transparent);
+}
+
+// Dónde está el verso hoy dentro de ese rango.
+.meter__cursor {
+  position: absolute;
+  inset-block: -3px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background-color: var(--mat-sys-primary);
+}
+
+.meter__target {
+  position: absolute;
+  inset-block: -5px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background-color: var(--mat-sys-tertiary);
+}
+
+.meter__range {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.meter__delta {
+  min-width: 1.75rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--mat-sys-tertiary);
+
+  :host([data-status='hit']) & { color: var(--mat-sys-primary); }
+  :host([data-status='far']) & { color: var(--mat-sys-error); }
 }

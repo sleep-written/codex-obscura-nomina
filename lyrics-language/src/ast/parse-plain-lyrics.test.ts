@@ -6,8 +6,8 @@ import { parseLyrics, parsePlainLyrics, LyricsParseError } from './index.js';
 
 /**
  * Mechanically derives the plain-text equivalent of an already-annotated
- * `.lyrics` source: strips syllable/diéresis/sinéresis symbols, turns
- * sinalefa (`&`) back into a plain space, and leaves `\n`, `#`/`##` titles,
+ * `.lyrics` source: strips syllable/diéresis/sinéresis symbols, turns both
+ * sinalefa symbols (`&`/`|`) back into a plain space, and leaves `\n`, `#`/`##` titles,
  * and `//` comments untouched (comment TEXT is preserved verbatim, so the
  * strip only ever runs on the part of a line before its `//`, if any).
  */
@@ -18,7 +18,7 @@ function toPlainText(annotated: string): string {
             const commentIdx = line.indexOf('//');
             const content = commentIdx === -1 ? line : line.slice(0, commentIdx);
             const comment = commentIdx === -1 ? '' : line.slice(commentIdx);
-            const plainContent = content.replace(/[-+_%]/g, '').replace(/\//g, '').replace(/&/g, ' ');
+            const plainContent = content.replace(/[-+_%]/g, '').replace(/\//g, '').replace(/[&|]/g, ' ');
             return plainContent + comment;
         })
         .join('\n');

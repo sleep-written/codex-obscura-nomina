@@ -5,7 +5,7 @@ const isLetter = (v: string): boolean => /\p{L}/u.test(v);
 const isSpace = (v: string): boolean => v === ' ';
 const isNewline = (v: string): boolean => v === '\n';
 const isSymbol = (v: string): boolean => (
-    v === '-' || v === '&' ||
+    v === '-' || v === '&' || v === '|' ||
     v === '+' || v === '_' ||
     v === '%' || v === '/' ||
     v === '#'
@@ -68,9 +68,14 @@ class CommentFactory implements TokenFactory {
 
 /**
  * Token factories for the `.lyrics` format, as defined in `./MEMORY.md`:
- * - ` ` (space) separates words and implies sinalefa deactivated.
+ * - ` ` (space) separates two words that CANNOT take a sinalefa (the boundary
+ *   is not alterable), the same way `-` separates two syllables that can never
+ *   be fused.
  * - `-` separates syllables.
- * - `&` activates sinalefa (replaces the space between the two fused words).
+ * - `&` / `|` activate/deactivate sinalefa; both replace the space between the
+ *   two words. A `|` boundary is alterable but currently split — without it,
+ *   a plain space would have to mean both "no sinalefa here" and "sinalefa
+ *   possible but off", which no consumer could tell apart.
  * - `+` / `_` activate/deactivate diéresis.
  * - `%` / `/` activate/deactivate sinéresis.
  * - `#` marks a song title; `##` (or more) marks a stanza title.
@@ -82,7 +87,8 @@ export const lyricsTokenFactories = {
     'word-separator': classFactory(isSpace),
     'syllable-separator': classFactory(v => v === '-'),
 
-    sinalefa: classFactory(v => v === '&'),
+    'sinalefa-on': classFactory(v => v === '&'),
+    'sinalefa-off': classFactory(v => v === '|'),
     'diaeresis-on': classFactory(v => v === '+'),
     'diaeresis-off': classFactory(v => v === '_'),
     'synaeresis-on': classFactory(v => v === '%'),

@@ -49,6 +49,7 @@ export function fromSongNode(song: SongNode): SongVm {
       }).trimEnd(),
       node: stanza,
       error: null,
+      target: null,
     })),
   };
 }

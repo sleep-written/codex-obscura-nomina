@@ -6,6 +6,7 @@ export interface StanzaVm {
   rawText: string;       // el textarea — FUENTE DE VERDAD de lo que el usuario escribió
   node: StanzaNode;      // el AST; node.verses es la lista reconciliada
   error: string | null;  // mensaje de LyricsParseError, si el texto no parsea
+  target: number | null; // notas esperadas por verso; solo UI, no viaja al .lyrics
 }
 
 export interface SongVm {

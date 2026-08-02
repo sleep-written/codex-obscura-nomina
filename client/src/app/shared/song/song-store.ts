@@ -14,7 +14,7 @@ const EMPTY_RANGE: Range = { start: { line: 1, column: 1 }, end: { line: 1, colu
 
 function emptyStanzaVm(): StanzaVm {
   const node: StanzaNode = { title: null, comments: [], verses: [], range: EMPTY_RANGE };
-  return { id: crypto.randomUUID(), titleText: '', rawText: '', node, error: null };
+  return { id: crypto.randomUUID(), titleText: '', rawText: '', node, error: null, target: null };
 }
 
 function emptySong(): SongVm {
@@ -48,6 +48,11 @@ export class SongStore {
 
   setStanzaTitle(id: string, titleText: string): void {
     this.updateStanza(id, stanza => ({ ...stanza, titleText }));
+  }
+
+  /** Notas esperadas por verso de la estrofa; `null` desactiva el objetivo. */
+  setStanzaTarget(id: string, target: number | null): void {
+    this.updateStanza(id, stanza => ({ ...stanza, target }));
   }
 
   setStanzaText(id: string, rawText: string): void {

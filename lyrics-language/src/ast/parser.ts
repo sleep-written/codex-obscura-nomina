@@ -169,18 +169,30 @@ function parseWord(tokens: LyricsToken[]): WordNode {
     return { syllables, trailingJoin: null, range: spanRange(tokens[0], tokens[tokens.length - 1]) };
 }
 
-/** Splits a verse line's tokens into `WordNode[]`, joined by sinalefa/space. */
+/**
+ * Splits a verse line's tokens into `WordNode[]`. Three kinds of boundary end
+ * a word: `&` (sinalefa on), `|` (sinalefa off) and a plain space. Only the
+ * first two produce a `trailingJoin` — a space means the boundary is not
+ * alterable at all (no vowel meets a vowel across it), just like `-` between
+ * two syllables that can never be fused.
+ */
 function parseVerse(tokens: LyricsToken[]): { words: WordNode[]; range: Range } {
     const words: WordNode[] = [];
     let buf: LyricsToken[] = [];
 
     for (const tok of tokens) {
-        if (tok.type === 'word-separator' || tok.type === 'sinalefa') {
+        if (tok.type === 'word-separator' || tok.type === 'sinalefa-on' || tok.type === 'sinalefa-off') {
             if (buf.length === 0) {
                 throw new LyricsParseError('A word cannot be empty', tok.line, tok.column);
             }
             const word = parseWord(buf);
-            word.trailingJoin = { kind: 'sinalefa', active: tok.type === 'sinalefa', range: tokenRange(tok) };
+            if (tok.type !== 'word-separator') {
+                word.trailingJoin = {
+                    kind: 'sinalefa',
+                    active: tok.type === 'sinalefa-on',
+                    range: tokenRange(tok)
+                };
+            }
             words.push(word);
             buf = [];
         } else {

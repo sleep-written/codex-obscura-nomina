@@ -1,6 +1,7 @@
 @use '@angular/material' as mat;
 @use 'light';
 @use 'dark';
+@use 'tokens';
 
 html {
   height: 100%;
@@ -17,6 +18,7 @@ html {
     density: 0,
   ));
 
+  @include tokens.tokens;
   @include light.colors;
 
   @media (prefers-color-scheme: dark) {

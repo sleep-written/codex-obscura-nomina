@@ -48,7 +48,7 @@ function markerSymbol(marker: AlterableMarker): string {
     switch (marker.kind) {
         case 'diaeresis': return marker.active ? '+' : '_';
         case 'synaeresis': return marker.active ? '%' : '/';
-        case 'sinalefa': return marker.active ? '&' : ' ';
+        case 'sinalefa': return marker.active ? '&' : '|';
     }
 }
 
@@ -80,18 +80,23 @@ function printSyllable(syllable: SyllableNode): string {
 }
 
 /**
- * Renders one word: its own text, plus the join symbol to the NEXT word
- * (empty on the verse's last word). The only thing that differs between
- * `printLyrics` and `printPlainLyrics`.
+ * Renders one word: its own text, plus the boundary to the NEXT word (empty
+ * on the verse's last word — hence the `isLast` flag, since a `null`
+ * `trailingJoin` also means a non-alterable boundary, which still needs its
+ * space printed). The only thing that differs between `printLyrics` and
+ * `printPlainLyrics`.
  */
 interface WordPrinter {
     text: (word: WordNode) => string;
-    join: (trailingJoin: AlterableMarker | null) => string;
+    join: (trailingJoin: AlterableMarker | null, isLast: boolean) => string;
 }
 
 const annotatedWordPrinter: WordPrinter = {
     text: word => word.syllables.map(printSyllable).join(''),
-    join: trailingJoin => trailingJoin !== null ? markerSymbol(trailingJoin) : ''
+    join: (trailingJoin, isLast) => {
+        if (isLast) return '';
+        return trailingJoin !== null ? markerSymbol(trailingJoin) : ' ';
+    }
 };
 
 /**
@@ -102,13 +107,15 @@ const annotatedWordPrinter: WordPrinter = {
  */
 const plainWordPrinter: WordPrinter = {
     text: word => word.syllables.map(s => s.text).join(''),
-    join: trailingJoin => trailingJoin !== null ? ' ' : ''
+    join: (_trailingJoin, isLast) => isLast ? '' : ' '
 };
 
 function printVerse(verse: VerseNode, printWord: WordPrinter): string[] {
     const anchorLine = verse.range.end.line;
     const { leading, trailing, dangling } = classifyComments(verse.comments, anchorLine);
-    const content = verse.words.map(w => printWord.text(w) + printWord.join(w.trailingJoin)).join('');
+    const content = verse.words
+        .map((w, i) => printWord.text(w) + printWord.join(w.trailingJoin, i === verse.words.length - 1))
+        .join('');
 
     return [
         ...leading.map(printCommentLine),

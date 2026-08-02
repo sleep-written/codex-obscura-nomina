@@ -18,7 +18,7 @@ const SYMBOL: Record<`${AlterableMarker['kind']}:${'true' | 'false'}`, string> =
     'synaeresis:true': '%',
     'synaeresis:false': '/',
     'sinalefa:true': '&',
-    'sinalefa:false': ' '
+    'sinalefa:false': '|'
 };
 
 const DESCRIPTION: Record<`${AlterableMarker['kind']}:${'true' | 'false'}`, string> = {
@@ -27,7 +27,7 @@ const DESCRIPTION: Record<`${AlterableMarker['kind']}:${'true' | 'false'}`, stri
     'synaeresis:true': 'Sinéresis activada (`%`) — el par vocálico queda en una sola sílaba.',
     'synaeresis:false': 'Sinéresis desactivada (`/`) — separa el par vocálico en dos sílabas.',
     'sinalefa:true': 'Sinalefa activada (`&`) — funde esta palabra con la siguiente en una sola sílaba métrica.',
-    'sinalefa:false': 'Sinalefa desactivada (espacio) — esta palabra no se funde con la siguiente.'
+    'sinalefa:false': 'Sinalefa desactivada (`|`) — se puede fundir con la siguiente, pero hoy no se funde. Un espacio, en cambio, es una frontera que no admite sinalefa.'
 };
 
 export function symbolFor(kind: AlterableMarker['kind'], active: boolean): string {
@@ -38,7 +38,7 @@ export function describeMarkerState(kind: AlterableMarker['kind'], active: boole
     return DESCRIPTION[`${kind}:${active}`];
 }
 
-/** The symbol produced by flipping `active`, same `kind` (`+`↔`_`, `%`↔`/`, `&`↔` `). */
+/** The symbol produced by flipping `active`, same `kind` (`+`↔`_`, `%`↔`/`, `&`↔`|`). */
 export function toggleSymbol(marker: AlterableMarker): string {
     return symbolFor(marker.kind, !marker.active);
 }

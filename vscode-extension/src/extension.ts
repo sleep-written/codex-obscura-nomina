@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.languages.registerCompletionItemProvider(
             LANGUAGE_SELECTOR,
             new LyricsCompletionItemProvider(),
-            '+', '_', '%', '/', '&', '#'
+            '+', '_', '%', '/', '&', '|', '#'
         ),
         vscode.languages.registerDocumentFormattingEditProvider(LANGUAGE_SELECTOR, new LyricsDocumentFormattingEditProvider()),
         vscode.languages.registerCodeActionsProvider(LANGUAGE_SELECTOR, new LyricsCodeActionProvider(), {

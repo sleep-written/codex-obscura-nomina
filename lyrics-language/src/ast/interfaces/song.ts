@@ -52,8 +52,10 @@ export interface WordNode {
     syllables: SyllableNode[];
 
     /**
-     * The boundary to the NEXT word in the verse (`kind: 'sinalefa'`).
-     * `null` on the verse's last word.
+     * The boundary to the NEXT word in the verse (`kind: 'sinalefa'`), written
+     * `&` when active and `|` when not. `null` on the verse's last word, and
+     * also on any boundary written as a plain space — a space means no vowel
+     * meets a vowel across it, so there is nothing to alter there.
      */
     trailingJoin: AlterableMarker | null;
 

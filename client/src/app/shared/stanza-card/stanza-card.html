@@ -1,4 +1,26 @@
-<mat-card class="stanza">
+<mat-card class="stanza" appearance="outlined">
+  <header class="stanza__head">
+    <span class="stanza__index">{{ position() }}</span>
+    <h2 class="stanza__name">{{ stanza().titleText.trim() || 'Estrofa sin nombre' }}</h2>
+
+    <span class="stanza__verses-count">
+      {{ stanza().node.verses.length }} {{ stanza().node.verses.length === 1 ? 'verso' : 'versos' }}
+    </span>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="stanza__target">
+      <mat-label>Objetivo</mat-label>
+      <input
+        matInput
+        type="number"
+        min="1"
+        inputmode="numeric"
+        placeholder="libre"
+        title="Notas por verso que quieres para esta estrofa"
+        [value]="target() ?? ''"
+        (input)="onTarget($any($event.target).value)" />
+    </mat-form-field>
+  </header>
+
   <mat-card-content class="stanza__body">
     <div class="stanza__input">
       <mat-form-field appearance="outline" class="stanza__field">
@@ -23,7 +45,7 @@
         <p class="stanza__error">{{ error }}</p>
       }
 
-      <button mat-button (click)="removed.emit()">
+      <button mat-button class="stanza__remove" (click)="removed.emit()">
         <mat-icon>delete</mat-icon>
         Eliminar estrofa
       </button>
@@ -31,9 +53,14 @@
 
     <div class="stanza__verses">
       @for (verse of stanza().node.verses; track verse) {
-        <app-verse-view [verse]="verse" (changed)="versesChanged.emit()" />
+        <app-verse-view
+          [verse]="verse"
+          [position]="$index + 1"
+          [scale]="scale()"
+          [target]="target()"
+          (changed)="versesChanged.emit()" />
       } @empty {
-        <p class="stanza__empty">Escribe la letra para ver las sílabas.</p>
+        <p class="stanza__empty">Escribe la letra para ver las notas.</p>
       }
     </div>
   </mat-card-content>

@@ -60,7 +60,11 @@ describe('printLyrics', () => {
         assertPrintsExactly(t, 'a&otro\n');
     });
 
-    it('prints sinalefa desactivada as a plain word separator', (t: it.TestContext) => {
+    it('prints sinalefa desactivada as "|"', (t: it.TestContext) => {
+        assertPrintsExactly(t, 'a|otro\n');
+    });
+
+    it('prints a non-alterable word boundary as a plain space', (t: it.TestContext) => {
         assertPrintsExactly(t, 'a otro\n');
     });
 
@@ -140,7 +144,8 @@ describe('printPlainLyrics', () => {
         t.assert.strictEqual(printPlainLyrics(parseLyrics('a&otro\n')), 'a otro\n');
     });
 
-    it('renders an inactive sinalefa as a plain space too', (t: it.TestContext) => {
+    it('renders an inactive sinalefa ("|") as a plain space too', (t: it.TestContext) => {
+        t.assert.strictEqual(printPlainLyrics(parseLyrics('a|otro\n')), 'a otro\n');
         t.assert.strictEqual(printPlainLyrics(parseLyrics('a otro\n')), 'a otro\n');
     });
 

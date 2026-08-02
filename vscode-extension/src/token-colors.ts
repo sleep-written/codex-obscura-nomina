@@ -17,9 +17,10 @@ export interface TextMateRule {
 
 export const LYRICS_TOKEN_COLOR_RULES: TextMateRule[] = [
     { scope: 'punctuation.separator.syllable.lyrics', settings: { foreground: '#5c5c5c' } },
-    { scope: 'keyword.operator.sinalefa.lyrics', settings: { foreground: '#4caf50' } },
+    { scope: 'keyword.operator.sinalefa-on.lyrics', settings: { foreground: '#4caf50' } },
     { scope: 'keyword.operator.diaeresis-on.lyrics', settings: { foreground: '#4caf50' } },
     { scope: 'keyword.operator.synaeresis-on.lyrics', settings: { foreground: '#4caf50' } },
+    { scope: 'keyword.operator.sinalefa-off.lyrics', settings: { foreground: '#4a9eff' } },
     { scope: 'keyword.operator.diaeresis-off.lyrics', settings: { foreground: '#4a9eff' } },
     { scope: 'keyword.operator.synaeresis-off.lyrics', settings: { foreground: '#4a9eff' } }
 ];

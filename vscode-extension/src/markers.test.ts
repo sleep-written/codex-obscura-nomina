@@ -17,7 +17,7 @@ describe('toggleSymbol', () => {
     });
 
     it('flips sinalefa on/off', () => {
-        assert.strictEqual(toggleSymbol({ kind: 'sinalefa', active: true, range }), ' ');
+        assert.strictEqual(toggleSymbol({ kind: 'sinalefa', active: true, range }), '|');
         assert.strictEqual(toggleSymbol({ kind: 'sinalefa', active: false, range }), '&');
     });
 });

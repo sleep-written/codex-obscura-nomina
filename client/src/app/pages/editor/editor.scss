@@ -1,23 +1,85 @@
+@use 'breakpoints' as bp;
+
 :host {
   display: block;
   min-height: 100%;
 }
 
 .editor__bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   flex-wrap: wrap;
   gap: 0.5rem;
   row-gap: 0.25rem;
   height: auto;
   padding-block: 0.5rem;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  background-color: var(--mat-sys-surface-container);
+}
+
+.editor__brand {
+  display: none;
+  flex: none;
+  font-family: var(--app-font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mat-sys-outline);
+
+  b {
+    color: var(--mat-sys-primary);
+    font-weight: 500;
+  }
+
+  @include bp.wide {
+    display: inline;
+  }
 }
 
 .editor__title {
   flex: 1 1 12rem;
 }
 
+.editor__page {
+  max-width: 90rem;
+  margin-inline: auto;
+  padding: 1rem;
+}
+
+.editor__legend {
+  margin: 0 0 1rem;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--mat-sys-outline);
+
+  b {
+    font-family: var(--app-font-mono);
+    font-size: 0.95rem;
+  }
+}
+
+// Misma ligadura dibujada con CSS que usa `verse-view` (ver el porqué allí).
+.editor__legend-tie {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.45em;
+  margin-inline: 0.1em;
+  vertical-align: middle;
+  border: 1.5px solid var(--mat-sys-primary);
+  border-top: none;
+  border-radius: 0 0 1em 1em;
+}
+
+.editor__legend-gap { color: var(--mat-sys-tertiary); }
+
 .editor__stanzas {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1rem;
+}
+
+.editor__add {
+  align-self: center;
+  margin-block: 0.5rem 1rem;
 }

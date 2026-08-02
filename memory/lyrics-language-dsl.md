@@ -9,14 +9,15 @@ metadata:
 
 **Principio central:** nada se infiere automáticamente por fonética. Sinalefa, diéresis y sinéresis solo ocurren donde se marcan explícitamente con su símbolo; sin símbolo, el estado es el desactivado (hiato/diptongo/palabras separadas, según corresponda).
 
-**Marcado de diéresis/sinéresis: obligatorio en toda posición alterable, no solo en desviaciones.** Toda pareja de vocales adyacentes dentro de una palabra (diptongo natural o hiato natural) debe llevar explícitamente uno de sus dos símbolos (`+`/`_` si es diptongo natural, `%`//` si es hiato natural), incluso si el usuario nunca la tocó y el resultado coincide con el estado natural. Ejemplo: "trifuerza" tiene el diptongo natural "ue" — se escribe `tri-fu_er-za` (diéresis desactivada, explícita) aunque nadie la haya alterado, no `tri-fuer-za` a secas. La sinalefa (`&`/espacio) NO sigue esta regla: se queda como estaba, sin necesidad de un símbolo de "desactivada", porque una frontera entre palabras no tiene una tercera categoría "natural" contra la cual comparar — simplemente está fusionada o no.
+**Marcado de diéresis/sinéresis: obligatorio en toda posición alterable, no solo en desviaciones.** Toda pareja de vocales adyacentes dentro de una palabra (diptongo natural o hiato natural) debe llevar explícitamente uno de sus dos símbolos (`+`/`_` si es diptongo natural, `%`//` si es hiato natural), incluso si el usuario nunca la tocó y el resultado coincide con el estado natural. Ejemplo: "trifuerza" tiene el diptongo natural "ue" — se escribe `tri-fu_er-za` (diéresis desactivada, explícita) aunque nadie la haya alterado, no `tri-fuer-za` a secas. **La sinalefa (`&`/`|`) sigue exactamente la misma regla** (cambiado el 2026-08-02): toda frontera entre palabras donde una vocal se encuentra con otra vocal debe llevar `&` o `|` explícito, y el espacio queda reservado para fronteras donde no hay sinalefa posible. Antes el espacio significaba las dos cosas a la vez ("apagada" e "imposible") y nadie que leyera el archivo podía distinguirlas: el cliente terminaba ofreciendo fundir "que me". El espacio es a la frontera entre palabras lo que `-` es a la frontera entre sílabas — un corte que nunca se puede fusionar.
 
 **Símbolos:**
 | Símbolo | Función |
 |---|---|
-| ` ` (espacio) | Separador de palabras. También implica sinalefa desactivada — es el estado por defecto, no existe un símbolo aparte para "sinalefa desactivada". |
-| `-` | Separador de sílabas. |
+| ` ` (espacio) | Separador de palabras donde NO hay sinalefa posible (ninguna vocal se encuentra con otra vocal). No es alterable: es el equivalente de `-` entre palabras. |
+| `-` | Separador de sílabas que nunca se puede fusionar. |
 | `&` | Sinalefa activada (reemplaza al espacio entre las dos palabras que se funden, ej. `a&otro`). |
+| `\|` | Sinalefa desactivada: las dos palabras *podrían* fundirse pero no lo hacen (ej. `a\|otro`). También reemplaza al espacio. |
 | `+` | Diéresis activada. |
 | `_` | Diéresis desactivada. |
 | `%` | Sinéresis activada. |

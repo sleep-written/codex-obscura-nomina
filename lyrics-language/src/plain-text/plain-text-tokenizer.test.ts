@@ -12,14 +12,39 @@ describe('tokenizePlainLyrics', () => {
         ]);
     });
 
-    it('never infers sinalefa between words, even across a vowel-to-vowel word boundary ("la ola")', (t: it.TestContext) => {
+    it('marks a vowel-to-vowel word boundary as an alterable sinalefa, but leaves it off ("la ola")', (t: it.TestContext) => {
         t.assert.deepStrictEqual(tokenizePlainLyrics('la ola'), [
             { type: 'text', value: 'la', line: 1, column: 1, length: 2 },
-            { type: 'word-separator', value: ' ', line: 1, column: 3, length: 1 },
+            { type: 'sinalefa-off', value: '|', line: 1, column: 3, length: 1 },
             { type: 'text', value: 'o', line: 1, column: 4, length: 1 },
             { type: 'syllable-separator', value: '-', line: 1, column: 5, length: 0 },
             { type: 'text', value: 'la', line: 1, column: 5, length: 2 }
         ]);
+    });
+
+    it('leaves a boundary where no vowel meets a vowel as a plain separator ("que me")', (t: it.TestContext) => {
+        t.assert.deepStrictEqual(tokenizePlainLyrics('que me'), [
+            { type: 'text', value: 'que', line: 1, column: 1, length: 3 },
+            { type: 'word-separator', value: ' ', line: 1, column: 4, length: 1 },
+            { type: 'text', value: 'me', line: 1, column: 5, length: 2 }
+        ]);
+    });
+
+    it('sees through a silent "h" ("la hora") and treats a final/lone "y" as a vowel ("hoy es", "y algo")', (t: it.TestContext) => {
+        const boundaries = (source: string) => tokenizePlainLyrics(source)
+            .filter(tok => tok.type === 'word-separator' || tok.type === 'sinalefa-off')
+            .map(tok => tok.type);
+
+        t.assert.deepStrictEqual(boundaries('la hora'), ['sinalefa-off']);
+        t.assert.deepStrictEqual(boundaries('hoy es'), ['sinalefa-off']);
+        t.assert.deepStrictEqual(boundaries('y algo'), ['sinalefa-off']);
+        // "yo" opens on the consonant /ʝ/, not on a vowel.
+        t.assert.deepStrictEqual(boundaries('la yema'), ['word-separator']);
+    });
+
+    it('does not join across dropped punctuation ("salí, a")', (t: it.TestContext) => {
+        const types = tokenizePlainLyrics('salí, a').map(tok => tok.type);
+        t.assert.strictEqual(types.includes('sinalefa-off'), false);
     });
 
     describe('discarded punctuation', () => {

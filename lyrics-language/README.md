@@ -16,9 +16,10 @@ A `.lyrics` file is plain text with a small set of symbols layered on top of nor
 
 | Symbol | Meaning |
 |---|---|
-| ` ` (space) | Word separator. Also means sinalefa is **off** between the two words — there's no separate "off" symbol, the space itself is the default state. |
-| `-` | Syllable separator. |
+| ` ` (space) | Word separator across which **no sinalefa is possible** (no vowel meets a vowel), so there is nothing to alter — the between-words counterpart of `-`. |
+| `-` | Syllable separator that can never be fused. |
 | `&` | Sinalefa **on** (replaces the space between the two words it fuses, e.g. `a&otro`). |
+| `\|` | Sinalefa **off**: the two words *could* fuse, but don't (e.g. `a\|otro`). Also replaces the space. |
 | `+` | Diéresis **on** (forces a natural diptongo apart into two syllables). |
 | `_` | Diéresis **off** (an explicit, no-op marker — see below). |
 | `%` | Sinéresis **on** (forces a natural hiato together into one syllable). |
@@ -31,21 +32,21 @@ A `.lyrics` file is plain text with a small set of symbols layered on top of nor
 
 **Diéresis/sinéresis marking is mandatory on every alterable vowel pair, not just on deviations from the natural pronunciation.** Every adjacent vowel pair inside a word — whether it's a natural diptongo or a natural hiato — must carry one of its two symbols explicitly, even when the result matches the natural state and nobody touched it. Example: *"trifuerza"* has the natural diptongo *"ue"*; it's written `tri-fu_er-za` (diéresis explicitly off) rather than `tri-fuer-za`. This is what lets a `.lyrics` file round-trip through the parser without re-running any phonetic analysis: the file is self-contained.
 
-Sinalefa does **not** follow this rule — a word boundary has no natural state to compare against (it's either fused or not), so there's no "explicitly off" symbol; a plain space is enough.
+**Sinalefa follows the same rule.** A word boundary where a vowel sound meets a vowel sound must carry `&` or `|` explicitly; a plain space is reserved for boundaries where no sinalefa is possible at all. Without that distinction a space would mean two different things — "possible but off" and "impossible" — and nothing reading the file could tell them apart, so a tool would end up offering to fuse *"que me"*.
 
 ### Example
 
 ```
 # Delirio en Hyrule
-Un cuc-co&e-nor-me in-cu-bó la tri-fu_er-za
+Un cuc-co|e-nor-me|in-cu-bó la tri-fu_er-za
 Ga-non-dorf a/ho-ra te-je bu-fan-das de Na-vi // nombres propios sin acentuar
-Link na-da&en so-pa del Tem-plo del Ti_em-po
+Link na-da|en so-pa del Tem-plo del Ti_em-po
 y Zel-da ven-de pa-ra-gu_as en Ge-ru-do
 
 // segunda estrofa: el coro
 ## Coro Cósmico
-Tri-fu_er-za tri-fu_er-za dón-de te&es-con-dis-te
-De-ba-jo del som-bre-ro de&un De-ku tris-te
+Tri-fu_er-za tri-fu_er-za dón-de te|es-con-dis-te
+De-ba-jo del som-bre-ro de|un De-ku tris-te
 ```
 
 The equivalent plain text (see `parsePlainLyrics` below):
@@ -84,11 +85,11 @@ const plainText = printPlainLyrics(songFromPlain);
 
 - **`parseLyrics(source: string): SongNode`** — tokenizes and parses an annotated `.lyrics` source. Throws `LyricsParseError` on a structural violation (an empty syllable/word, a diéresis/sinéresis marker not following a vowel, more than one song/stanza title, etc.). Never fails for phonetic reasons — it trusts every marker's `active` state as written, it doesn't evaluate whether it matches the "natural" pronunciation.
 
-- **`parsePlainLyrics(source: string): SongNode`** — parses unannotated Spanish text: no syllable separators, no diéresis/sinéresis/sinalefa marks. Syllable boundaries and each vowel pair's natural diptongo/hiato state are computed automatically by a Spanish syllabification engine. `#`/`##` titles and `//` comments are still recognized literally; anything else unrecognized (punctuation, digits, a DSL symbol typed loose) is silently dropped. Sinalefa is **never** inferred between words — that fusion is a musical/metrical choice, not a phonetic fact, so a plain-text import always starts with every word boundary open; a `SongNode` from this path can still throw `LyricsParseError` for the same structural violations as `parseLyrics` (e.g. more than one song title).
+- **`parsePlainLyrics(source: string): SongNode`** — parses unannotated Spanish text: no syllable separators, no diéresis/sinéresis/sinalefa marks. Syllable boundaries and each vowel pair's natural diptongo/hiato state are computed automatically by a Spanish syllabification engine. `#`/`##` titles and `//` comments are still recognized literally; anything else unrecognized (punctuation, digits, a DSL symbol typed loose) is silently dropped. A word boundary becomes an alterable sinalefa (`|`) when a vowel sound meets a vowel sound across it — silent `h` doesn't block it, and a final or lone `y` counts as a vowel — and a plain space otherwise. Whether to *apply* the sinalefa is **never** inferred: that fusion is a musical/metrical choice, not a phonetic fact, so a plain-text import always starts with every boundary open. A `SongNode` from this path can still throw `LyricsParseError` for the same structural violations as `parseLyrics` (e.g. more than one song title).
 
 - **`printLyrics(song: SongNode): string`** — serializes a `SongNode` back into annotated `.lyrics` text, re-parseable with `parseLyrics`. Canonicalizes stanza title markers to exactly `##` regardless of how many `#` the original had (that count isn't retained in the AST). An empty song prints to `''`, not a stray newline.
 
-- **`printPlainLyrics(song: SongNode): string`** — serializes a `SongNode` into unannotated plain text, re-parseable with `parsePlainLyrics`. Titles and comments are preserved; every DSL symbol carried by words is lost by design — syllable separators, diéresis/sinéresis marks, and sinalefa (an active sinalefa falls back to a plain space, since plain text has no "fused words" notation).
+- **`printPlainLyrics(song: SongNode): string`** — serializes a `SongNode` into unannotated plain text, re-parseable with `parsePlainLyrics`. Titles and comments are preserved; every DSL symbol carried by words is lost by design — syllable separators, diéresis/sinéresis marks, and sinalefa (both `&` and `|` fall back to a plain space, since plain text has no "fused words" notation).
 
 ### Inspecting a position (editor tooling)
 
@@ -112,6 +113,24 @@ type LocateResult =
 
 This is pure logic with no editor dependency — it's what powers the [vscode-extension](../vscode-extension)'s hover, completion, and outline providers. Note the package's `Position`/`Range` are **1-indexed** (matching `Token.line`/`Token.column`); an editor integration using 0-indexed positions must convert both ways at its boundary.
 
+### Counting notes (metrics)
+
+```ts
+import { verseMetrics, stanzaMetrics, songMetrics } from '@codex-obscura-nomina/lyrics-language';
+
+const { notes, boundaries, count, min, max } = verseMetrics(verse);
+```
+
+A **note** is one beat of the voice — *not* the same thing as a `SyllableNode`: a sinalefa fuses syllables from two different words into one note, and a diéresis splits one syllable into two. `verseMetrics` groups a verse into the notes it sings **today** and reports how far that count can be pushed without rewriting a single word:
+
+- `notes: Note[]` — each with `text` and `parts: NotePart[]`. A note has more than one part only where a marker is currently fusing (`_`, `%`, `&`); `part.tie` is that marker, so a renderer can draw the fusion *inside* the note and make it clickable.
+- `boundaries: NoteBoundary[]` — `boundaries[i]` sits between `notes[i]` and `notes[i + 1]`. `marker` is the alterable marker keeping them apart, or `null` when nothing there can change (a plain `-`, a plain space); `word` says whether the two notes belong to different words.
+- `count` / `min` / `max` — notes today, notes with every alterable marker fused, notes with all of them split. `min === max` means the verse's length is fixed.
+
+`stanzaMetrics(stanza)` and `songMetrics(song)` return the per-child metrics plus the extremes across them (`0`/`0` when empty) — the natural scale for plotting a stanza's verses against each other.
+
+`markerMerges(marker: AlterableMarker): boolean` is also exported: whether a marker, as written, keeps both sides in the same note. Unlike `active`, it means the same thing for all three kinds.
+
 ## The AST
 
 ```
@@ -124,18 +143,18 @@ SongNode
     └── verses: VerseNode[]
         ├── comments: CommentNode[]
         └── words: WordNode[]
-            ├── trailingJoin: AlterableMarker | null   // sinalefa to the NEXT word
+            ├── trailingJoin: AlterableMarker | null   // `&`/`|` to the NEXT word; null on a plain space
             └── syllables: SyllableNode[]
                 ├── text: string                        // graphemes only, no symbols
                 ├── internalMarker: AlterableMarker | null  // `_`/`%`, lives inside this syllable
                 └── boundary: 'separator' | AlterableMarker | null  // `-`, or `+`/`/`, to the NEXT syllable
 ```
 
-Every node carries a `range: Range` (1-indexed `{ start, end }`, `end` exclusive), including each `AlterableMarker`, so tooling can hover/highlight the individual `+`/`_`/`%`/`/`/`&` symbol. `title` is a `TitledText` (`{ text, range }`); `comments` are `CommentNode[]` (`{ text, range }`).
+Every node carries a `range: Range` (1-indexed `{ start, end }`, `end` exclusive), including each `AlterableMarker`, so tooling can hover/highlight the individual `+`/`_`/`%`/`/`/`&`/`|` symbol. `title` is a `TitledText` (`{ text, range }`); `comments` are `CommentNode[]` (`{ text, range }`).
 
 The tree is nested by syllable rather than a flat token stream, specifically so a consumer can iterate and render it directly without having to interpret which DSL symbol produced which node — see [vscode-extension](../vscode-extension) and the syllable-card style frontend this package was built for.
 
-**`AlterableMarker`** (`{ kind: 'diaeresis' | 'synaeresis' | 'sinalefa', active: boolean, range: Range }`) is the shared shape for every alterable symbol: `active` reflects which of the pair (`+`/`_`, `%`//`, `&`/space) was actually used.
+**`AlterableMarker`** (`{ kind: 'diaeresis' | 'synaeresis' | 'sinalefa', active: boolean, range: Range }`) is the shared shape for every alterable symbol: `active` reflects which of the pair (`+`/`_`, `%`//`, `&`/`|`) was actually used. Note that `active` means "fuses" for sinéresis and sinalefa but "splits" for diéresis — it tracks which symbol was written, not one shared meaning. `markerMerges(marker)` (see below) is the flag with a single meaning.
 
 ## Error handling
 
@@ -157,7 +176,7 @@ Most consumers only need the four conversions, `locate`, and the type exports ab
 
 - `lyricsTokenizer: Tokenizer<LyricsTokenType>` — tokenizes annotated `.lyrics` source via `lyricsTokenizer.tokenize(source)`.
 - `tokenizePlainLyrics(source: string): LyricsToken[]` — the plain-text equivalent, producing the same token shape `parseSong` expects.
-- `LyricsToken` / `LyricsTokenType` — the token type this package's tokenizers produce (`Token<LyricsTokenType>`) and its type tag union (`'text' | 'word-separator' | 'syllable-separator' | 'sinalefa' | 'diaeresis-on' | 'diaeresis-off' | 'synaeresis-on' | 'synaeresis-off' | 'song-title-marker' | 'stanza-title-marker' | 'comment' | 'verse-end' | 'stanza-end' | 'unknown'`).
+- `LyricsToken` / `LyricsTokenType` — the token type this package's tokenizers produce (`Token<LyricsTokenType>`) and its type tag union (`'text' | 'word-separator' | 'syllable-separator' | 'sinalefa-on' | 'sinalefa-off' | 'diaeresis-on' | 'diaeresis-off' | 'synaeresis-on' | 'synaeresis-off' | 'song-title-marker' | 'stanza-title-marker' | 'comment' | 'verse-end' | 'stanza-end' | 'unknown'`).
 - `Token<T>` / `TokenFactory` / `Tokenizer<T>` / `Character` — the generic, DSL-agnostic tokenizer engine `lyricsTokenizer` is built on.
 
 The Spanish syllabification engine (`src/phonetics/`) that powers `parsePlainLyrics` is intentionally **not** exported — it's an internal detail of the plain-text import path, not a general-purpose syllabifier.

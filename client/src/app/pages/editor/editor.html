@@ -1,16 +1,18 @@
 <mat-toolbar class="editor__bar">
-  <mat-form-field appearance="outline" class="editor__title">
+  <span class="editor__brand">Codex<b>Obscura</b>Nomina</span>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="editor__title">
     <mat-label>Título de la canción</mat-label>
     <input matInput [value]="song().title" (input)="onTitle($any($event.target).value)" />
   </mat-form-field>
 
-  <button mat-icon-button aria-label="Limpiar" (click)="onClear()">
+  <button mat-icon-button aria-label="Limpiar" title="Borrar toda la canción" (click)="onClear()">
     <mat-icon>delete_sweep</mat-icon>
   </button>
-  <button mat-icon-button aria-label="Cargar .lyrics" (click)="fileInput.click()">
+  <button mat-icon-button aria-label="Cargar .lyrics" title="Cargar .lyrics" (click)="fileInput.click()">
     <mat-icon>folder_open</mat-icon>
   </button>
-  <button mat-icon-button aria-label="Guardar .lyrics" (click)="onSave()">
+  <button mat-icon-button aria-label="Guardar .lyrics" title="Guardar .lyrics" (click)="onSave()">
     <mat-icon>save</mat-icon>
   </button>
   <input
@@ -22,19 +24,30 @@
   />
 </mat-toolbar>
 
-<div class="editor__stanzas">
-  @for (stanza of song().stanzas; track stanza.id) {
-    <app-stanza-card
-      [stanza]="stanza"
-      (titleChanged)="store.setStanzaTitle(stanza.id, $event)"
-      (textChanged)="store.setStanzaText(stanza.id, $event)"
-      (versesChanged)="store.markVersesChanged()"
-      (removed)="store.removeStanza(stanza.id)"
-    />
-  }
+<div class="editor__page">
+  <p class="editor__legend">
+    Cada ficha es una nota cantable.
+    La ligadura <i class="editor__legend-tie" aria-hidden="true"></i> une dos trozos en una sola
+    nota — tócala para separarlos. <b class="editor__legend-gap">~</b> marca dónde se pueden unir
+    dos notas. La barra bajo cada verso muestra cuánto se puede estirar o encoger.
+  </p>
 
-  <button mat-fab extended (click)="store.addStanza()">
-    <mat-icon>add</mat-icon>
-    Agregar estrofa
-  </button>
+  <div class="editor__stanzas">
+    @for (stanza of song().stanzas; track stanza.id) {
+      <app-stanza-card
+        [stanza]="stanza"
+        [position]="$index + 1"
+        (titleChanged)="store.setStanzaTitle(stanza.id, $event)"
+        (textChanged)="store.setStanzaText(stanza.id, $event)"
+        (targetChanged)="store.setStanzaTarget(stanza.id, $event)"
+        (versesChanged)="store.markVersesChanged()"
+        (removed)="store.removeStanza(stanza.id)"
+      />
+    }
+
+    <button mat-fab extended class="editor__add" (click)="store.addStanza()">
+      <mat-icon>add</mat-icon>
+      Agregar estrofa
+    </button>
+  </div>
 </div>
