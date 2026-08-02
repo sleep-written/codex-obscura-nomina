@@ -1,9 +1,6 @@
 import { Character } from '../tokenizer/character.js';
 import { syllabifyWord } from '../phonetics/syllabify-word.js';
-import type { Token } from '../tokenizer/interfaces/index.js';
-import type { LyricsTokenType } from '../tokenizer/lyrics-tokenizer.js';
-
-type LyricsToken = Token<LyricsTokenType>;
+import type { LyricsToken } from '../tokenizer/lyrics-tokenizer.js';
 
 const isLetter = (v: string): boolean => /\p{L}/u.test(v);
 

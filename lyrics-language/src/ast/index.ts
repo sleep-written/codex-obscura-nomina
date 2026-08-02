@@ -5,7 +5,7 @@ import type { SongNode } from './interfaces/index.js';
 
 export { locate } from './locate.js';
 export type { LocateResult } from './locate.js';
-export { printLyrics } from './printer.js';
+export { printLyrics, printPlainLyrics } from './printer.js';
 
 export type {
     AlterableMarker,

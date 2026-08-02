@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
-import { parseLyrics, printLyrics } from './index.js';
+import { parseLyrics, parsePlainLyrics, printLyrics, printPlainLyrics } from './index.js';
 
 /** Recursively drops every `range` key so two ASTs can be compared position-agnostically. */
 function stripRanges<T>(value: T): T {
@@ -118,5 +118,65 @@ describe('printLyrics', () => {
 
         t.assert.strictEqual(printLyrics(parseLyrics(source)), source);
         assertRoundTrips(t, source);
+    });
+});
+
+describe('printPlainLyrics', () => {
+    it('drops syllable separators', (t: it.TestContext) => {
+        t.assert.strictEqual(printPlainLyrics(parseLyrics('nie-go\n')), 'niego\n');
+    });
+
+    it('drops diéresis marks (boundary and internal)', (t: it.TestContext) => {
+        t.assert.strictEqual(printPlainLyrics(parseLyrics('fu+er\n')), 'fuer\n');
+        t.assert.strictEqual(printPlainLyrics(parseLyrics('tri-fu_er-za\n')), 'trifuerza\n');
+    });
+
+    it('drops sinéresis marks (boundary and internal)', (t: it.TestContext) => {
+        t.assert.strictEqual(printPlainLyrics(parseLyrics('a/ho-ra\n')), 'ahora\n');
+        t.assert.strictEqual(printPlainLyrics(parseLyrics('pa-ra%u\n')), 'parau\n');
+    });
+
+    it('renders an active sinalefa as a plain space', (t: it.TestContext) => {
+        t.assert.strictEqual(printPlainLyrics(parseLyrics('a&otro\n')), 'a otro\n');
+    });
+
+    it('renders an inactive sinalefa as a plain space too', (t: it.TestContext) => {
+        t.assert.strictEqual(printPlainLyrics(parseLyrics('a otro\n')), 'a otro\n');
+    });
+
+    it('preserves titles and comments', (t: it.TestContext) => {
+        const source = '// nota\n## Estrofa\nnie-go // otra\n';
+        t.assert.strictEqual(printPlainLyrics(parseLyrics(source)), '// nota\n## Estrofa\nniego // otra\n');
+    });
+
+    it('separates stanzas by exactly one blank line', (t: it.TestContext) => {
+        t.assert.strictEqual(printPlainLyrics(parseLyrics('nie-go\n\n## Stanza\nla-la\n')), 'niego\n\n## Stanza\nlala\n');
+    });
+
+    it('round-trips an empty song to an empty string', (t: it.TestContext) => {
+        t.assert.strictEqual(printPlainLyrics(parseLyrics('')), '');
+    });
+
+    it('reproduces the plain-text fixture byte-for-byte from the annotated one', async (t: it.TestContext) => {
+        const lyricsPath = fileURLToPath(new URL('../../fixtures/delirio-en-hyrule.lyrics', import.meta.url));
+        const txtPath = fileURLToPath(new URL('../../fixtures/delirio-en-hyrule.txt', import.meta.url));
+        const [lyricsSource, txtSource] = await Promise.all([
+            readFile(lyricsPath, 'utf-8'),
+            readFile(txtPath, 'utf-8')
+        ]);
+
+        t.assert.strictEqual(printPlainLyrics(parseLyrics(lyricsSource)), txtSource);
+    });
+
+    it('round-trips the plain-text fixture through parsePlainLyrics', async (t: it.TestContext) => {
+        const txtPath = fileURLToPath(new URL('../../fixtures/delirio-en-hyrule.txt', import.meta.url));
+        const source = await readFile(txtPath, 'utf-8');
+
+        const song = parsePlainLyrics(source);
+        const printed = printPlainLyrics(song);
+        const reparsed = parsePlainLyrics(printed);
+
+        t.assert.strictEqual(printed, source);
+        t.assert.deepStrictEqual(stripRanges(reparsed), stripRanges(song));
     });
 });

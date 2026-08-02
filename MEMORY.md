@@ -3,5 +3,5 @@
 - [Lyrics AST](memory/lyrics-ast.md) — parser tokens→AST con rango de posición (Song/Stanza/Verse/Word/Syllable), `locate.ts`, en ./lyrics-language, feature `ast`
 - [Lyrics app architecture](memory/lyrics-app-architecture.md) — scope de la app (textarea + cards), frontend "tonto" que solo renderiza un AST, por qué el .lyrics debe ser autocontenido
 - [Lyrics phonetics](memory/lyrics-phonetics.md) — motor de silabeo español, texto plano → AST vía `parsePlainLyrics`, en ./lyrics-language (`src/phonetics/`, `src/plain-text/`)
-- [Lyrics printer](memory/lyrics-printer.md) — AST→texto `.lyrics` vía `printLyrics`, inverso de parseLyrics, en ./lyrics-language (`src/ast/printer.ts`)
+- [Lyrics printer](memory/lyrics-printer.md) — AST→texto: `printLyrics` (.lyrics anotado) y `printPlainLyrics` (texto plano), en ./lyrics-language (`src/ast/printer.ts`)
 - [VSCode extension](memory/vscode-extension.md) — hover/outline/completion + syntax highlighting + auto-colores para .lyrics, en ./vscode-extension

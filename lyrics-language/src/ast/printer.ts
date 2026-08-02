@@ -79,16 +79,36 @@ function printSyllable(syllable: SyllableNode): string {
     return text;
 }
 
-function printWord(word: WordNode): string {
-    const syllables = word.syllables.map(printSyllable).join('');
-    const join = word.trailingJoin !== null ? markerSymbol(word.trailingJoin) : '';
-    return syllables + join;
+/**
+ * Renders one word: its own text, plus the join symbol to the NEXT word
+ * (empty on the verse's last word). The only thing that differs between
+ * `printLyrics` and `printPlainLyrics`.
+ */
+interface WordPrinter {
+    text: (word: WordNode) => string;
+    join: (trailingJoin: AlterableMarker | null) => string;
 }
 
-function printVerse(verse: VerseNode): string[] {
+const annotatedWordPrinter: WordPrinter = {
+    text: word => word.syllables.map(printSyllable).join(''),
+    join: trailingJoin => trailingJoin !== null ? markerSymbol(trailingJoin) : ''
+};
+
+/**
+ * Renders words as unannotated text: syllable text is concatenated with no
+ * DSL symbols (`internalMarker`/`boundary` dropped), and every word boundary
+ * — including an active sinalefa — falls back to a plain space, since plain
+ * text has no way to express a fused word boundary.
+ */
+const plainWordPrinter: WordPrinter = {
+    text: word => word.syllables.map(s => s.text).join(''),
+    join: trailingJoin => trailingJoin !== null ? ' ' : ''
+};
+
+function printVerse(verse: VerseNode, printWord: WordPrinter): string[] {
     const anchorLine = verse.range.end.line;
     const { leading, trailing, dangling } = classifyComments(verse.comments, anchorLine);
-    const content = verse.words.map(printWord).join('');
+    const content = verse.words.map(w => printWord.text(w) + printWord.join(w.trailingJoin)).join('');
 
     return [
         ...leading.map(printCommentLine),
@@ -97,7 +117,7 @@ function printVerse(verse: VerseNode): string[] {
     ];
 }
 
-function printStanza(stanza: StanzaNode): string[] {
+function printStanza(stanza: StanzaNode, printWord: WordPrinter): string[] {
     const anchorLine = stanza.title !== null ? stanza.title.range.end.line : null;
     const { leading, trailing, dangling } = classifyComments(stanza.comments, anchorLine);
 
@@ -106,13 +126,13 @@ function printStanza(stanza: StanzaNode): string[] {
         lines.push(withTrailingComment(`## ${stanza.title.text}`, trailing));
     }
     for (const verse of stanza.verses) {
-        lines.push(...printVerse(verse));
+        lines.push(...printVerse(verse, printWord));
     }
     lines.push(...dangling.map(printCommentLine));
     return lines;
 }
 
-function printSong(song: SongNode): string[] {
+function printSong(song: SongNode, printWord: WordPrinter): string[] {
     const anchorLine = song.title !== null ? song.title.range.end.line : null;
     const { leading, trailing, dangling } = classifyComments(song.comments, anchorLine);
 
@@ -125,15 +145,29 @@ function printSong(song: SongNode): string[] {
         if (i > 0) {
             lines.push('');
         }
-        lines.push(...printStanza(stanza));
+        lines.push(...printStanza(stanza, printWord));
     });
 
     lines.push(...dangling.map(printCommentLine));
     return lines;
 }
 
+function joinLines(lines: string[]): string {
+    return lines.length > 0 ? lines.join('\n') + '\n' : '';
+}
+
 /** Serializes a {@link SongNode} back into a `.lyrics` source string, re-parseable with `parseLyrics`. */
 export function printLyrics(song: SongNode): string {
-    const lines = printSong(song);
-    return lines.length > 0 ? lines.join('\n') + '\n' : '';
+    return joinLines(printSong(song, annotatedWordPrinter));
+}
+
+/**
+ * Serializes a {@link SongNode} into unannotated Spanish lyrics text,
+ * re-parseable with `parsePlainLyrics`. Titles and comments are preserved,
+ * but every DSL symbol carried by words is lost: syllable separators,
+ * diéresis/sinéresis marks, and sinalefa (rendered as a plain space, since
+ * plain text has no "fused words" notation).
+ */
+export function printPlainLyrics(song: SongNode): string {
+    return joinLines(printSong(song, plainWordPrinter));
 }

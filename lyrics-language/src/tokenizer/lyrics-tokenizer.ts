@@ -1,5 +1,5 @@
 import { Tokenizer } from './tokenizer.js';
-import type { TokenFactory } from './interfaces/index.js';
+import type { Token, TokenFactory } from './interfaces/index.js';
 
 const isLetter = (v: string): boolean => /\p{L}/u.test(v);
 const isSpace = (v: string): boolean => v === ' ';
@@ -112,5 +112,8 @@ export const lyricsTokenFactories = {
 } as const satisfies Record<string, TokenFactory | (new () => TokenFactory)>;
 
 export type LyricsTokenType = keyof typeof lyricsTokenFactories;
+
+/** A {@link Token} typed to this package's {@link LyricsTokenType}. */
+export type LyricsToken = Token<LyricsTokenType>;
 
 export const lyricsTokenizer = new Tokenizer(lyricsTokenFactories);
