@@ -24,6 +24,7 @@ metadata:
 | `/` | Sinéresis desactivada. |
 | `#` | Título de canción (opcional, solo válido como la primera línea del archivo, igual que un H1 de Markdown). |
 | `##` (o más `#`) | Título de estrofa (opcional, debe ser la primera línea de su estrofa, igual que un H2 de Markdown). |
+| `:` | Separa clave y valor en una línea de metadata de cabecera (`albumYear: 1999`). Solo significa algo ahí; dentro de un verso sigue siendo un error de parseo. Ver [[lyrics-metadata]]. |
 | `//` | Comentario hasta fin de línea. Puede ir en su propia línea o "trailing" después de contenido (ej. `a-ho-ra // nota`). Ver [[lyrics-ast]] para la regla de a qué nodo del AST se adjunta. |
 | `\n` | Fin de verso. |
 | `\n{2,}` | Fin de estrofa (2+ saltos de línea consecutivos cuentan como un solo delimitador). |

@@ -124,6 +124,16 @@ describe('lyricsTokenizer', () => {
         ]);
     });
 
+    it('recognizes a metadata separator, keeping it out of "unknown" ("albumYear: 1999")', (t: it.TestContext) => {
+        const tokens = lyricsTokenizer.tokenize('albumYear: 1999');
+        t.assert.deepStrictEqual(tokens, [
+            { type: 'text', value: 'albumYear', line: 1, column: 1, length: 9 },
+            { type: 'metadata-separator', value: ':', line: 1, column: 10, length: 1 },
+            { type: 'word-separator', value: ' ', line: 1, column: 11, length: 1 },
+            { type: 'unknown', value: '1999', line: 1, column: 12, length: 4 }
+        ]);
+    });
+
     it('tokenizes a full verso with an explicit sinalefa ("Buscarán a&otro contratar")', (t: it.TestContext) => {
         const tokens = lyricsTokenizer.tokenize('Buscarán a&otro contratar');
         t.assert.deepStrictEqual(tokens, [

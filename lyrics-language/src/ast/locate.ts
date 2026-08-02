@@ -1,9 +1,14 @@
+import { SONG_METADATA_SPEC, STANZA_METADATA_SPEC, metadataSlots } from './interfaces/index.js';
 import type {
     AlterableMarker,
     CommentNode,
+    MetadataEntry,
+    MetadataValueKind,
     Position,
     Range,
+    SongMetadata,
     SongNode,
+    StanzaMetadata,
     SyllableNode,
     WordNode
 } from './interfaces/index.js';
@@ -16,6 +21,7 @@ import type {
 export type LocateResult =
     | { kind: 'title'; text: string; range: Range; owner: 'song' | 'stanza' }
     | { kind: 'comment'; comment: CommentNode; owner: 'song' | 'stanza' | 'verse' }
+    | { kind: 'metadata'; entry: MetadataEntry; part: 'key' | 'value'; owner: 'song' | 'stanza' }
     | { kind: 'marker'; marker: AlterableMarker }
     | { kind: 'syllable'; syllable: SyllableNode; word: WordNode }
     | { kind: 'none' };
@@ -35,8 +41,34 @@ function contains(range: Range, pos: Position): boolean {
 }
 
 /**
- * Finds the most specific AST node (marker, syllable, comment, or title)
- * containing `pos`.
+ * Finds the metadata entry of a header containing `pos`, reporting which half
+ * of `key: value` it landed on. The `:` and the spaces around it belong to
+ * neither, so they yield `null` and the search moves on.
+ */
+function locateMetadata(
+    metadata: SongMetadata | StanzaMetadata,
+    spec: Record<string, MetadataValueKind>,
+    pos: Position
+): { entry: MetadataEntry; part: 'key' | 'value' } | null {
+    const slots = metadataSlots(metadata);
+    for (const key of Object.keys(spec)) {
+        const entry = slots[key] ?? null;
+        if (entry === null) {
+            continue;
+        }
+        if (contains(entry.keyRange, pos)) {
+            return { entry, part: 'key' };
+        }
+        if (contains(entry.valueRange, pos)) {
+            return { entry, part: 'value' };
+        }
+    }
+    return null;
+}
+
+/**
+ * Finds the most specific AST node (marker, syllable, comment, metadata entry,
+ * or title) containing `pos`.
  *
  * Comment/title checks are NOT gated behind their parent's structural
  * `range`: `StanzaNode.range`/`VerseNode.range` are derived purely from
@@ -50,6 +82,10 @@ export function locate(song: SongNode, pos: Position): LocateResult {
     if (song.title !== null && contains(song.title.range, pos)) {
         return { kind: 'title', text: song.title.text, range: song.title.range, owner: 'song' };
     }
+    const songMeta = locateMetadata(song.metadata, SONG_METADATA_SPEC, pos);
+    if (songMeta !== null) {
+        return { kind: 'metadata', ...songMeta, owner: 'song' };
+    }
     for (const comment of song.comments) {
         if (contains(comment.range, pos)) {
             return { kind: 'comment', comment, owner: 'song' };
@@ -59,6 +95,10 @@ export function locate(song: SongNode, pos: Position): LocateResult {
     for (const stanza of song.stanzas) {
         if (stanza.title !== null && contains(stanza.title.range, pos)) {
             return { kind: 'title', text: stanza.title.text, range: stanza.title.range, owner: 'stanza' };
+        }
+        const stanzaMeta = locateMetadata(stanza.metadata, STANZA_METADATA_SPEC, pos);
+        if (stanzaMeta !== null) {
+            return { kind: 'metadata', ...stanzaMeta, owner: 'stanza' };
         }
         for (const comment of stanza.comments) {
             if (contains(comment.range, pos)) {

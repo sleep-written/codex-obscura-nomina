@@ -26,6 +26,7 @@ A `.lyrics` file is plain text with a small set of symbols layered on top of nor
 | `/` | Sinéresis **off** (explicit no-op marker). |
 | `#` | Song title. Only valid as the first line of the file, like a Markdown H1. |
 | `##` (or more `#`) | Stanza title. Must be the first line of its stanza, like a Markdown H2. All counts of 2+ collapse to the same "stanza title" meaning. |
+| `:` | Separates a metadata key from its value on a header line (`albumYear: 1999`). Only meaningful there — a `:` inside a verse is a parse error, as it always was. |
 | `//` | Comment to end of line. Can stand on its own line or trail after content (`a-ho-ra // note`). |
 | `\n` | End of verse. |
 | `\n\n` (2+ newlines) | End of stanza. A run of any length collapses to one boundary. |
@@ -33,6 +34,40 @@ A `.lyrics` file is plain text with a small set of symbols layered on top of nor
 **Diéresis/sinéresis marking is mandatory on every alterable vowel pair, not just on deviations from the natural pronunciation.** Every adjacent vowel pair inside a word — whether it's a natural diptongo or a natural hiato — must carry one of its two symbols explicitly, even when the result matches the natural state and nobody touched it. Example: *"trifuerza"* has the natural diptongo *"ue"*; it's written `tri-fu_er-za` (diéresis explicitly off) rather than `tri-fuer-za`. This is what lets a `.lyrics` file round-trip through the parser without re-running any phonetic analysis: the file is self-contained.
 
 **Sinalefa follows the same rule.** A word boundary where a vowel sound meets a vowel sound must carry `&` or `|` explicitly; a plain space is reserved for boundaries where no sinalefa is possible at all. Without that distinction a space would mean two different things — "possible but off" and "impossible" — and nothing reading the file could tell them apart, so a tool would end up offering to fuse *"que me"*.
+
+### Metadata
+
+Both the song and each stanza can carry an optional block of `key: value` lines in their **header** — at the top of the file under the `#` title, and at the top of a stanza under its `##` title. Every key is optional; the block itself can be absent entirely.
+
+```
+# Torquemada
+artist: Avalanch
+album: Llanto De Un Héroe
+albumArtist: Avalanch
+albumYear: 1999
+trackNumber: 2
+
+## Verso
+desiredLength: 11
+La|i-gle-si_a|en sus ma-nos de-le-gó
+```
+
+| Key | Scope | Value |
+|---|---|---|
+| `artist` | song | text |
+| `album` | song | text |
+| `albumArtist` | song | text |
+| `albumYear` | song | whole number |
+| `trackNumber` | song | whole number |
+| `desiredLength` | stanza | whole number — the note count each verse of the stanza is aiming for |
+
+The key set is **closed and validated**: an unrecognized key, a repeated one, an empty value, or a non-numeric value on a numeric key is a `LyricsParseError` with the offending line/column. That's what lets an editor integration surface a bad header as a squiggle, via the same `LyricsParseError` path as any other structural violation.
+
+The two key sets are deliberately disjoint, so a key alone says which header it belongs to — an untitled first stanza's `desiredLength` is never mistaken for song metadata. A metadata line outside a header (below the first stanza for a song key, below the stanza's first verse for a stanza key) is also an error, which is what keeps a `:` inside an ordinary lyric line unambiguous.
+
+A value is kept verbatim: punctuation, digits and further colons all survive (`album: Vol. II: 2 Héroes & 1 Cucco`). Comments interleave with metadata lines exactly as they do with verses, and print back where they were written.
+
+`desiredLength` is the author's stated intent and nothing more — this package never validates a verse against it. Compare it yourself against `verseMetrics(verse).count`.
 
 ### Example
 
@@ -89,7 +124,7 @@ const plainText = printPlainLyrics(songFromPlain);
 
 - **`printLyrics(song: SongNode): string`** — serializes a `SongNode` back into annotated `.lyrics` text, re-parseable with `parseLyrics`. Canonicalizes stanza title markers to exactly `##` regardless of how many `#` the original had (that count isn't retained in the AST). An empty song prints to `''`, not a stray newline.
 
-- **`printPlainLyrics(song: SongNode): string`** — serializes a `SongNode` into unannotated plain text, re-parseable with `parsePlainLyrics`. Titles and comments are preserved; every DSL symbol carried by words is lost by design — syllable separators, diéresis/sinéresis marks, and sinalefa (both `&` and `|` fall back to a plain space, since plain text has no "fused words" notation).
+- **`printPlainLyrics(song: SongNode): string`** — serializes a `SongNode` into unannotated plain text, re-parseable with `parsePlainLyrics`. Titles, metadata and comments are preserved; every DSL symbol carried by words is lost by design — syllable separators, diéresis/sinéresis marks, and sinalefa (both `&` and `|` fall back to a plain space, since plain text has no "fused words" notation).
 
 ### Inspecting a position (editor tooling)
 
@@ -106,6 +141,7 @@ const result = locate(song, pos);
 type LocateResult =
     | { kind: 'title'; text: string; range: Range; owner: 'song' | 'stanza' }
     | { kind: 'comment'; comment: CommentNode; owner: 'song' | 'stanza' | 'verse' }
+    | { kind: 'metadata'; entry: MetadataEntry; part: 'key' | 'value'; owner: 'song' | 'stanza' }
     | { kind: 'marker'; marker: AlterableMarker }
     | { kind: 'syllable'; syllable: SyllableNode; word: WordNode }
     | { kind: 'none' };
@@ -136,9 +172,11 @@ A **note** is one beat of the voice — *not* the same thing as a `SyllableNode`
 ```
 SongNode
 ├── title: TitledText | null       // from `#Title`
+├── metadata: SongMetadata         // artist/album/albumArtist/albumYear/trackNumber
 ├── comments: CommentNode[]
 └── stanzas: StanzaNode[]
     ├── title: TitledText | null   // from `##Title`
+    ├── metadata: StanzaMetadata   // desiredLength
     ├── comments: CommentNode[]
     └── verses: VerseNode[]
         ├── comments: CommentNode[]
@@ -151,6 +189,8 @@ SongNode
 ```
 
 Every node carries a `range: Range` (1-indexed `{ start, end }`, `end` exclusive), including each `AlterableMarker`, so tooling can hover/highlight the individual `+`/`_`/`%`/`/`/`&`/`|` symbol. `title` is a `TitledText` (`{ text, range }`); `comments` are `CommentNode[]` (`{ text, range }`).
+
+**`SongMetadata` / `StanzaMetadata`** are records whose every field is a `MetadataEntry | null` — `null` meaning the line was absent. An entry is `{ key, value, keyRange, valueRange, range }`, with `value: string` for a text key and `value: number` for a numeric one, and the key/value spans split so tooling can hover either half. `SONG_METADATA_SPEC`/`STANZA_METADATA_SPEC` (the key → value-kind maps), `emptySongMetadata()`/`emptyStanzaMetadata()` (for building a node from scratch) and `metadataSlots(metadata)` (a key → entry view, for walking a header generically) are exported alongside them.
 
 The tree is nested by syllable rather than a flat token stream, specifically so a consumer can iterate and render it directly without having to interpret which DSL symbol produced which node — see [vscode-extension](../vscode-extension) and the syllable-card style frontend this package was built for.
 
@@ -176,7 +216,7 @@ Most consumers only need the four conversions, `locate`, and the type exports ab
 
 - `lyricsTokenizer: Tokenizer<LyricsTokenType>` — tokenizes annotated `.lyrics` source via `lyricsTokenizer.tokenize(source)`.
 - `tokenizePlainLyrics(source: string): LyricsToken[]` — the plain-text equivalent, producing the same token shape `parseSong` expects.
-- `LyricsToken` / `LyricsTokenType` — the token type this package's tokenizers produce (`Token<LyricsTokenType>`) and its type tag union (`'text' | 'word-separator' | 'syllable-separator' | 'sinalefa-on' | 'sinalefa-off' | 'diaeresis-on' | 'diaeresis-off' | 'synaeresis-on' | 'synaeresis-off' | 'song-title-marker' | 'stanza-title-marker' | 'comment' | 'verse-end' | 'stanza-end' | 'unknown'`).
+- `LyricsToken` / `LyricsTokenType` — the token type this package's tokenizers produce (`Token<LyricsTokenType>`) and its type tag union (`'text' | 'word-separator' | 'syllable-separator' | 'sinalefa-on' | 'sinalefa-off' | 'diaeresis-on' | 'diaeresis-off' | 'synaeresis-on' | 'synaeresis-off' | 'metadata-separator' | 'song-title-marker' | 'stanza-title-marker' | 'comment' | 'verse-end' | 'stanza-end' | 'unknown'`).
 - `Token<T>` / `TokenFactory` / `Tokenizer<T>` / `Character` — the generic, DSL-agnostic tokenizer engine `lyricsTokenizer` is built on.
 
 The Spanish syllabification engine (`src/phonetics/`) that powers `parsePlainLyrics` is intentionally **not** exported — it's an internal detail of the plain-text import path, not a general-purpose syllabifier.

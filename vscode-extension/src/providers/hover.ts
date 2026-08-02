@@ -43,6 +43,16 @@ export class LyricsHoverProvider implements vscode.HoverProvider {
                     result.owner === 'song' ? 'Título de la canción' : 'Título de la estrofa',
                     toVscodeRange(result.range)
                 );
+            case 'metadata': {
+                const scope = result.owner === 'song' ? 'la canción' : 'la estrofa';
+                const range = result.part === 'key' ? result.entry.keyRange : result.entry.valueRange;
+                return new vscode.Hover(
+                    result.part === 'key'
+                        ? `\`${result.entry.key}\` — metadata de ${scope}`
+                        : `Valor de \`${result.entry.key}\``,
+                    toVscodeRange(range)
+                );
+            }
             case 'syllable':
                 return new vscode.Hover(`Sílaba: \`${result.syllable.text}\``, toVscodeRange(result.syllable.range));
             default:

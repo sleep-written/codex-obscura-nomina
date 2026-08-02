@@ -1,39 +1,17 @@
+import { SONG_METADATA_SPEC, STANZA_METADATA_SPEC, metadataSlots } from './interfaces/index.js';
 import type {
     AlterableMarker,
     CommentNode,
+    MetadataEntry,
+    MetadataValueKind,
+    SongMetadata,
     SongNode,
+    StanzaMetadata,
     StanzaNode,
     SyllableNode,
     VerseNode,
     WordNode
 } from './interfaces/index.js';
-
-interface CommentBuckets {
-    leading: CommentNode[];
-    trailing: CommentNode | null;
-    dangling: CommentNode[];
-}
-
-/**
- * Splits a node's `comments` into leading (own line, before the node),
- * trailing (same line as the node's own content), and dangling (own line,
- * after the node — only possible for the last verse/stanza/song in the
- * file, see the pending-comment flush at the end of `parseSong` in
- * `parser.ts`). `anchorLine` is the line the node's own content ends on
- * (a title's line, or a verse's last word's line); `null` when the node has
- * no title of its own (song/stanza without one), in which case every
- * comment is necessarily leading.
- */
-function classifyComments(comments: CommentNode[], anchorLine: number | null): CommentBuckets {
-    if (anchorLine === null) {
-        return { leading: comments, trailing: null, dangling: [] };
-    }
-    return {
-        leading: comments.filter(c => c.range.start.line < anchorLine),
-        trailing: comments.find(c => c.range.start.line === anchorLine) ?? null,
-        dangling: comments.filter(c => c.range.start.line > anchorLine)
-    };
-}
 
 function printCommentLine(comment: CommentNode): string {
     return `// ${comment.text}`;
@@ -41,6 +19,71 @@ function printCommentLine(comment: CommentNode): string {
 
 function withTrailingComment(line: string, trailing: CommentNode | null): string {
     return trailing !== null ? `${line} // ${trailing.text}` : line;
+}
+
+/** One rendered source line of a node's own content, tagged with the line it sat on. */
+interface AnchoredLine {
+    line: number;
+    text: string;
+}
+
+/**
+ * Prints the lines a node's own content occupies (a title, its metadata
+ * entries, or a verse's words) with the node's `comments` put back where they
+ * were written: a comment from an earlier line prints above the line it led,
+ * one from the same line trails it. Whatever is left over sat below every
+ * anchor, so it's handed back for the caller to print after the node's body —
+ * that's the "dangling" case, only reachable on the last verse/stanza/song in
+ * the file (see the pending-comment flush at the end of `parseSong`).
+ *
+ * With no anchors at all — an untitled, metadata-less song or stanza — there
+ * is nothing to compare a line number against, so every comment is leading.
+ */
+function printAnchored(
+    anchors: AnchoredLine[],
+    comments: CommentNode[]
+): { lines: string[]; below: CommentNode[] } {
+    if (anchors.length === 0) {
+        return { lines: comments.map(printCommentLine), below: [] };
+    }
+
+    const lines: string[] = [];
+    const used = new Set<CommentNode>();
+
+    for (const anchor of anchors) {
+        for (const comment of comments) {
+            if (!used.has(comment) && comment.range.start.line < anchor.line) {
+                lines.push(printCommentLine(comment));
+                used.add(comment);
+            }
+        }
+        const trailing = comments.find(c => !used.has(c) && c.range.start.line === anchor.line) ?? null;
+        if (trailing !== null) {
+            used.add(trailing);
+        }
+        lines.push(withTrailingComment(anchor.text, trailing));
+    }
+
+    return { lines, below: comments.filter(c => !used.has(c)) };
+}
+
+/**
+ * Renders a header's metadata record as `key: value` lines, in source order.
+ * The AST stores entries as named fields, so the original order has to be
+ * recovered from their ranges; ties (every entry synthesized by a consumer
+ * shares one range) fall back to the spec's own key order, since `sort` is
+ * stable.
+ */
+function metadataAnchors(
+    metadata: SongMetadata | StanzaMetadata,
+    spec: Record<string, MetadataValueKind>
+): AnchoredLine[] {
+    const slots = metadataSlots(metadata);
+    return Object.keys(spec)
+        .map(key => slots[key] ?? null)
+        .filter((entry): entry is MetadataEntry => entry !== null)
+        .sort((a, b) => a.range.start.line - b.range.start.line)
+        .map(entry => ({ line: entry.range.end.line, text: `${entry.key}: ${entry.value}` }));
 }
 
 /** Pure kind+active → DSL symbol mapping, shared by internalMarker/boundary/trailingJoin. */
@@ -111,42 +154,40 @@ const plainWordPrinter: WordPrinter = {
 };
 
 function printVerse(verse: VerseNode, printWord: WordPrinter): string[] {
-    const anchorLine = verse.range.end.line;
-    const { leading, trailing, dangling } = classifyComments(verse.comments, anchorLine);
     const content = verse.words
         .map((w, i) => printWord.text(w) + printWord.join(w.trailingJoin, i === verse.words.length - 1))
         .join('');
 
-    return [
-        ...leading.map(printCommentLine),
-        withTrailingComment(content, trailing),
-        ...dangling.map(printCommentLine)
-    ];
+    const { lines, below } = printAnchored(
+        [{ line: verse.range.end.line, text: content }],
+        verse.comments
+    );
+    return [...lines, ...below.map(printCommentLine)];
 }
 
 function printStanza(stanza: StanzaNode, printWord: WordPrinter): string[] {
-    const anchorLine = stanza.title !== null ? stanza.title.range.end.line : null;
-    const { leading, trailing, dangling } = classifyComments(stanza.comments, anchorLine);
-
-    const lines: string[] = leading.map(printCommentLine);
+    const anchors: AnchoredLine[] = [];
     if (stanza.title !== null) {
-        lines.push(withTrailingComment(`## ${stanza.title.text}`, trailing));
+        anchors.push({ line: stanza.title.range.end.line, text: `## ${stanza.title.text}` });
     }
+    anchors.push(...metadataAnchors(stanza.metadata, STANZA_METADATA_SPEC));
+
+    const { lines, below } = printAnchored(anchors, stanza.comments);
     for (const verse of stanza.verses) {
         lines.push(...printVerse(verse, printWord));
     }
-    lines.push(...dangling.map(printCommentLine));
+    lines.push(...below.map(printCommentLine));
     return lines;
 }
 
 function printSong(song: SongNode, printWord: WordPrinter): string[] {
-    const anchorLine = song.title !== null ? song.title.range.end.line : null;
-    const { leading, trailing, dangling } = classifyComments(song.comments, anchorLine);
-
-    const lines: string[] = leading.map(printCommentLine);
+    const anchors: AnchoredLine[] = [];
     if (song.title !== null) {
-        lines.push(withTrailingComment(`# ${song.title.text}`, trailing));
+        anchors.push({ line: song.title.range.end.line, text: `# ${song.title.text}` });
     }
+    anchors.push(...metadataAnchors(song.metadata, SONG_METADATA_SPEC));
+
+    const { lines, below } = printAnchored(anchors, song.comments);
 
     song.stanzas.forEach((stanza, i) => {
         if (i > 0) {
@@ -155,7 +196,7 @@ function printSong(song: SongNode, printWord: WordPrinter): string[] {
         lines.push(...printStanza(stanza, printWord));
     });
 
-    lines.push(...dangling.map(printCommentLine));
+    lines.push(...below.map(printCommentLine));
     return lines;
 }
 
@@ -170,8 +211,8 @@ export function printLyrics(song: SongNode): string {
 
 /**
  * Serializes a {@link SongNode} into unannotated Spanish lyrics text,
- * re-parseable with `parsePlainLyrics`. Titles and comments are preserved,
- * but every DSL symbol carried by words is lost: syllable separators,
+ * re-parseable with `parsePlainLyrics`. Titles, metadata and comments are
+ * preserved, but every DSL symbol carried by words is lost: syllable separators,
  * diéresis/sinéresis marks, and sinalefa (rendered as a plain space, since
  * plain text has no "fused words" notation).
  */

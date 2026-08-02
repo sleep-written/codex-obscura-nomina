@@ -1,4 +1,10 @@
-import { parseLyrics, parsePlainLyrics, printPlainLyrics } from '@codex-obscura-nomina/lyrics-language';
+import {
+  emptySongMetadata,
+  emptyStanzaMetadata,
+  parseLyrics,
+  parsePlainLyrics,
+  printPlainLyrics,
+} from '@codex-obscura-nomina/lyrics-language';
 import { reconcileVerses } from './reconcile-verses';
 
 const FIXTURE = `// fixture de prueba para el tokenizer y el parser de AST
@@ -61,8 +67,9 @@ describe('reconcileVerses', () => {
       const previous = stanza.verses;
       const plainText = printPlainLyrics({
         title: null,
+        metadata: emptySongMetadata(),
         comments: [],
-        stanzas: [{ ...stanza, title: null, comments: [] }],
+        stanzas: [{ ...stanza, title: null, metadata: emptyStanzaMetadata(), comments: [] }],
         range: stanza.range,
       });
       const next = parsePlainLyrics(plainText).stanzas[0]?.verses ?? [];

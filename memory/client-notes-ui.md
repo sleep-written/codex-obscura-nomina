@@ -36,9 +36,10 @@ si cada verso se dibujara contra su propia escala, comparar largos entre versos 
 `max` no cambia al alternar marcadores, así que ese `computed` no necesita recalcularse tras un
 toggle (a diferencia del `linkedSignal` de las métricas del verso).
 
-**Objetivo de notas por verso (`StanzaVm.target`):** opcional, por estrofa, vive solo en el
-view-model y en `localStorage` — **no viaja al `.lyrics`**, porque es una intención de trabajo, no
-una propiedad de la canción. Pinta el borde izquierdo del verso: `primary` si lo cumple,
+**Objetivo de notas por verso (`StanzaVm.target`):** opcional, por estrofa. Desde el 2026-08-02
+**sí viaja al `.lyrics`**, como el `desiredLength` de su estrofa (ver [[lyrics-metadata]]) — antes
+vivía solo en el view-model y en `localStorage`, con el argumento de que era una intención de
+trabajo y no una propiedad de la canción; el usuario pidió persistirlo igual. Pinta el borde izquierdo del verso: `primary` si lo cumple,
 `outline-variant` si es alcanzable moviendo alteraciones, `error` si el objetivo cae fuera de
 `[min, max]` (no hay forma de llegar sin reescribir el verso). Los borradores guardados antes de
 esto no traen el campo, así que siempre se lee con `?? null`.

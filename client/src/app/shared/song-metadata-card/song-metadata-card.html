@@ -1,0 +1,90 @@
+<mat-card class="meta" appearance="outlined">
+  <header class="meta__head">
+    <mat-icon class="meta__icon">album</mat-icon>
+    <h2 class="meta__name">{{ title().trim() || 'Canción sin nombre' }}</h2>
+
+    <span class="meta__count">
+      @if (filled() === 0) {
+        sin datos del disco
+      } @else {
+        {{ filled() }} de 5
+      }
+    </span>
+
+    <div class="meta__actions">
+      <button mat-icon-button aria-label="Limpiar" title="Borrar toda la canción" (click)="cleared.emit()">
+        <mat-icon>delete_sweep</mat-icon>
+      </button>
+      <button mat-icon-button aria-label="Cargar .lyrics" title="Cargar .lyrics" (click)="fileInput.click()">
+        <mat-icon>folder_open</mat-icon>
+      </button>
+      <button mat-icon-button aria-label="Guardar .lyrics" title="Guardar .lyrics" (click)="saved.emit()">
+        <mat-icon>save</mat-icon>
+      </button>
+      <input
+        #fileInput
+        type="file"
+        accept=".lyrics,text/plain"
+        hidden
+        (change)="onFile($event)"
+      />
+    </div>
+  </header>
+
+  <mat-card-content class="meta__body">
+    <mat-form-field appearance="outline" class="meta__field meta__field--full">
+      <mat-label>Título de la canción</mat-label>
+      <input
+        matInput
+        [value]="title()"
+        (input)="titleChanged.emit($any($event.target).value)" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="meta__field meta__field--wide">
+      <mat-label>Artista</mat-label>
+      <input
+        matInput
+        [value]="metadata().artist"
+        (input)="onText('artist', $any($event.target).value)" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="meta__field meta__field--wide">
+      <mat-label>Artista del álbum</mat-label>
+      <input
+        matInput
+        title="Solo si el álbum es de un artista distinto al de la canción (recopilatorios, colaboraciones)"
+        [value]="metadata().albumArtist"
+        (input)="onText('albumArtist', $any($event.target).value)" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="meta__field">
+      <mat-label>Álbum</mat-label>
+      <input
+        matInput
+        [value]="metadata().album"
+        (input)="onText('album', $any($event.target).value)" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="meta__field">
+      <mat-label>Año</mat-label>
+      <input
+        matInput
+        type="number"
+        min="1"
+        inputmode="numeric"
+        [value]="metadata().albumYear ?? ''"
+        (input)="onNumber('albumYear', $any($event.target).value)" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="meta__field">
+      <mat-label>N.º de pista</mat-label>
+      <input
+        matInput
+        type="number"
+        min="1"
+        inputmode="numeric"
+        [value]="metadata().trackNumber ?? ''"
+        (input)="onNumber('trackNumber', $any($event.target).value)" />
+    </mat-form-field>
+  </mat-card-content>
+</mat-card>

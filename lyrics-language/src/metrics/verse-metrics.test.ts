@@ -1,5 +1,5 @@
 import { describe, it } from 'node:test';
-import { parseLyrics, parsePlainLyrics } from '../ast/index.js';
+import { emptyStanzaMetadata, parseLyrics, parsePlainLyrics } from '../ast/index.js';
 import type { VerseNode } from '../ast/interfaces/index.js';
 import { stanzaMetrics, verseMetrics } from './index.js';
 
@@ -102,6 +102,7 @@ describe('stanzaMetrics', () => {
     it('is 0/0 on a stanza without verses', (t: it.TestContext) => {
         const { verses, min, max } = stanzaMetrics({
             title: null,
+            metadata: emptyStanzaMetadata(),
             comments: [],
             verses: [],
             range: { start: { line: 1, column: 1 }, end: { line: 1, column: 1 } }

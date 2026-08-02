@@ -17,7 +17,23 @@ export type {
     StanzaNode,
     SyllableNode,
     VerseNode,
-    WordNode
+    WordNode,
+    MetadataValueKind,
+    MetadataKey,
+    SongMetadataKey,
+    StanzaMetadataKey,
+    MetadataEntry,
+    TextMetadataEntry,
+    NumberMetadataEntry,
+    SongMetadata,
+    StanzaMetadata
+} from './interfaces/index.js';
+export {
+    SONG_METADATA_SPEC,
+    STANZA_METADATA_SPEC,
+    emptySongMetadata,
+    emptyStanzaMetadata,
+    metadataSlots
 } from './interfaces/index.js';
 export { LyricsParseError } from './lyrics-parse.error.js';
 

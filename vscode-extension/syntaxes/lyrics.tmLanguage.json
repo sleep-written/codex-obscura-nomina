@@ -4,6 +4,7 @@
     "scopeName": "source.lyrics",
     "patterns": [
         { "include": "#comment" },
+        { "include": "#metadata" },
         { "include": "#stanza-title" },
         { "include": "#song-title" },
         { "include": "#sinalefa-on" },
@@ -22,6 +23,15 @@
             },
             "end": "$",
             "name": "comment.line.double-slash.lyrics"
+        },
+        "metadata": {
+            "comment": "A `key: value` header line. Only the closed key set matches, so a ':' inside an ordinary verse never lights up. The value stops short of a trailing '//' so the comment rule can still claim it; a grammar can't tell whether the line really sits in a header, so a key written elsewhere is colored anyway — the parser is what rejects it.",
+            "match": "^(albumArtist|albumYear|album|artist|trackNumber|desiredLength)(:)((?:[^/]|/(?!/))*)",
+            "captures": {
+                "1": { "name": "variable.other.metadata.lyrics" },
+                "2": { "name": "punctuation.separator.key-value.lyrics" },
+                "3": { "name": "string.unquoted.metadata.lyrics" }
+            }
         },
         "song-title": {
             "comment": "A single '#', not followed by another '#' (that's a stanza title instead).",

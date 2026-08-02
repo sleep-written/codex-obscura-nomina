@@ -1,5 +1,11 @@
 // fixture de prueba para el tokenizer y el parser de AST
 # Delirio en Hyrule
+// datos del disco
+artist: Los Cuccos Vengativos
+album: Ocarina del Descontrol
+albumArtist: Los Cuccos Vengativos
+albumYear: 1998 // remasterizado en 2011
+trackNumber: 7
 Un cuc-co|e-nor-me|in-cu-bó la tri-fu_er-za
 Ga-non-dorf a/ho-ra te-je bu-fan-das de Na-vi // nombres propios sin acentuar
 Link na-da|en so-pa del Tem-plo del Ti_em-po
@@ -7,5 +13,6 @@ y Zel-da ven-de pa-ra-gu_as en Ge-ru-do
 
 // segunda estrofa: el coro
 ## Coro Cósmico
+desiredLength: 12
 Tri-fu_er-za tri-fu_er-za dón-de te|es-con-dis-te
 De-ba-jo del som-bre-ro de|un De-ku tris-te

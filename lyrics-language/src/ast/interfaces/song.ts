@@ -1,4 +1,5 @@
 import type { Range } from './position.js';
+import type { SongMetadata, StanzaMetadata } from './metadata.js';
 
 /**
  * A vowel-pair or word-boundary marker whose state was explicitly set in the
@@ -73,6 +74,8 @@ export interface VerseNode {
 export interface StanzaNode {
     /** From `##Título`; `null` if the stanza has no title. */
     title: TitledText | null;
+    /** From the `key: value` block at the top of the stanza, under its title. */
+    metadata: StanzaMetadata;
     /** Comments attached to this stanza (leading and/or trailing). */
     comments: CommentNode[];
     verses: VerseNode[];
@@ -82,6 +85,8 @@ export interface StanzaNode {
 export interface SongNode {
     /** From `#Título`; `null` if the song has no title. */
     title: TitledText | null;
+    /** From the `key: value` block at the top of the file, under the title. */
+    metadata: SongMetadata;
     /** Comments attached to the song as a whole (leading and/or trailing). */
     comments: CommentNode[];
     stanzas: StanzaNode[];

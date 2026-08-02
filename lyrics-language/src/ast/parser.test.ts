@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
-import { parseLyrics, LyricsParseError } from './index.js';
+import { parseLyrics, LyricsParseError, emptySongMetadata, emptyStanzaMetadata } from './index.js';
 import type { Range } from './interfaces/index.js';
 
 const r = (startLine: number, startColumn: number, endLine: number, endColumn: number): Range => ({
@@ -16,10 +16,12 @@ describe('parseLyrics', () => {
 
         t.assert.deepStrictEqual(song, {
             title: { text: 'Song', range: r(1, 2, 1, 6) },
+            metadata: emptySongMetadata(),
             comments: [],
             range: r(1, 1, 3, 7),
             stanzas: [{
                 title: { text: 'Stanza', range: r(2, 3, 2, 9) },
+                metadata: emptyStanzaMetadata(),
                 comments: [],
                 range: r(2, 1, 3, 7),
                 verses: [{
@@ -137,6 +139,107 @@ describe('parseLyrics', () => {
         });
     });
 
+    describe('metadata', () => {
+        it('parses the song header keys, typing numeric ones as numbers', (t: it.TestContext) => {
+            const song = parseLyrics([
+                '# Torquemada',
+                'artist: Avalanch',
+                'album: Llanto De Un Héroe',
+                'albumArtist: Avalanch',
+                'albumYear: 1999',
+                'trackNumber: 2',
+                'La|i-gle-si_a',
+                ''
+            ].join('\n'));
+
+            t.assert.strictEqual(song.metadata.artist?.value, 'Avalanch');
+            t.assert.strictEqual(song.metadata.album?.value, 'Llanto De Un Héroe');
+            t.assert.strictEqual(song.metadata.albumArtist?.value, 'Avalanch');
+            t.assert.strictEqual(song.metadata.albumYear?.value, 1999);
+            t.assert.strictEqual(song.metadata.trackNumber?.value, 2);
+        });
+
+        it('spans the key and the trimmed value separately', (t: it.TestContext) => {
+            const song = parseLyrics('artist: Avalanch\nnie-go\n');
+
+            t.assert.deepStrictEqual(song.metadata.artist, {
+                key: 'artist',
+                value: 'Avalanch',
+                keyRange: r(1, 1, 1, 7),
+                valueRange: r(1, 9, 1, 17),
+                range: r(1, 1, 1, 17)
+            });
+        });
+
+        it('keeps a value verbatim, including its punctuation, digits and further colons', (t: it.TestContext) => {
+            const song = parseLyrics('album: Vol. II: 2 Héroes & 1 Cucco\nnie-go\n');
+
+            t.assert.strictEqual(song.metadata.album?.value, 'Vol. II: 2 Héroes & 1 Cucco');
+        });
+
+        it('parses a stanza\'s desiredLength under its title', (t: it.TestContext) => {
+            const song = parseLyrics('## Coro\ndesiredLength: 8\nnie-go\n');
+
+            t.assert.strictEqual(song.stanzas[0].metadata.desiredLength?.value, 8);
+            t.assert.strictEqual(song.metadata.artist, null);
+        });
+
+        it('opens an untitled stanza when a stanza key arrives with no stanza started', (t: it.TestContext) => {
+            const song = parseLyrics('nie-go\n\ndesiredLength: 8\nla-la\n');
+
+            t.assert.strictEqual(song.stanzas.length, 2);
+            t.assert.strictEqual(song.stanzas[1].title, null);
+            t.assert.strictEqual(song.stanzas[1].metadata.desiredLength?.value, 8);
+            t.assert.strictEqual(song.stanzas[1].verses.length, 1);
+        });
+
+        it('attaches a metadata line\'s own comments to the header that owns it', (t: it.TestContext) => {
+            const song = parseLyrics('// del disco\nartist: Avalanch // la banda\nnie-go\n');
+
+            t.assert.deepStrictEqual(song.comments.map(c => c.text), ['del disco', 'la banda']);
+        });
+
+        describe('errors', () => {
+            it('rejects an unknown key', (t: it.TestContext) => {
+                t.assert.throws(() => parseLyrics('artista: Avalanch\nnie-go\n'), LyricsParseError);
+            });
+
+            it('rejects a non-numeric value on a numeric key', (t: it.TestContext) => {
+                t.assert.throws(() => parseLyrics('albumYear: mil\nnie-go\n'), LyricsParseError);
+                t.assert.throws(() => parseLyrics('trackNumber: 2b\nnie-go\n'), LyricsParseError);
+            });
+
+            it('rejects an empty value', (t: it.TestContext) => {
+                t.assert.throws(() => parseLyrics('artist:\nnie-go\n'), LyricsParseError);
+                t.assert.throws(() => parseLyrics('artist:   \nnie-go\n'), LyricsParseError);
+            });
+
+            it('rejects a repeated key in the same header', (t: it.TestContext) => {
+                t.assert.throws(() => parseLyrics('artist: A\nartist: B\nnie-go\n'), LyricsParseError);
+                t.assert.throws(
+                    () => parseLyrics('## Coro\ndesiredLength: 8\ndesiredLength: 9\nnie-go\n'),
+                    LyricsParseError
+                );
+            });
+
+            it('rejects a song key below the first stanza', (t: it.TestContext) => {
+                t.assert.throws(() => parseLyrics('nie-go\n\nartist: Avalanch\n'), LyricsParseError);
+            });
+
+            it('rejects a stanza key below its stanza\'s first verse', (t: it.TestContext) => {
+                t.assert.throws(() => parseLyrics('## Coro\nnie-go\ndesiredLength: 8\n'), LyricsParseError);
+            });
+
+            it('rejects a song title below the metadata block', (t: it.TestContext) => {
+                t.assert.throws(() => parseLyrics('artist: Avalanch\n# Torquemada\nnie-go\n'), LyricsParseError);
+            });
+
+            it('still rejects a bare ":" inside a verse', (t: it.TestContext) => {
+                t.assert.throws(() => parseLyrics('## Coro\nnie-go\nla:la\n'), LyricsParseError);
+            });
+        });
+    });
+
     describe('errors', () => {
         it('rejects an unknown character inside a word', (t: it.TestContext) => {
             t.assert.throws(() => parseLyrics('nie,go\n'), LyricsParseError);
@@ -162,20 +265,49 @@ describe('parseLyrics', () => {
 
         t.assert.deepStrictEqual(song.title, { text: 'Delirio en Hyrule', range: r(2, 3, 2, 20) });
         t.assert.deepStrictEqual(song.comments, [
-            { text: 'fixture de prueba para el tokenizer y el parser de AST', range: r(1, 4, 1, 58) }
+            { text: 'fixture de prueba para el tokenizer y el parser de AST', range: r(1, 4, 1, 58) },
+            { text: 'datos del disco', range: r(3, 4, 3, 19) },
+            { text: 'remasterizado en 2011', range: r(7, 20, 7, 41) }
         ]);
+
+        t.assert.deepStrictEqual(song.metadata.artist, {
+            key: 'artist',
+            value: 'Los Cuccos Vengativos',
+            keyRange: r(4, 1, 4, 7),
+            valueRange: r(4, 9, 4, 30),
+            range: r(4, 1, 4, 30)
+        });
+        t.assert.deepStrictEqual(song.metadata.albumYear, {
+            key: 'albumYear',
+            value: 1998,
+            keyRange: r(7, 1, 7, 10),
+            valueRange: r(7, 12, 7, 16),
+            range: r(7, 1, 7, 16)
+        });
+        t.assert.strictEqual(song.metadata.trackNumber?.value, 7);
+        t.assert.strictEqual(song.metadata.album?.value, 'Ocarina del Descontrol');
+        t.assert.strictEqual(song.metadata.albumArtist?.value, 'Los Cuccos Vengativos');
+
         t.assert.strictEqual(song.stanzas.length, 2);
 
         t.assert.strictEqual(song.stanzas[0].title, null);
+        t.assert.strictEqual(song.stanzas[0].metadata.desiredLength, null);
         t.assert.strictEqual(song.stanzas[0].verses.length, 4);
         t.assert.deepStrictEqual(
             song.stanzas[0].verses[1].comments,
-            [{ text: 'nombres propios sin acentuar', range: r(4, 50, 4, 78) }]
+            [{ text: 'nombres propios sin acentuar', range: r(10, 50, 10, 78) }]
         );
 
-        t.assert.deepStrictEqual(song.stanzas[1].title, { text: 'Coro Cósmico', range: r(9, 4, 9, 16) });
+        t.assert.deepStrictEqual(song.stanzas[1].title, { text: 'Coro Cósmico', range: r(15, 4, 15, 16) });
+        t.assert.deepStrictEqual(song.stanzas[1].metadata.desiredLength, {
+            key: 'desiredLength',
+            value: 12,
+            keyRange: r(16, 1, 16, 14),
+            valueRange: r(16, 16, 16, 18),
+            range: r(16, 1, 16, 18)
+        });
         t.assert.deepStrictEqual(song.stanzas[1].comments, [
-            { text: 'segunda estrofa: el coro', range: r(8, 4, 8, 28) }
+            { text: 'segunda estrofa: el coro', range: r(14, 4, 14, 28) }
         ]);
         t.assert.strictEqual(song.stanzas[1].verses.length, 2);
     });

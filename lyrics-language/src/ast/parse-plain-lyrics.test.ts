@@ -38,6 +38,54 @@ describe('parsePlainLyrics', () => {
         t.assert.throws(() => parsePlainLyrics('# A\n# B\n'), LyricsParseError);
     });
 
+    describe('metadata', () => {
+        it('reads a header block written literally, in both scopes', (t: it.TestContext) => {
+            const song = parsePlainLyrics([
+                '# Torquemada',
+                'artist: Avalanch',
+                'albumYear: 1999',
+                '',
+                '## Coro',
+                'desiredLength: 8',
+                'hola',
+                ''
+            ].join('\n'));
+
+            t.assert.strictEqual(song.metadata.artist?.value, 'Avalanch');
+            t.assert.strictEqual(song.metadata.albumYear?.value, 1999);
+            t.assert.strictEqual(song.stanzas[0].metadata.desiredLength?.value, 8);
+        });
+
+        it('keeps a value verbatim instead of dropping its punctuation like a verse does', (t: it.TestContext) => {
+            const song = parsePlainLyrics('album: Vol. II: 2 Héroes & 1 Cucco\nhola\n');
+
+            t.assert.strictEqual(song.metadata.album?.value, 'Vol. II: 2 Héroes & 1 Cucco');
+        });
+
+        it('does not syllabify a metadata key or value', (t: it.TestContext) => {
+            const song = parsePlainLyrics('artist: Avalanch\nhola\n');
+
+            t.assert.strictEqual(song.metadata.artist?.value, 'Avalanch');
+        });
+
+        it('leaves a ":" inside an ordinary verse meaningless, as before', (t: it.TestContext) => {
+            const song = parsePlainLyrics('hola\nque: tal\n');
+
+            t.assert.strictEqual(song.stanzas[0].verses.length, 2);
+            t.assert.deepStrictEqual(
+                song.stanzas[0].verses[1].words.map(w => w.syllables.map(s => s.text).join('')),
+                ['que', 'tal']
+            );
+        });
+
+        it('reopens the header at each stanza, so a late verse-like colon stays inert', (t: it.TestContext) => {
+            const song = parsePlainLyrics('hola\n\n## Coro\ndesiredLength: 8\nadios\n');
+
+            t.assert.strictEqual(song.stanzas[0].metadata.desiredLength, null);
+            t.assert.strictEqual(song.stanzas[1].metadata.desiredLength?.value, 8);
+        });
+    });
+
     it('parses the delirio-en-hyrule fixture\'s plain-text equivalent to the same syllable structure as its hand-annotated original', async (t: it.TestContext) => {
         const fixturePath = fileURLToPath(new URL('../../fixtures/delirio-en-hyrule.lyrics', import.meta.url));
         const annotated = await readFile(fixturePath, 'utf-8');

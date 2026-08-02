@@ -1,11 +1,23 @@
 import type { Token } from '../tokenizer/interfaces/index.js';
 import type { LyricsTokenType } from '../tokenizer/lyrics-tokenizer.js';
 import { LyricsParseError } from './lyrics-parse.error.js';
+import {
+    SONG_METADATA_SPEC,
+    STANZA_METADATA_SPEC,
+    emptySongMetadata,
+    emptyStanzaMetadata,
+    metadataSlots
+} from './interfaces/index.js';
 import type {
     AlterableMarker,
     CommentNode,
+    MetadataEntry,
+    MetadataKey,
+    MetadataValueKind,
     Range,
+    SongMetadata,
     SongNode,
+    StanzaMetadata,
     StanzaNode,
     SyllableNode,
     TitledText,
@@ -98,6 +110,83 @@ function tokensToText(tokens: LyricsToken[]): TitledText {
             end: { line: last.line, column: last.column + last.length - trailingTrimmed }
         }
     };
+}
+
+/**
+ * True when a line has the `key:` shape that opens a metadata entry. Only the
+ * first two tokens matter: a `:` anywhere else on the line belongs to the
+ * value (`album: Vol. II: El Regreso`) and is reassembled by `tokensToText`.
+ */
+function isMetadataLine(tokens: LyricsToken[]): boolean {
+    return tokens.length >= 2 && tokens[0].type === 'text' && tokens[1].type === 'metadata-separator';
+}
+
+/**
+ * Parses one `key: value` line. The key alone decides which header the entry
+ * belongs to — the song's or a stanza's — because the two key sets are
+ * disjoint by design; its spec decides whether the value is kept verbatim or
+ * read as a whole number.
+ */
+function parseMetadataEntry(tokens: LyricsToken[]): { scope: 'song' | 'stanza'; entry: MetadataEntry } {
+    const keyTok = tokens[0];
+    const key = keyTok.value;
+    const songKind: MetadataValueKind | undefined = (SONG_METADATA_SPEC as Record<string, MetadataValueKind>)[key];
+    const kind = songKind ?? (STANZA_METADATA_SPEC as Record<string, MetadataValueKind>)[key];
+    if (kind === undefined) {
+        throw new LyricsParseError(`Unknown metadata key "${key}"`, keyTok.line, keyTok.column);
+    }
+
+    const separator = tokens[1];
+    const valueTokens = tokens.slice(2);
+    const raw = valueTokens.length > 0 ? tokensToText(valueTokens) : null;
+    if (raw === null || raw.text.length === 0) {
+        throw new LyricsParseError(
+            `Metadata "${key}" has no value`,
+            separator.line,
+            separator.column + separator.length
+        );
+    }
+
+    let value: string | number = raw.text;
+    if (kind === 'number') {
+        if (!/^\d+$/.test(raw.text)) {
+            throw new LyricsParseError(
+                `Metadata "${key}" expects a whole number, got "${raw.text}"`,
+                raw.range.start.line,
+                raw.range.start.column
+            );
+        }
+        value = Number(raw.text);
+    }
+
+    return {
+        scope: songKind !== undefined ? 'song' : 'stanza',
+        entry: {
+            key: key as MetadataKey,
+            value,
+            keyRange: tokenRange(keyTok),
+            valueRange: raw.range,
+            range: { start: tokenRange(keyTok).start, end: raw.range.end }
+        }
+    };
+}
+
+/**
+ * Files a parsed entry into its header's metadata record, rejecting a repeated
+ * key. The entry is known to fit the slot it lands in because
+ * {@link parseMetadataEntry} already matched its key against the spec — see
+ * {@link metadataSlots} for why that can't be expressed to the type checker.
+ */
+function assignMetadata(target: SongMetadata | StanzaMetadata, entry: MetadataEntry): void {
+    const slots = metadataSlots(target);
+    if (slots[entry.key] !== null) {
+        throw new LyricsParseError(
+            `Duplicate metadata key "${entry.key}"`,
+            entry.keyRange.start.line,
+            entry.keyRange.start.column
+        );
+    }
+    slots[entry.key] = entry;
 }
 
 /** Builds a `SyllableNode[]` from the tokens of a single word. */
@@ -213,28 +302,37 @@ function parseVerse(tokens: LyricsToken[]): { words: WordNode[]; range: Range } 
  *
  * Single forward pass over the file's lines: comment-only lines are buffered
  * as "pending" and attached as leading comments to whatever structural node
- * (song title, stanza title, or verse) comes next; a `stanza-end` closes the
- * currently open stanza. Anything still pending at the very end of the file
- * (or of a stanza, with nothing left to lead) attaches as a trailing comment
- * to the innermost node still open (last verse > stanza > song).
+ * (song title, stanza title, metadata entry, or verse) comes next; a
+ * `stanza-end` closes the currently open stanza. Anything still pending at the
+ * very end of the file (or of a stanza, with nothing left to lead) attaches as
+ * a trailing comment to the innermost node still open (last verse > stanza >
+ * song).
  */
 export function parseSong(tokens: LyricsToken[]): SongNode {
     const lines = splitLines(tokens);
 
     const song: SongNode = {
         title: null,
+        metadata: emptySongMetadata(),
         comments: [],
         stanzas: [],
         range: { start: { line: 1, column: 1 }, end: { line: 1, column: 1 } }
     };
     let pending: CommentNode[] = [];
     let currentStanza: StanzaNode | null = null;
+    /** Whether anything has contributed to `song.range` yet (title, metadata or a stanza). */
+    let songStarted = false;
+
+    const extendSongRange = (range: Range): void => {
+        song.range = songStarted
+            ? { start: song.range.start, end: range.end }
+            : { start: range.start, end: range.end };
+        songStarted = true;
+    };
 
     const closeCurrentStanza = (): void => {
         if (currentStanza !== null) {
-            song.range = song.title === null && song.stanzas.length === 0
-                ? { start: currentStanza.range.start, end: currentStanza.range.end }
-                : { start: song.range.start, end: currentStanza.range.end };
+            extendSongRange(currentStanza.range);
             song.stanzas.push(currentStanza);
             currentStanza = null;
         }
@@ -254,7 +352,7 @@ export function parseSong(tokens: LyricsToken[]): SongNode {
         }
 
         if (first.type === 'song-title-marker') {
-            if (song.title !== null || song.stanzas.length > 0 || currentStanza !== null) {
+            if (songStarted || currentStanza !== null) {
                 throw new LyricsParseError('A song can only have one title, at the very top', first.line, first.column);
             }
             const title = tokensToText(line.tokens.slice(1));
@@ -262,7 +360,7 @@ export function parseSong(tokens: LyricsToken[]): SongNode {
                 throw new LyricsParseError('Song title cannot be empty', first.line, first.column);
             }
             song.title = title;
-            song.range = { start: tokenRange(first).start, end: title.range.end };
+            extendSongRange({ start: tokenRange(first).start, end: title.range.end });
             song.comments.push(...pending);
             pending = [];
             if (line.comment !== null) {
@@ -281,11 +379,66 @@ export function parseSong(tokens: LyricsToken[]): SongNode {
             }
             currentStanza = {
                 title,
+                metadata: emptyStanzaMetadata(),
                 comments: [...pending],
                 verses: [],
                 range: { start: tokenRange(first).start, end: title.range.end }
             };
             pending = [];
+            if (line.comment !== null) {
+                currentStanza.comments.push(line.comment);
+            }
+            if (line.endedBy === 'stanza-end') {
+                closeCurrentStanza();
+            }
+            continue;
+        }
+
+        if (isMetadataLine(line.tokens)) {
+            const { scope, entry } = parseMetadataEntry(line.tokens);
+
+            if (scope === 'song') {
+                if (currentStanza !== null || song.stanzas.length > 0) {
+                    throw new LyricsParseError(
+                        `Song metadata "${entry.key}" must sit in the song header, above the first stanza`,
+                        entry.keyRange.start.line,
+                        entry.keyRange.start.column
+                    );
+                }
+                assignMetadata(song.metadata, entry);
+                extendSongRange(entry.range);
+                song.comments.push(...pending);
+                pending = [];
+                if (line.comment !== null) {
+                    song.comments.push(line.comment);
+                }
+                continue;
+            }
+
+            // A stanza-scoped key with no stanza open starts a new, untitled
+            // one — exactly like a bare verse line does.
+            if (currentStanza === null) {
+                currentStanza = {
+                    title: null,
+                    metadata: emptyStanzaMetadata(),
+                    comments: [...pending],
+                    verses: [],
+                    range: { ...entry.range }
+                };
+                pending = [];
+            } else {
+                if (currentStanza.verses.length > 0) {
+                    throw new LyricsParseError(
+                        `Stanza metadata "${entry.key}" must sit at the top of its stanza, above its first verse`,
+                        entry.keyRange.start.line,
+                        entry.keyRange.start.column
+                    );
+                }
+                currentStanza.comments.push(...pending);
+                pending = [];
+                currentStanza.range = { start: currentStanza.range.start, end: entry.range.end };
+            }
+            assignMetadata(currentStanza.metadata, entry);
             if (line.comment !== null) {
                 currentStanza.comments.push(line.comment);
             }
@@ -302,7 +455,13 @@ export function parseSong(tokens: LyricsToken[]): SongNode {
         }
 
         if (currentStanza === null) {
-            currentStanza = { title: null, comments: [], verses: [], range: { ...verse.range } };
+            currentStanza = {
+                title: null,
+                metadata: emptyStanzaMetadata(),
+                comments: [],
+                verses: [],
+                range: { ...verse.range }
+            };
         } else {
             currentStanza.range = { start: currentStanza.range.start, end: verse.range.end };
         }

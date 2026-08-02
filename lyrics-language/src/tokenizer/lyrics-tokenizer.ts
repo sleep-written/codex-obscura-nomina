@@ -8,7 +8,7 @@ const isSymbol = (v: string): boolean => (
     v === '-' || v === '&' || v === '|' ||
     v === '+' || v === '_' ||
     v === '%' || v === '/' ||
-    v === '#'
+    v === '#' || v === ':'
 );
 
 /**
@@ -79,6 +79,9 @@ class CommentFactory implements TokenFactory {
  * - `+` / `_` activate/deactivate diéresis.
  * - `%` / `/` activate/deactivate sinéresis.
  * - `#` marks a song title; `##` (or more) marks a stanza title.
+ * - `:` separates a metadata key from its value. Purely lexical here: the
+ *   parser is what decides that a `:` is only meaningful as the second token
+ *   of a header line, and rejects it anywhere else (see `parser.ts`).
  * - `//` starts a comment that runs until the next `\n`.
  * - `\n` ends a verse; `\n{2,}` ends a stanza.
  */
@@ -93,6 +96,7 @@ export const lyricsTokenFactories = {
     'diaeresis-off': classFactory(v => v === '_'),
     'synaeresis-on': classFactory(v => v === '%'),
     'synaeresis-off': classFactory(v => v === '/'),
+    'metadata-separator': classFactory(v => v === ':'),
 
     'song-title-marker': {
         close: (next?: string) => next === '#',

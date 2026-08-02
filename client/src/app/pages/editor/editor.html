@@ -1,27 +1,5 @@
 <mat-toolbar class="editor__bar">
   <span class="editor__brand">Codex<b>Obscura</b>Nomina</span>
-
-  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="editor__title">
-    <mat-label>Título de la canción</mat-label>
-    <input matInput [value]="song().title" (input)="onTitle($any($event.target).value)" />
-  </mat-form-field>
-
-  <button mat-icon-button aria-label="Limpiar" title="Borrar toda la canción" (click)="onClear()">
-    <mat-icon>delete_sweep</mat-icon>
-  </button>
-  <button mat-icon-button aria-label="Cargar .lyrics" title="Cargar .lyrics" (click)="fileInput.click()">
-    <mat-icon>folder_open</mat-icon>
-  </button>
-  <button mat-icon-button aria-label="Guardar .lyrics" title="Guardar .lyrics" (click)="onSave()">
-    <mat-icon>save</mat-icon>
-  </button>
-  <input
-    #fileInput
-    type="file"
-    accept=".lyrics,text/plain"
-    hidden
-    (change)="onLoad($event)"
-  />
 </mat-toolbar>
 
 <div class="editor__page">
@@ -33,7 +11,26 @@
   </p>
 
   <div class="editor__stanzas">
+    <app-song-metadata-card
+      [title]="song().title"
+      [metadata]="song().metadata"
+      (titleChanged)="onTitle($event)"
+      (changed)="store.setMetadata($event)"
+      (cleared)="onClear()"
+      (saved)="onSave()"
+      (fileChosen)="onLoad($event)"
+    />
+
     @for (stanza of song().stanzas; track stanza.id) {
+      <button
+        mat-button
+        class="editor__insert"
+        [attr.aria-label]="'Insertar una estrofa antes de la ' + ($index + 1)"
+        (click)="store.addStanzaBefore(stanza.id)">
+        <mat-icon>add</mat-icon>
+        Insertar estrofa aquí
+      </button>
+
       <app-stanza-card
         [stanza]="stanza"
         [position]="$index + 1"

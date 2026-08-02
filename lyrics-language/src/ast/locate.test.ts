@@ -49,6 +49,43 @@ describe('locate', () => {
         }
     });
 
+    it('tells a metadata key apart from its value', (t: it.TestContext) => {
+        const song = parseLyrics('artist: Avalanch\nnie-go\n');
+        // "artist" spans columns 1-7 (exclusive); "Avalanch" starts at column 9.
+        const onKey = locate(song, { line: 1, column: 3 });
+        const onValue = locate(song, { line: 1, column: 10 });
+
+        t.assert.strictEqual(onKey.kind, 'metadata');
+        if (onKey.kind === 'metadata') {
+            t.assert.strictEqual(onKey.part, 'key');
+            t.assert.strictEqual(onKey.entry.key, 'artist');
+            t.assert.strictEqual(onKey.owner, 'song');
+        }
+
+        t.assert.strictEqual(onValue.kind, 'metadata');
+        if (onValue.kind === 'metadata') {
+            t.assert.strictEqual(onValue.part, 'value');
+            t.assert.strictEqual(onValue.entry.value, 'Avalanch');
+        }
+    });
+
+    it('finds a stanza\'s metadata entry', (t: it.TestContext) => {
+        const song = parseLyrics('## Coro\ndesiredLength: 8\nnie-go\n');
+        const result = locate(song, { line: 2, column: 2 });
+
+        t.assert.strictEqual(result.kind, 'metadata');
+        if (result.kind === 'metadata') {
+            t.assert.strictEqual(result.entry.key, 'desiredLength');
+            t.assert.strictEqual(result.entry.value, 8);
+            t.assert.strictEqual(result.owner, 'stanza');
+        }
+    });
+
+    it('returns "none" on the ":" separating a key from its value', (t: it.TestContext) => {
+        const song = parseLyrics('artist: Avalanch\nnie-go\n');
+        t.assert.strictEqual(locate(song, { line: 1, column: 7 }).kind, 'none');
+    });
+
     it('returns "none" for a position outside any node (e.g. past end of file)', (t: it.TestContext) => {
         const song = parseLyrics('nie-go\n');
         const result = locate(song, { line: 99, column: 1 });

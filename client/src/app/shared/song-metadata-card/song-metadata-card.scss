@@ -1,0 +1,84 @@
+@use 'breakpoints' as bp;
+
+.meta {
+  overflow: hidden;
+}
+
+// Mismo encabezado que `stanza-card`: las dos son fichas de la misma pila.
+.meta__head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  background-color: var(--mat-sys-surface-container-low);
+}
+
+.meta__icon {
+  flex: none;
+  color: var(--mat-sys-primary);
+}
+
+.meta__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font: var(--mat-sys-title-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta__count {
+  flex: none;
+  font-family: var(--app-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mat-sys-outline);
+}
+
+// Acciones de la canción entera (limpiar / cargar / guardar): viven aquí y no
+// en la toolbar porque operan sobre el archivo que esta card encabeza.
+.meta__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-right: -0.5rem; // compensa el padding propio del último mat-icon-button
+}
+
+.meta__body {
+  display: grid;
+  gap: 0 1rem;
+  grid-template-columns: 1fr;
+  padding-top: 1rem;
+
+  @include bp.wide {
+    // Seis columnas para poder partir la reja en mitades y en tercios sin
+    // fijar anchos: una fila de dos campos y otra de tres.
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+// Un tercio de la reja: los campos que caben en la fila de tres.
+.meta__field {
+  width: 100%;
+
+  @include bp.wide {
+    grid-column: span 2;
+  }
+}
+
+// Reja completa: el título de la canción, que encabeza el formulario.
+.meta__field--full {
+  @include bp.wide {
+    grid-column: 1 / -1;
+  }
+}
+
+// Media reja: los dos campos de "artista", que son los nombres más largos.
+.meta__field--wide {
+  @include bp.wide {
+    grid-column: span 3;
+  }
+}

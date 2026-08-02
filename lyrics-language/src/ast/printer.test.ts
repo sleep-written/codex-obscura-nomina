@@ -116,6 +116,60 @@ describe('printLyrics', () => {
         t.assert.strictEqual(printLyrics(song), '');
     });
 
+    describe('metadata', () => {
+        it('prints the song header block under the title, in source order', (t: it.TestContext) => {
+            assertPrintsExactly(t, [
+                '# Torquemada',
+                'artist: Avalanch',
+                'album: Llanto De Un Héroe',
+                'albumArtist: Avalanch',
+                'albumYear: 1999',
+                'trackNumber: 2',
+                'La|i-gle-si_a',
+                ''
+            ].join('\n'));
+        });
+
+        it('prints a stanza\'s desiredLength between its title and its first verse', (t: it.TestContext) => {
+            assertPrintsExactly(t, '## Coro\ndesiredLength: 8\nnie-go\n');
+        });
+
+        it('prints a header with metadata but no title', (t: it.TestContext) => {
+            assertPrintsExactly(t, 'artist: Avalanch\nnie-go\n');
+        });
+
+        it('keeps comments interleaved in the metadata block where they were written', (t: it.TestContext) => {
+            assertPrintsExactly(t, [
+                '// arriba de todo',
+                '# Torquemada',
+                '// del disco',
+                'artist: Avalanch // la banda',
+                'albumYear: 1999',
+                'nie-go',
+                ''
+            ].join('\n'));
+        });
+
+        it('emits entries in canonical key order when every range is synthetic', (t: it.TestContext) => {
+            const song = parseLyrics('# Torquemada\nnie-go\n');
+            const synthetic = { start: { line: 99, column: 1 }, end: { line: 99, column: 1 } };
+
+            song.metadata.trackNumber = {
+                key: 'trackNumber', value: 2,
+                keyRange: synthetic, valueRange: synthetic, range: synthetic
+            };
+            song.metadata.artist = {
+                key: 'artist', value: 'Avalanch',
+                keyRange: synthetic, valueRange: synthetic, range: synthetic
+            };
+
+            t.assert.strictEqual(
+                printLyrics(song),
+                '# Torquemada\nartist: Avalanch\ntrackNumber: 2\nnie-go\n'
+            );
+        });
+    });
+
     it('round-trips the delirio-en-hyrule fixture byte-for-byte', async (t: it.TestContext) => {
         const fixturePath = fileURLToPath(new URL('../../fixtures/delirio-en-hyrule.lyrics', import.meta.url));
         const source = await readFile(fixturePath, 'utf-8');
@@ -152,6 +206,11 @@ describe('printPlainLyrics', () => {
     it('preserves titles and comments', (t: it.TestContext) => {
         const source = '// nota\n## Estrofa\nnie-go // otra\n';
         t.assert.strictEqual(printPlainLyrics(parseLyrics(source)), '// nota\n## Estrofa\nniego // otra\n');
+    });
+
+    it('preserves metadata, which plain text can express verbatim', (t: it.TestContext) => {
+        const source = '# Torquemada\nartist: Avalanch\n## Coro\ndesiredLength: 8\nnie-go\n';
+        t.assert.strictEqual(printPlainLyrics(parseLyrics(source)), source.replace('nie-go', 'niego'));
     });
 
     it('separates stanzas by exactly one blank line', (t: it.TestContext) => {
