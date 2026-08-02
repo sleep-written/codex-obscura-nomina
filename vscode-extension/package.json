@@ -32,6 +32,34 @@
                 "scopeName": "source.lyrics",
                 "path": "./syntaxes/lyrics.tmLanguage.json"
             }
+        ],
+        "commands": [
+            {
+                "command": "lyrics.annotate",
+                "title": "Anotar texto plano",
+                "category": "Lyrics"
+            },
+            {
+                "command": "lyrics.toggleMarker",
+                "title": "Alternar alteración (+/_, %//, &/espacio)",
+                "category": "Lyrics"
+            }
+        ],
+        "menus": {
+            "commandPalette": [
+                { "command": "lyrics.annotate", "when": "editorLangId == lyrics" },
+                { "command": "lyrics.toggleMarker", "when": "editorLangId == lyrics" }
+            ],
+            "editor/context": [
+                { "command": "lyrics.annotate", "when": "editorLangId == lyrics", "group": "1_lyrics" }
+            ]
+        },
+        "keybindings": [
+            {
+                "command": "lyrics.toggleMarker",
+                "key": "alt+t",
+                "when": "editorTextFocus && editorLangId == lyrics"
+            }
         ]
     },
     "scripts": {

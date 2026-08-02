@@ -2,34 +2,40 @@ import * as vscode from 'vscode';
 import { locate, type AlterableMarker } from '@codex-obscura-nomina/lyrics-language';
 import { getParsed } from '../document-store.js';
 import { toLyricsPosition, toVscodeRange } from '../position.js';
+import { describeMarkerState, toggleSymbol } from '../markers.js';
 
-const MARKER_DESCRIPTIONS: Record<`${AlterableMarker['kind']}:${'true' | 'false'}`, string> = {
-    'diaeresis:true': 'Diéresis activada (`+`) — separa el par vocálico en dos sílabas.',
-    'diaeresis:false': 'Diéresis desactivada (`_`) — el par vocálico queda en una sola sílaba.',
-    'synaeresis:true': 'Sinéresis activada (`%`) — el par vocálico queda en una sola sílaba.',
-    'synaeresis:false': 'Sinéresis desactivada (`/`) — separa el par vocálico en dos sílabas.',
-    'sinalefa:true': 'Sinalefa activada (`&`) — funde esta palabra con la siguiente en una sola sílaba métrica.',
-    'sinalefa:false': 'Sinalefa desactivada (espacio) — esta palabra no se funde con la siguiente.'
-};
-
-function describeMarker(marker: AlterableMarker): string {
-    return MARKER_DESCRIPTIONS[`${marker.kind}:${marker.active}`];
+/**
+ * Builds the hover content for an `AlterableMarker`: its current-state
+ * description, plus a `command:` link that drives `lyrics.toggleMarker` —
+ * this is the "click on an alteration to flip it" entry point. Only offers
+ * the SAME kind's opposite symbol (`+`↔`_`, `%`↔`/`, `&`↔space) — diéresis
+ * and sinéresis are different phenomena in the DSL, so this deliberately
+ * never suggests crossing from one to the other. `isTrusted` is required
+ * for VSCode to honor `command:` links from a hover. The command re-locates
+ * the marker from `position` at click time (see `commands/toggle-marker.ts`)
+ * rather than receiving it serialized here, so a stale hover can't act on
+ * an outdated AST.
+ */
+function markerHover(marker: AlterableMarker, position: vscode.Position): vscode.MarkdownString {
+    const args = encodeURIComponent(JSON.stringify([{ line: position.line, character: position.character }]));
+    const md = new vscode.MarkdownString(describeMarkerState(marker.kind, marker.active));
+    md.isTrusted = true;
+    md.appendMarkdown(`\n\n[Cambiar a \`${toggleSymbol(marker)}\`](command:lyrics.toggleMarker?${args})`);
+    return md;
 }
 
 export class LyricsHoverProvider implements vscode.HoverProvider {
     provideHover(document: vscode.TextDocument, position: vscode.Position): vscode.Hover | undefined {
-        const { song, error } = getParsed(document);
+        const { song } = getParsed(document);
         if (song === null) {
-            if (error !== null && error.line === position.line + 1 && error.column === position.character + 1) {
-                return new vscode.Hover(`Parse error: ${error.message}`);
-            }
+            // No hover for a parse error — see diagnostics.ts, which surfaces it as a squiggle instead.
             return undefined;
         }
 
         const result = locate(song, toLyricsPosition(position));
         switch (result.kind) {
             case 'marker':
-                return new vscode.Hover(describeMarker(result.marker), toVscodeRange(result.marker.range));
+                return new vscode.Hover(markerHover(result.marker, position), toVscodeRange(result.marker.range));
             case 'comment':
                 return new vscode.Hover(`Comentario (${result.owner})`, toVscodeRange(result.comment.range));
             case 'title':
