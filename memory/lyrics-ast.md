@@ -7,7 +7,7 @@ metadata:
 
 `./lyrics-language/src/ast/` implementa el feature "ast": consume el `Token[]` que produce [[lyrics-tokenizer]] y construye un árbol (`SongNode`) que el frontend "tonto" (ver [[lyrics-app-architecture]]) puede renderizar directamente, sin interpretar símbolos, y que también sirve de base para IntelliSense en editores (ver [[vscode-extension]]).
 
-**Alcance:** cubre el camino `.lyrics` (ya anotado) → AST vía `parseLyrics`. El camino texto-plano → AST vive en `parsePlainLyrics` (ver [[lyrics-phonetics]]), que reutiliza `parseSong` sin modificarlo — traduce texto plano a un `LyricsToken[]` equivalente en vez de construir el `SongNode` por su cuenta.
+**Alcance:** cubre el camino `.lyrics` (ya anotado) → AST vía `parseLyrics`. El camino texto-plano → AST vive en `parsePlainLyrics` (ver [[lyrics-phonetics]]), que reutiliza `parseSong` sin modificarlo — traduce texto plano a un `LyricsToken[]` equivalente en vez de construir el `SongNode` por su cuenta. El camino inverso, AST → `.lyrics` vía `printLyrics`, vive en `printer.ts` dentro de este mismo folder — ver [[lyrics-printer]].
 
 **Estructura:**
 - `interfaces/position.ts` — `Position` (`{ line, column }`, 1-indexado, misma convención que `Token.line`/`Token.column`) y `Range` (`{ start, end }`, `start` inclusivo, `end` exclusivo — una columna después del último grafema).
