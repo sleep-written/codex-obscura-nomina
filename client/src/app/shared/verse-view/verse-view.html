@@ -1,0 +1,18 @@
+<div class="verse">
+  @for (piece of pieces(); track $index) {
+    @switch (piece.kind) {
+      @case ('text') { <span class="verse__text">{{ piece.text }}</span> }
+      @case ('separator') { <span class="verse__sep">-</span> }
+      @case ('marker') {
+        <button
+          type="button"
+          class="verse__marker"
+          [class.verse__marker--active]="piece.marker.active"
+          [attr.data-kind]="piece.marker.kind"
+          [attr.aria-pressed]="piece.marker.active"
+          [attr.aria-label]="piece.marker.kind"
+          (click)="toggle(piece.marker)">{{ piece.symbol }}</button>
+      }
+    }
+  }
+</div>

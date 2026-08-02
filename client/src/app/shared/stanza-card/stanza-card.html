@@ -1,0 +1,40 @@
+<mat-card class="stanza">
+  <mat-card-content class="stanza__body">
+    <div class="stanza__input">
+      <mat-form-field appearance="outline" class="stanza__field">
+        <mat-label>Nombre de la estrofa</mat-label>
+        <input
+          matInput
+          [value]="stanza().titleText"
+          (input)="titleChanged.emit($any($event.target).value)" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="stanza__field">
+        <mat-label>Letra</mat-label>
+        <textarea
+          matInput
+          cdkTextareaAutosize
+          cdkAutosizeMinRows="4"
+          [value]="stanza().rawText"
+          (input)="textChanged.emit($any($event.target).value)"></textarea>
+      </mat-form-field>
+
+      @if (stanza().error; as error) {
+        <p class="stanza__error">{{ error }}</p>
+      }
+
+      <button mat-button (click)="removed.emit()">
+        <mat-icon>delete</mat-icon>
+        Eliminar estrofa
+      </button>
+    </div>
+
+    <div class="stanza__verses">
+      @for (verse of stanza().node.verses; track verse) {
+        <app-verse-view [verse]="verse" (changed)="versesChanged.emit()" />
+      } @empty {
+        <p class="stanza__empty">Escribe la letra para ver las sílabas.</p>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>

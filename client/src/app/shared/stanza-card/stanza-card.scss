@@ -1,0 +1,35 @@
+@use 'breakpoints' as bp;
+
+.stanza__body {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+
+  @include bp.wide {
+    grid-template-columns: 1fr 2fr;
+    align-items: start;
+  }
+}
+
+.stanza__input {
+  display: flex;
+  flex-direction: column;
+}
+
+.stanza__field {
+  width: 100%;
+}
+
+.stanza__error {
+  color: var(--mat-sys-error);
+}
+
+.stanza__verses {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stanza__empty {
+  color: var(--mat-sys-outline);
+}

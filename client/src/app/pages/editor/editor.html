@@ -1,0 +1,40 @@
+<mat-toolbar class="editor__bar">
+  <mat-form-field appearance="outline" class="editor__title">
+    <mat-label>Título de la canción</mat-label>
+    <input matInput [value]="song().title" (input)="onTitle($any($event.target).value)" />
+  </mat-form-field>
+
+  <button mat-icon-button aria-label="Limpiar" (click)="onClear()">
+    <mat-icon>delete_sweep</mat-icon>
+  </button>
+  <button mat-icon-button aria-label="Cargar .lyrics" (click)="fileInput.click()">
+    <mat-icon>folder_open</mat-icon>
+  </button>
+  <button mat-icon-button aria-label="Guardar .lyrics" (click)="onSave()">
+    <mat-icon>save</mat-icon>
+  </button>
+  <input
+    #fileInput
+    type="file"
+    accept=".lyrics,text/plain"
+    hidden
+    (change)="onLoad($event)"
+  />
+</mat-toolbar>
+
+<div class="editor__stanzas">
+  @for (stanza of song().stanzas; track stanza.id) {
+    <app-stanza-card
+      [stanza]="stanza"
+      (titleChanged)="store.setStanzaTitle(stanza.id, $event)"
+      (textChanged)="store.setStanzaText(stanza.id, $event)"
+      (versesChanged)="store.markVersesChanged()"
+      (removed)="store.removeStanza(stanza.id)"
+    />
+  }
+
+  <button mat-fab extended (click)="store.addStanza()">
+    <mat-icon>add</mat-icon>
+    Agregar estrofa
+  </button>
+</div>

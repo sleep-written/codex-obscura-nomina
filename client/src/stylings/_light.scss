@@ -1,0 +1,10 @@
+@use '@angular/material' as mat;
+
+@mixin colors {
+  @include mat.theme-overrides((
+    // primary:   #......,
+    // secondary: #......,
+    // tertiary:  #......,
+    // error:     #......,
+  ));
+}

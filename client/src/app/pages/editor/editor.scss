@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+.editor__bar {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  row-gap: 0.25rem;
+  height: auto;
+  padding-block: 0.5rem;
+}
+
+.editor__title {
+  flex: 1 1 12rem;
+}
+
+.editor__stanzas {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}

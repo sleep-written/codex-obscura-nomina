@@ -1,0 +1,27 @@
+.verse {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+.verse__marker {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  min-width: 1.75rem;
+  min-height: 1.75rem;
+  cursor: pointer;
+  color: var(--mat-sys-outline);
+  font: inherit;
+
+  &.verse__marker--active {
+    color: var(--mat-sys-primary);
+  }
+
+  &[data-kind='sinalefa']:not(.verse__marker--active) {
+    min-width: 1rem;
+    border-bottom: 1px dotted var(--mat-sys-outline-variant);
+  }
+}
