@@ -192,7 +192,13 @@
   background-color: var(--mat-sys-tertiary);
 }
 
+// Reservado para el caso más ancho ("10–13"): sin esto la etiqueta mide según
+// su contenido, y como `.meter__track` es el `flex: 1 1 auto` de la fila, un
+// verso con rango de dos dígitos encogía su barra respecto a las de al lado
+// —justo lo que hace incomparables dos barras de la misma estrofa—. En `ch`
+// porque la fuente es monoespaciada, así que la cuenta es exacta.
 .meter__range {
+  min-width: 5.5ch;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
