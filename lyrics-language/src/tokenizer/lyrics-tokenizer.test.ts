@@ -41,11 +41,52 @@ describe('lyricsTokenizer', () => {
         ]);
     });
 
-    it('recognizes a stanza title ("#Título")', (t: it.TestContext) => {
+    it('recognizes a song title ("#Título")', (t: it.TestContext) => {
         const tokens = lyricsTokenizer.tokenize('#Título');
         t.assert.deepStrictEqual(tokens, [
-            { type: 'stanza-title', value: '#',      line: 1, column: 1, length: 1 },
-            { type: 'text',         value: 'Título', line: 1, column: 2, length: 6 }
+            { type: 'song-title-marker', value: '#',      line: 1, column: 1, length: 1 },
+            { type: 'text',              value: 'Título', line: 1, column: 2, length: 6 }
+        ]);
+    });
+
+    it('recognizes a stanza title ("##Título")', (t: it.TestContext) => {
+        const tokens = lyricsTokenizer.tokenize('##Título');
+        t.assert.deepStrictEqual(tokens, [
+            { type: 'stanza-title-marker', value: '##',     line: 1, column: 1, length: 2 },
+            { type: 'text',                value: 'Título', line: 1, column: 3, length: 6 }
+        ]);
+    });
+
+    it('recognizes a standalone comment ("// nota suelta\\nb")', (t: it.TestContext) => {
+        const tokens = lyricsTokenizer.tokenize('// nota suelta\nb');
+        t.assert.deepStrictEqual(tokens, [
+            { type: 'comment',   value: '// nota suelta', line: 1, column: 1,  length: 14 },
+            { type: 'verse-end', value: '\n',              line: 1, column: 15, length: 1 },
+            { type: 'text',      value: 'b',                line: 2, column: 1,  length: 1 }
+        ]);
+    });
+
+    it('recognizes a trailing comment after content ("a-ho-ra // nota")', (t: it.TestContext) => {
+        const tokens = lyricsTokenizer.tokenize('a-ho-ra // nota');
+        t.assert.deepStrictEqual(tokens, [
+            { type: 'text',               value: 'a',        line: 1, column: 1,  length: 1 },
+            { type: 'syllable-separator', value: '-',        line: 1, column: 2,  length: 1 },
+            { type: 'text',               value: 'ho',       line: 1, column: 3,  length: 2 },
+            { type: 'syllable-separator', value: '-',        line: 1, column: 5,  length: 1 },
+            { type: 'text',               value: 'ra',       line: 1, column: 6,  length: 2 },
+            { type: 'word-separator',     value: ' ',        line: 1, column: 8,  length: 1 },
+            { type: 'comment',            value: '// nota',  line: 1, column: 9,  length: 7 }
+        ]);
+    });
+
+    it('does not confuse a lone synaeresis-off slash with a comment ("a/ho-ra")', (t: it.TestContext) => {
+        const tokens = lyricsTokenizer.tokenize('a/ho-ra');
+        t.assert.deepStrictEqual(tokens, [
+            { type: 'text',               value: 'a',   line: 1, column: 1, length: 1 },
+            { type: 'synaeresis-off',     value: '/',   line: 1, column: 2, length: 1 },
+            { type: 'text',               value: 'ho',  line: 1, column: 3, length: 2 },
+            { type: 'syllable-separator', value: '-',   line: 1, column: 5, length: 1 },
+            { type: 'text',               value: 'ra',  line: 1, column: 6, length: 2 }
         ]);
     });
 

@@ -10,6 +10,7 @@
         }
     },
     "scripts": {
+        "e2e": "bleed start ./src/index.e2e.ts",
         "test": "node --import @bleed-believer/cli --test --",
         "build": "node --run build:clear && node --run build:source && node --run build:*.d.ts",
         "build:clear": "rm -rf ./dist",

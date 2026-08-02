@@ -1,3 +1,4 @@
-- [Lyrics language DSL](memory/lyrics-language-dsl.md) — especificación de símbolos del DSL de ./lyrics-language (sinalefa/diéresis/sinéresis, alcance solo español, marcado obligatorio)
+- [Lyrics language DSL](memory/lyrics-language-dsl.md) — especificación de símbolos del DSL de ./lyrics-language (sinalefa/diéresis/sinéresis, título canción `#`/estrofa `##`, comentarios `//`, alcance solo español)
 - [Lyrics tokenizer](memory/lyrics-tokenizer.md) — implementación del tokenizer de archivos .lyrics en ./lyrics-language
+- [Lyrics AST](memory/lyrics-ast.md) — parser tokens→AST (Song/Stanza/Verse/Word/Syllable) en ./lyrics-language, feature `ast`
 - [Lyrics app architecture](memory/lyrics-app-architecture.md) — scope de la app (textarea + cards), frontend "tonto" que solo renderiza un AST, por qué el .lyrics debe ser autocontenido
