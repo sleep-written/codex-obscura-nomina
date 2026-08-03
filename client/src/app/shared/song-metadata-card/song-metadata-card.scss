@@ -38,8 +38,14 @@
   color: var(--mat-sys-outline);
 }
 
-// Acciones de la canción entera (limpiar / cargar / guardar): viven aquí y no
-// en la toolbar porque operan sobre el archivo que esta card encabeza.
+// Estado del guardado: ocupa el sitio del contador de metadata, que es
+// información de sobra mientras haya algo pendiente de guardar.
+.meta__count--dirty {
+  color: var(--mat-sys-tertiary);
+}
+
+// Acciones de la canción entera (limpiar / exportar / guardar): viven aquí y
+// no en la toolbar porque operan sobre la canción que esta card encabeza.
 .meta__actions {
   display: flex;
   flex: none;

@@ -1,0 +1,40 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.bar {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  row-gap: 0.25rem;
+  height: auto;
+  padding-block: 0.5rem;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  background-color: var(--mat-sys-surface-container);
+}
+
+.bar__back {
+  flex: none;
+  margin-left: -0.5rem; // compensa el padding propio del mat-icon-button
+  color: var(--mat-sys-outline);
+}
+
+.bar__brand {
+  flex: none;
+  font-family: var(--app-font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mat-sys-outline);
+
+  b {
+    color: var(--mat-sys-primary);
+    font-weight: 500;
+  }
+}
+
+.bar__spacer {
+  flex: 1 1 auto;
+}

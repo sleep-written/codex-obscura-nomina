@@ -1,6 +1,4 @@
-<mat-toolbar class="editor__bar">
-  <span class="editor__brand">Codex<b>Obscura</b>Nomina</span>
-</mat-toolbar>
+<app-app-bar back="/songs" />
 
 <div class="editor__page">
   <p class="editor__legend">
@@ -14,11 +12,12 @@
     <app-song-metadata-card
       [title]="song().title"
       [metadata]="song().metadata"
+      [dirty]="store.dirty()"
       (titleChanged)="onTitle($event)"
       (changed)="store.setMetadata($event)"
       (cleared)="onClear()"
       (saved)="onSave()"
-      (fileChosen)="onLoad($event)"
+      (exported)="onExport()"
     />
 
     @for (stanza of song().stanzas; track stanza.id) {

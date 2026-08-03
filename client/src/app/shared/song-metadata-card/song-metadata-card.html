@@ -3,31 +3,33 @@
     <mat-icon class="meta__icon">album</mat-icon>
     <h2 class="meta__name">{{ title().trim() || 'Canción sin nombre' }}</h2>
 
-    <span class="meta__count">
-      @if (filled() === 0) {
-        sin datos del disco
-      } @else {
-        {{ filled() }} de 5
-      }
-    </span>
+    @if (dirty()) {
+      <span class="meta__count meta__count--dirty">sin guardar</span>
+    } @else {
+      <span class="meta__count">
+        @if (filled() === 0) {
+          sin datos del disco
+        } @else {
+          {{ filled() }} de 5
+        }
+      </span>
+    }
 
     <div class="meta__actions">
       <button mat-icon-button aria-label="Limpiar" title="Borrar toda la canción" (click)="cleared.emit()">
         <mat-icon>delete_sweep</mat-icon>
       </button>
-      <button mat-icon-button aria-label="Cargar .lyrics" title="Cargar .lyrics" (click)="fileInput.click()">
-        <mat-icon>folder_open</mat-icon>
+      <button mat-icon-button aria-label="Exportar .lyrics" title="Exportar como archivo .lyrics" (click)="exported.emit()">
+        <mat-icon>download</mat-icon>
       </button>
-      <button mat-icon-button aria-label="Guardar .lyrics" title="Guardar .lyrics" (click)="saved.emit()">
+      <button
+        mat-icon-button
+        aria-label="Guardar"
+        [title]="dirty() ? 'Guardar en el navegador' : 'Sin cambios que guardar'"
+        [disabled]="!dirty()"
+        (click)="saved.emit()">
         <mat-icon>save</mat-icon>
       </button>
-      <input
-        #fileInput
-        type="file"
-        accept=".lyrics,text/plain"
-        hidden
-        (change)="onFile($event)"
-      />
     </div>
   </header>
 

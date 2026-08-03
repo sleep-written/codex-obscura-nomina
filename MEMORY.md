@@ -9,4 +9,5 @@
 - [VSCode extension](memory/vscode-extension.md) — hover/outline/completion/formatting/diagnósticos/toggle+anotar (escritura) + syntax highlighting, en ./vscode-extension
 - [Client architecture](memory/client-architecture.md) — estructura del cliente Angular 22 en ./client (pages/shared/stylings, rutas lazy, tema claro-oscuro, breakpoint por ancho, dependencia `file:`)
 - [Client editor state](memory/client-editor-state.md) — modelo de estado del editor: rawText vs AST, reconciliación por verso que preserva las alteraciones, y por qué el printer tolera estrofas parseadas por separado
+- [Client song library](memory/client-song-library.md) — varias canciones en el navegador: biblioteca vs. borrador (dos claves de localStorage), guardado explícito con `currentId`/`dirty`, y duplicados al importar
 - [Client notes UI](memory/client-notes-ui.md) — lenguaje visual del editor: ficha por nota, ligadura/`~` para las alteraciones, barra de elasticidad por verso y objetivo por estrofa

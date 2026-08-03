@@ -1,0 +1,17 @@
+<mat-toolbar class="bar">
+  @if (back(); as route) {
+    <button
+      mat-icon-button
+      class="bar__back"
+      aria-label="Volver"
+      title="Volver"
+      [routerLink]="route">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  }
+
+  <span class="bar__brand">Codex<b>Obscura</b>Nomina</span>
+
+  <span class="bar__spacer"></span>
+  <ng-content />
+</mat-toolbar>

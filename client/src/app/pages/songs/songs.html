@@ -1,0 +1,86 @@
+<app-app-bar />
+
+<div class="songs__page">
+  <header class="songs__head">
+    <h1 class="songs__title">Mis canciones</h1>
+
+    <div class="songs__head-actions">
+      <button mat-button (click)="fileInput.click()">
+        <mat-icon>folder_open</mat-icon>
+        Importar .lyrics
+      </button>
+      <button mat-flat-button (click)="onNew()">
+        <mat-icon>add</mat-icon>
+        Nueva canción
+      </button>
+      <input
+        #fileInput
+        type="file"
+        accept=".lyrics,text/plain"
+        hidden
+        (change)="onImport($event)"
+      />
+    </div>
+  </header>
+
+  @if (store.hasUnsavedWork()) {
+    <mat-card class="draft" appearance="outlined">
+      <div class="draft__body">
+        <mat-icon class="draft__icon">edit_note</mat-icon>
+        <div class="draft__text">
+          <b>Cambios sin guardar</b>
+          <span class="draft__name">«{{ draftTitle() }}»</span>
+        </div>
+      </div>
+      <div class="draft__actions">
+        <button mat-button (click)="onDiscard()">Descartar</button>
+        <button mat-flat-button (click)="onContinue()">Continuar editando</button>
+      </div>
+    </mat-card>
+  }
+
+  @if (songs().length === 0) {
+    <p class="songs__empty">
+      Todavía no has guardado ninguna canción. Empieza una nueva o importa un archivo
+      <code>.lyrics</code> que ya tengas: lo que guardes se queda en este navegador.
+    </p>
+  } @else {
+    <ul class="songs__list">
+      @for (song of songs(); track song.id) {
+        <li>
+          <mat-card class="song" appearance="outlined">
+            <button class="song__open" type="button" (click)="onOpen(song.id)">
+              <span class="song__title">{{ song.title }}</span>
+              <span class="song__details">{{ song.details }}</span>
+              <span class="song__date">guardada el {{ song.savedAt }}</span>
+            </button>
+
+            <div class="song__actions">
+              <button
+                mat-icon-button
+                aria-label="Exportar .lyrics"
+                title="Exportar como archivo .lyrics"
+                (click)="onExport(song.id)">
+                <mat-icon>download</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                aria-label="Duplicar"
+                title="Duplicar"
+                (click)="onDuplicate(song.id)">
+                <mat-icon>content_copy</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                aria-label="Eliminar"
+                title="Eliminar"
+                (click)="onDelete(song)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-card>
+        </li>
+      }
+    </ul>
+  }
+</div>

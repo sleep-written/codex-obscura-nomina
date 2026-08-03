@@ -1,15 +1,12 @@
-import { Injectable, effect, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import type { Range, StanzaNode } from '@codex-obscura-nomina/lyrics-language';
-import {
-  LyricsParseError,
-  emptyStanzaMetadata,
-  parseLyrics,
-  printLyrics,
-} from '@codex-obscura-nomina/lyrics-language';
+import { LyricsParseError, emptyStanzaMetadata } from '@codex-obscura-nomina/lyrics-language';
 import { parseStanzaText } from '../lyrics/parse-stanza-text';
 import { reconcileVerses } from '../lyrics/reconcile-verses';
-import { fromSongNode, normalizeDraft, toSongNode } from '../lyrics/song-node';
-import { DraftStorage } from '../services/draft-storage';
+import { normalizeDraft } from '../lyrics/song-node';
+import { JsonStorage } from '../services/json-storage';
+import { toLyricsText } from './song-file';
+import { SongLibrary } from './song-library';
 import type { SongMetadataVm, SongVm, StanzaVm } from './song-vm';
 import { emptySongMetadataVm } from './song-vm';
 
@@ -17,6 +14,19 @@ const DRAFT_KEY = 'codex-obscura-nomina:song:v1';
 
 /** Rango sintético para una estrofa creada vacía desde la UI, sin AST previo. */
 const EMPTY_RANGE: Range = { start: { line: 1, column: 1 }, end: { line: 1, column: 1 } };
+
+/** El trabajo en curso: qué canción se edita y si difiere de lo guardado. */
+interface Draft {
+  song: SongVm;
+  currentId: string | null;
+  dirty: boolean;
+}
+
+/**
+ * Lo que puede haber bajo `DRAFT_KEY`. Antes de la biblioteca el borrador era
+ * un `SongVm` pelado, y esos siguen ahí: `readDraft` distingue las dos formas.
+ */
+type StoredDraft = Partial<Draft> & Partial<SongVm>;
 
 function emptyStanzaVm(): StanzaVm {
   const node: StanzaNode = {
@@ -33,30 +43,82 @@ function emptySong(): SongVm {
   return { title: '', metadata: emptySongMetadataVm(), stanzas: [] };
 }
 
+/** Una canción en la que no hay nada que perder. */
+function isEmptySong(song: SongVm): boolean {
+  return (
+    song.title.trim() === '' &&
+    song.stanzas.length === 0 &&
+    Object.values(song.metadata).every(value => value === null || value === '')
+  );
+}
+
+function readDraft(storage: JsonStorage<StoredDraft>): Draft {
+  const raw = storage.read();
+  if (raw === null) return { song: emptySong(), currentId: null, dirty: false };
+
+  // El borrador viejo no tenía `song`: era el `SongVm` entero. Se rescata como
+  // canción nueva sin guardar, que es exactamente lo que era.
+  if (raw.song === undefined) {
+    return { song: normalizeDraft(raw as Partial<SongVm>), currentId: null, dirty: true };
+  }
+  return {
+    song: normalizeDraft(raw.song),
+    currentId: raw.currentId ?? null,
+    dirty: raw.dirty ?? false,
+  };
+}
+
+/**
+ * La canción abierta en el editor. Es el documento vivo de la app: la
+ * biblioteca (`SongLibrary`) guarda versiones confirmadas, este store guarda lo
+ * que el usuario está escribiendo ahora mismo — autoguardado en su propia clave
+ * para que un F5 no cueste trabajo, pero sin tocar lo guardado hasta que se
+ * pulse Guardar.
+ */
 @Injectable({ providedIn: 'root' })
 export class SongStore {
-  private readonly draft = new DraftStorage<SongVm>(DRAFT_KEY);
-  private readonly song = signal<SongVm>(normalizeDraft(this.draft.read() ?? emptySong()));
+  private readonly library = inject(SongLibrary);
+  private readonly storage = new JsonStorage<StoredDraft>(DRAFT_KEY);
+
+  private readonly restored = readDraft(this.storage);
+  private readonly song = signal<SongVm>(this.restored.song);
+  private readonly currentIdFlag = signal<string | null>(this.restored.currentId);
+  private readonly dirtyFlag = signal<boolean>(this.restored.dirty);
 
   readonly state = this.song.asReadonly();
 
+  /** Id de la canción de la biblioteca que se edita; `null` si es nueva. */
+  readonly currentId = this.currentIdFlag.asReadonly();
+
+  /** Hay cambios posteriores al último guardado o apertura. */
+  readonly dirty = this.dirtyFlag.asReadonly();
+
+  /** Lo mismo, pero ignorando un borrador vacío: no hay nada que perder. */
+  readonly hasUnsavedWork = computed(() => this.dirtyFlag() && !isEmptySong(this.song()));
+
   constructor() {
     // Autoguardado: cualquier mutación produce una referencia nueva del
-    // estado raíz, así que basta con leer el signal.
-    effect(() => this.draft.write(this.song()));
+    // estado raíz, así que basta con leer los signals.
+    effect(() =>
+      this.storage.writeDebounced({
+        song: this.song(),
+        currentId: this.currentIdFlag(),
+        dirty: this.dirtyFlag(),
+      }),
+    );
   }
 
   setTitle(title: string): void {
-    this.song.update(s => ({ ...s, title }));
+    this.mutate(s => ({ ...s, title }));
   }
 
   /** Actualiza un campo de la metadata de la canción; el resto queda intacto. */
   setMetadata(patch: Partial<SongMetadataVm>): void {
-    this.song.update(s => ({ ...s, metadata: { ...s.metadata, ...patch } }));
+    this.mutate(s => ({ ...s, metadata: { ...s.metadata, ...patch } }));
   }
 
   addStanza(): void {
-    this.song.update(s => ({ ...s, stanzas: [...s.stanzas, emptyStanzaVm()] }));
+    this.mutate(s => ({ ...s, stanzas: [...s.stanzas, emptyStanzaVm()] }));
   }
 
   /**
@@ -65,7 +127,7 @@ export class SongStore {
    * cada inserción y la plantilla ya la identifica así.
    */
   addStanzaBefore(id: string): void {
-    this.song.update(s => {
+    this.mutate(s => {
       const at = s.stanzas.findIndex(stanza => stanza.id === id);
       if (at === -1) return s;
       return {
@@ -76,7 +138,7 @@ export class SongStore {
   }
 
   removeStanza(id: string): void {
-    this.song.update(s => ({ ...s, stanzas: s.stanzas.filter(stanza => stanza.id !== id) }));
+    this.mutate(s => ({ ...s, stanzas: s.stanzas.filter(stanza => stanza.id !== id) }));
   }
 
   setStanzaTitle(id: string, titleText: string): void {
@@ -106,23 +168,77 @@ export class SongStore {
   markVersesChanged(): void {
     // El toggle muta el AST en sitio: no hay cambio de referencia que
     // detectar, así que forzamos una nueva referencia del estado raíz.
-    this.song.update(s => ({ ...s }));
+    this.mutate(s => ({ ...s }));
   }
 
+  /** Vacía el contenido sin soltar la canción abierta: sigue siendo esa. */
   clear(): void {
-    this.song.set(emptySong());
+    this.mutate(() => emptySong());
   }
 
-  loadFromLyrics(text: string): void {
-    this.song.set(fromSongNode(parseLyrics(text)));
+  /** Empieza una canción nueva, desligada de la biblioteca. */
+  startNew(): void {
+    this.set(emptySong(), null);
+  }
+
+  /** Abre una canción guardada. `false` si el id ya no existe. */
+  open(id: string): boolean {
+    const saved = this.library.get(id);
+    if (saved === null) return false;
+    // Misma tolerancia que con el borrador: la entrada guardada es JSON crudo
+    // que pudo escribir una versión anterior del cliente.
+    this.set(normalizeDraft(saved.song), id);
+    return true;
+  }
+
+  /**
+   * Escribe la canción en la biblioteca y devuelve su id. Puede lanzar si el
+   * almacenamiento está lleno; por eso el estado se actualiza después del
+   * `put`, para no quedar marcado como guardado sin estarlo.
+   */
+  save(): string {
+    const id = this.currentIdFlag() ?? crypto.randomUUID();
+    this.library.put(id, this.song());
+    this.currentIdFlag.set(id);
+    this.dirtyFlag.set(false);
+    return id;
+  }
+
+  /**
+   * Suelta la entrada de la biblioteca sin tocar el contenido: lo que hay en
+   * el editor pasa a ser una canción nueva sin guardar. Es lo que corresponde
+   * cuando se borra de la biblioteca la canción abierta — el trabajo sigue a
+   * la vista, pero guardarlo no debe resucitar lo que el usuario eliminó.
+   */
+  detach(): void {
+    this.currentIdFlag.set(null);
+    this.dirtyFlag.set(true);
+  }
+
+  /** Tira los cambios sin guardar: vuelve a la versión guardada, o a vacío. */
+  discardChanges(): void {
+    const id = this.currentIdFlag();
+    if (id !== null && this.open(id)) return;
+    this.startNew();
   }
 
   toLyricsText(): string {
-    return printLyrics(toSongNode(this.song()));
+    return toLyricsText(this.song());
+  }
+
+  private set(song: SongVm, currentId: string | null): void {
+    this.song.set(song);
+    this.currentIdFlag.set(currentId);
+    this.dirtyFlag.set(false);
+  }
+
+  private mutate(update: (song: SongVm) => SongVm): void {
+    this.song.update(update);
+    this.dirtyFlag.set(true);
   }
 
   private updateStanza(id: string, update: (stanza: StanzaVm) => StanzaVm): void {
-    this.song.update(s => ({
+    this.mutate(s => ({
       ...s,
       stanzas: s.stanzas.map(stanza => (stanza.id === id ? update(stanza) : stanza)),
     }));

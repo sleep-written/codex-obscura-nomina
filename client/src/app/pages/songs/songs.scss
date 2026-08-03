@@ -1,0 +1,167 @@
+@use 'breakpoints' as bp;
+
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+.songs__page {
+  max-width: 90rem;
+  margin-inline: auto;
+  padding: 1rem;
+}
+
+.songs__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.songs__title {
+  flex: 1 1 auto;
+  margin: 0;
+  font: var(--mat-sys-headline-small);
+}
+
+.songs__head-actions {
+  display: flex;
+  flex: none;
+  gap: 0.5rem;
+}
+
+.songs__empty {
+  margin: 2rem 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--mat-sys-outline);
+
+  code {
+    font-family: var(--app-font-mono);
+  }
+}
+
+// Tarjeta del trabajo en curso. Va antes de la lista y con el color de acento
+// terciario (el mismo que marca "sin guardar" en el editor) para que se lea
+// como un aviso y no como una canción más.
+.draft {
+  display: flex;
+  // `mat-card` es una columna por su cuenta: sin esto los hijos se apilan y
+  // los `flex-basis` de abajo pasan a ser alturas.
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-color: var(--mat-sys-tertiary);
+}
+
+.draft__body {
+  display: flex;
+  flex: 1 1 14rem;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.draft__icon {
+  flex: none;
+  color: var(--mat-sys-tertiary);
+}
+
+.draft__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 0.85rem;
+}
+
+.draft__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--mat-sys-outline);
+}
+
+.draft__actions {
+  display: flex;
+  flex: none;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.songs__list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  grid-template-columns: 1fr;
+
+  @include bp.wide {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.song {
+  display: flex;
+  flex-direction: row; // ver la nota de `.draft`
+  align-items: center;
+  height: 100%;
+  overflow: hidden;
+}
+
+// Toda la ficha es el blanco de "abrir": un botón desnudo, sin apariencia
+// propia, para que el hover de la card entera sea la pista de que se puede
+// pulsar. `text-align: start` porque un <button> centra por defecto.
+.song__open {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  padding: 0.85rem 0 0.85rem 1rem;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+
+  &:hover .song__title,
+  &:focus-visible .song__title {
+    color: var(--mat-sys-primary);
+  }
+}
+
+.song__title {
+  overflow: hidden;
+  font: var(--mat-sys-title-small);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song__details {
+  overflow: hidden;
+  font-size: 0.8rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.song__date {
+  font-family: var(--app-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--mat-sys-outline);
+}
+
+.song__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  padding-right: 0.5rem;
+}

@@ -18,7 +18,9 @@ default). Standalone + signals + control flow nuevo (`@if`/`@for`/`@let`) en tod
 sus peer deps), `provideAnimationsAsync()`, ni `provideZonelessChangeDetection()` (redundante en v22).
 
 **Estructura de carpetas:**
-- `src/app/pages/<pagina>/` — una carpeta por página. Hoy solo `editor`, pero habrá más.
+- `src/app/pages/<pagina>/` — una carpeta por página. Hoy `songs` (la biblioteca, y la ruta de
+  arranque) y `editor`. Un componente que solo usa una página vive bajo su carpeta (así está el
+  diálogo de duplicados en `pages/songs/import-conflict-dialog/`), no en `shared/`.
 - `src/app/shared/` — todo lo genérico y reutilizable por cualquier página (componentes, funciones
   puras sobre el AST, servicios de navegador, y el store de la canción).
 - `src/stylings/` — SCSS global (temas, breakpoints y `_tokens.scss` con los tokens propios que
@@ -35,7 +37,13 @@ próxima página es una línea y no engorda el bundle de las anteriores.
 **Estado root vs. ruta:** el store de la canción vive en `shared/song/` con `providedIn: 'root'`, no
 dentro de `pages/editor/`. La canción es el documento de la app, no un detalle del editor — futuras
 páginas (métrica, vista previa) van a leer el mismo estado, y navegar entre páginas no debe perder el
-trabajo.
+trabajo. Eso ya se cobró: la página de la biblioteca lee del mismo `SongStore` para mostrar el
+borrador pendiente (ver [[client-song-library]]).
+
+**Gotcha de layout con `mat-card`:** su estilo propio es `display: flex; flex-direction: column`.
+Poner `display: flex` en la card para armar una fila **no basta** — hay que declarar
+`flex-direction: row` explícitamente, o los hijos siguen apilados y, peor, cualquier `flex: 1 1 14rem`
+pasa a ser una **altura** de 14rem. El síntoma es una card altísima con el contenido centrado.
 
 **Tema claro/oscuro siguiendo al sistema:** `mat.theme()` ya emite todos sus tokens como
 `light-dark(claro, oscuro)`, pero **Material nunca emite la propiedad `color-scheme`** — hay que

@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Esa canción ya está guardada</h2>
+
+<mat-dialog-content>
+  <p>
+    Ya tienes «<b>{{ data.title }}</b>»@if (data.artist) { de {{ data.artist }}} en tu biblioteca.
+  </p>
+  <p class="conflict__hint">Cierra este aviso si prefieres no importar nada.</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="'copy'">Guardar como copia</button>
+  <button mat-flat-button [mat-dialog-close]="'replace'">Reemplazar la guardada</button>
+</mat-dialog-actions>

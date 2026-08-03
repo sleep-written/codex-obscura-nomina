@@ -62,10 +62,11 @@ problema — ver [[lyrics-language-dsl]]). El cliente sigue siendo tonto: render
 que le da `verseMetrics` y no filtra nada. Una frontera alterable pero separada se dibuja como un
 botón angosto con `~`; una no alterable, como aire (más ancho si `boundary.word`).
 
-**Persistencia:** autoguardado en `localStorage` con debounce. El view-model es JSON puro
-(`SongNode` y compañía son interfaces, no clases), así que `JSON.stringify`/`JSON.parse` bastan. La
-restauración va envuelta en `try/catch`: un borrador corrupto o de otra versión se ignora, nunca
-rompe el arranque.
+**Persistencia:** autoguardado del borrador en `localStorage` con debounce, más una biblioteca de
+canciones guardadas aparte — ver [[client-song-library]]. El view-model es JSON puro (`SongNode` y
+compañía son interfaces, no clases), así que `JSON.stringify`/`JSON.parse` bastan. La restauración va
+envuelta en `try/catch` y pasa por `normalizeDraft`: un borrador corrupto o de otra versión se
+ignora o se rellena, nunca rompe el arranque.
 
 **Why:** el frontend es "tonto" por diseño (ver [[lyrics-app-architecture]]) — no calcula fonética ni
 decide dónde va una sílaba, solo renderiza el AST y hace flip a un booleano. La reconciliación existe

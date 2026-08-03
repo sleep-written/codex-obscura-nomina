@@ -3,35 +3,6 @@
   min-height: 100%;
 }
 
-.editor__bar {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  row-gap: 0.25rem;
-  height: auto;
-  padding-block: 0.5rem;
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
-  background-color: var(--mat-sys-surface-container);
-}
-
-.editor__brand {
-  // Único ocupante de la toolbar desde que el título y las acciones del
-  // archivo viven en la card de metadata, así que se muestra siempre.
-  flex: none;
-  font-family: var(--app-font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--mat-sys-outline);
-
-  b {
-    color: var(--mat-sys-primary);
-    font-weight: 500;
-  }
-}
-
 .editor__page {
   max-width: 90rem;
   margin-inline: auto;

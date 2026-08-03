@@ -113,7 +113,7 @@ export function fromSongNode(song: SongNode): SongVm {
 
 /**
  * Rellena lo que le falte a un borrador guardado por una versión anterior del
- * cliente. `DraftStorage` hace `JSON.parse` a ciegas, así que un draft escrito
+ * cliente. `JsonStorage` hace `JSON.parse` a ciegas, así que un draft escrito
  * antes de que existiera la metadata llega sin ella — y sin esto el printer
  * reventaría al recorrer un `metadata` inexistente. De ahí que el parámetro sea
  * `Partial`: los tipos describen el VM de hoy, no el que escribió ese draft.

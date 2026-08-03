@@ -17,14 +17,21 @@ export class SongMetadataCard {
   readonly title = input.required<string>();
   readonly metadata = input.required<SongMetadataVm>();
 
+  /** Hay cambios sin guardar en la biblioteca. */
+  readonly dirty = input(false);
+
   readonly titleChanged = output<string>();
 
   /** Emite solo el campo tocado; el store hace el merge con el resto. */
   readonly changed = output<Partial<SongMetadataVm>>();
 
   readonly cleared = output<void>();
+
+  /** Guardar en la biblioteca del navegador. */
   readonly saved = output<void>();
-  readonly fileChosen = output<File>();
+
+  /** Descargar la canción como archivo `.lyrics`. */
+  readonly exported = output<void>();
 
   /**
    * Cuántos de los cinco campos del disco están puestos. El título queda
@@ -37,18 +44,6 @@ export class SongMetadataCard {
       value => value !== null && value !== '',
     ).length;
   });
-
-  protected onFile(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    // Se limpia de inmediato para que elegir dos veces seguidas el mismo
-    // archivo vuelva a disparar `change`. El `File` ya está capturado, así que
-    // el lector asíncrono de arriba lo sigue viendo entero.
-    input.value = '';
-    if (file) {
-      this.fileChosen.emit(file);
-    }
-  }
 
   protected onText(key: 'artist' | 'album' | 'albumArtist', value: string): void {
     this.changed.emit({ [key]: value });
