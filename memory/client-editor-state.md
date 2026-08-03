@@ -53,8 +53,9 @@ cliente, la respuesta es agregarlo a `metrics`.
 **El toggle muta el AST en sitio, así que hay que forzar el recálculo.** `marker.active = !active` no
 cambia ninguna referencia, por lo que un `computed()` nunca se recalcularía y la UI no reaccionaría.
 Se usa `linkedSignal` (se recalcula cuando cambia el objeto verso, y además es escribible para
-re-setear tras el toggle). El store, en paralelo, emite una referencia nueva del estado raíz para
-disparar el autoguardado.
+re-setear tras el toggle). El store, en paralelo, emite una referencia nueva del estado raíz — antes
+eso disparaba el autoguardado del borrador; ya no (ver [[client-song-library]]), pero sigue haciendo
+falta para que la UI reactiva a `state()` note el cambio.
 
 **Solo las fronteras vocal-vocal son alterables** (desde el 2026-08-02; antes la librería marcaba
 *toda* frontera entre palabras y el cliente ofrecía fundir "que me", que fue como se detectó el
@@ -62,11 +63,12 @@ problema — ver [[lyrics-language-dsl]]). El cliente sigue siendo tonto: render
 que le da `verseMetrics` y no filtra nada. Una frontera alterable pero separada se dibuja como un
 botón angosto con `~`; una no alterable, como aire (más ancho si `boundary.word`).
 
-**Persistencia:** autoguardado del borrador en `localStorage` con debounce, más una biblioteca de
-canciones guardadas aparte — ver [[client-song-library]]. El view-model es JSON puro (`SongNode` y
-compañía son interfaces, no clases), así que `JSON.stringify`/`JSON.parse` bastan. La restauración va
-envuelta en `try/catch` y pasa por `normalizeDraft`: un borrador corrupto o de otra versión se
-ignora o se rellena, nunca rompe el arranque.
+**Persistencia:** solo la biblioteca de canciones guardadas vive en `localStorage` — ver
+[[client-song-library]]. El borrador del editor (`SongStore`) ya no se autoguarda: vive solo en
+memoria, y un F5 lo pierde a propósito (desde 2026-08-03). El view-model es JSON puro (`SongNode` y
+compañía son interfaces, no clases), así que al abrir una canción guardada `JSON.stringify`/
+`JSON.parse` bastan; `normalizeDraft` sigue rellenando/ignorando forma vieja o corrupta al leerla de
+la biblioteca.
 
 **Why:** el frontend es "tonto" por diseño (ver [[lyrics-app-architecture]]) — no calcula fonética ni
 decide dónde va una sílaba, solo renderiza el AST y hace flip a un booleano. La reconciliación existe

@@ -15,7 +15,7 @@ export interface SongMetadataVm {
 }
 
 export interface StanzaVm {
-  id: string;            // crypto.randomUUID(), para `@for ... track stanza.id`
+  id: string;            // randomUuid(), para `@for ... track stanza.id`
   titleText: string;     // el textbox de la card
   rawText: string;       // el textarea — FUENTE DE VERDAD de lo que el usuario escribió
   node: StanzaNode;      // el AST; node.verses es la lista reconciliada

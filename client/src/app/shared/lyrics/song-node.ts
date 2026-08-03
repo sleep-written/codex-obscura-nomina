@@ -11,6 +11,7 @@ import {
   emptyStanzaMetadata,
   printPlainLyrics,
 } from '@codex-obscura-nomina/lyrics-language';
+import { randomUuid } from '../services/random-uuid';
 import type { SongMetadataVm, SongVm, StanzaVm } from '../song/song-vm';
 import { emptySongMetadataVm } from '../song/song-vm';
 
@@ -95,7 +96,7 @@ export function fromSongNode(song: SongNode): SongVm {
     title: song.title?.text ?? '',
     metadata: fromSongMetadata(song.metadata),
     stanzas: song.stanzas.map((stanza): StanzaVm => ({
-      id: crypto.randomUUID(),
+      id: randomUuid(),
       titleText: stanza.title?.text ?? '',
       rawText: printPlainLyrics({
         title: null,

@@ -9,12 +9,13 @@ import { firstValueFrom } from 'rxjs';
 import { AppBar } from '../../shared/app-bar/app-bar';
 import { fromSongNode } from '../../shared/lyrics/song-node';
 import { FileIo } from '../../shared/services/file-io';
+import { randomUuid } from '../../shared/services/random-uuid';
 import { lyricsFileName, toLyricsText } from '../../shared/song/song-file';
 import { SongLibrary } from '../../shared/song/song-library';
 import { SongStore } from '../../shared/song/song-store';
 import type { SongVm } from '../../shared/song/song-vm';
-import type { ImportConflictChoice } from './import-conflict-dialog/import-conflict-dialog';
-import { ImportConflictDialog } from './import-conflict-dialog/import-conflict-dialog';
+import type { SongConflictChoice } from '../../shared/song-conflict-dialog/song-conflict-dialog';
+import { SongConflictDialog } from '../../shared/song-conflict-dialog/song-conflict-dialog';
 
 /** Una canción guardada, ya en la forma que muestra la ficha. */
 interface SongItem {
@@ -159,12 +160,12 @@ export class Songs {
     // Primero el choque y después el borrador: preguntar por trabajo que se va
     // a perder antes de saber si el archivo sirve sería pedir de más.
     const existing = this.library.findSameSong(song);
-    let id: string = crypto.randomUUID();
+    let id: string = randomUuid();
     if (existing !== null) {
       const choice = await firstValueFrom(
         this.dialog
-          .open<ImportConflictDialog, unknown, ImportConflictChoice | undefined>(
-            ImportConflictDialog,
+          .open<SongConflictDialog, unknown, SongConflictChoice | undefined>(
+            SongConflictDialog,
             {
               data: {
                 title: existing.song.title.trim() || 'Canción sin nombre',

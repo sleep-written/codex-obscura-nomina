@@ -16,8 +16,8 @@
     }
 
     <div class="meta__actions">
-      <button mat-icon-button aria-label="Limpiar" title="Borrar toda la canción" (click)="cleared.emit()">
-        <mat-icon>delete_sweep</mat-icon>
+      <button mat-icon-button aria-label="Vaciar el editor" title="Vaciar el editor" (click)="cleared.emit()">
+        <mat-icon>restart_alt</mat-icon>
       </button>
       <button mat-icon-button aria-label="Exportar .lyrics" title="Exportar como archivo .lyrics" (click)="exported.emit()">
         <mat-icon>download</mat-icon>
@@ -25,8 +25,12 @@
       <button
         mat-icon-button
         aria-label="Guardar"
-        [title]="dirty() ? 'Guardar en el navegador' : 'Sin cambios que guardar'"
-        [disabled]="!dirty()"
+        [title]="
+          titleMissing() ? 'Escribe un título para guardar'
+          : dirty() ? 'Guardar en el navegador'
+          : 'Sin cambios que guardar'
+        "
+        [disabled]="!dirty() || titleMissing()"
         (click)="saved.emit()">
         <mat-icon>save</mat-icon>
       </button>

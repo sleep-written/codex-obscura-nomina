@@ -1,32 +1,17 @@
-import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import type { Range, StanzaNode } from '@codex-obscura-nomina/lyrics-language';
 import { LyricsParseError, emptyStanzaMetadata } from '@codex-obscura-nomina/lyrics-language';
 import { parseStanzaText } from '../lyrics/parse-stanza-text';
 import { reconcileVerses } from '../lyrics/reconcile-verses';
 import { normalizeDraft } from '../lyrics/song-node';
-import { JsonStorage } from '../services/json-storage';
+import { randomUuid } from '../services/random-uuid';
 import { toLyricsText } from './song-file';
 import { SongLibrary } from './song-library';
 import type { SongMetadataVm, SongVm, StanzaVm } from './song-vm';
 import { emptySongMetadataVm } from './song-vm';
 
-const DRAFT_KEY = 'codex-obscura-nomina:song:v1';
-
 /** Rango sintético para una estrofa creada vacía desde la UI, sin AST previo. */
 const EMPTY_RANGE: Range = { start: { line: 1, column: 1 }, end: { line: 1, column: 1 } };
-
-/** El trabajo en curso: qué canción se edita y si difiere de lo guardado. */
-interface Draft {
-  song: SongVm;
-  currentId: string | null;
-  dirty: boolean;
-}
-
-/**
- * Lo que puede haber bajo `DRAFT_KEY`. Antes de la biblioteca el borrador era
- * un `SongVm` pelado, y esos siguen ahí: `readDraft` distingue las dos formas.
- */
-type StoredDraft = Partial<Draft> & Partial<SongVm>;
 
 function emptyStanzaVm(): StanzaVm {
   const node: StanzaNode = {
@@ -36,7 +21,7 @@ function emptyStanzaVm(): StanzaVm {
     verses: [],
     range: EMPTY_RANGE,
   };
-  return { id: crypto.randomUUID(), titleText: '', rawText: '', node, error: null, target: null };
+  return { id: randomUuid(), titleText: '', rawText: '', node, error: null, target: null };
 }
 
 function emptySong(): SongVm {
@@ -52,38 +37,19 @@ function isEmptySong(song: SongVm): boolean {
   );
 }
 
-function readDraft(storage: JsonStorage<StoredDraft>): Draft {
-  const raw = storage.read();
-  if (raw === null) return { song: emptySong(), currentId: null, dirty: false };
-
-  // El borrador viejo no tenía `song`: era el `SongVm` entero. Se rescata como
-  // canción nueva sin guardar, que es exactamente lo que era.
-  if (raw.song === undefined) {
-    return { song: normalizeDraft(raw as Partial<SongVm>), currentId: null, dirty: true };
-  }
-  return {
-    song: normalizeDraft(raw.song),
-    currentId: raw.currentId ?? null,
-    dirty: raw.dirty ?? false,
-  };
-}
-
 /**
  * La canción abierta en el editor. Es el documento vivo de la app: la
  * biblioteca (`SongLibrary`) guarda versiones confirmadas, este store guarda lo
- * que el usuario está escribiendo ahora mismo — autoguardado en su propia clave
- * para que un F5 no cueste trabajo, pero sin tocar lo guardado hasta que se
- * pulse Guardar.
+ * que el usuario está escribiendo ahora mismo, solo en memoria — un F5 lo
+ * pierde, porque solo pulsar Guardar debe dejar rastro persistente.
  */
 @Injectable({ providedIn: 'root' })
 export class SongStore {
   private readonly library = inject(SongLibrary);
-  private readonly storage = new JsonStorage<StoredDraft>(DRAFT_KEY);
 
-  private readonly restored = readDraft(this.storage);
-  private readonly song = signal<SongVm>(this.restored.song);
-  private readonly currentIdFlag = signal<string | null>(this.restored.currentId);
-  private readonly dirtyFlag = signal<boolean>(this.restored.dirty);
+  private readonly song = signal<SongVm>(emptySong());
+  private readonly currentIdFlag = signal<string | null>(null);
+  private readonly dirtyFlag = signal<boolean>(false);
 
   readonly state = this.song.asReadonly();
 
@@ -95,18 +61,6 @@ export class SongStore {
 
   /** Lo mismo, pero ignorando un borrador vacío: no hay nada que perder. */
   readonly hasUnsavedWork = computed(() => this.dirtyFlag() && !isEmptySong(this.song()));
-
-  constructor() {
-    // Autoguardado: cualquier mutación produce una referencia nueva del
-    // estado raíz, así que basta con leer los signals.
-    effect(() =>
-      this.storage.writeDebounced({
-        song: this.song(),
-        currentId: this.currentIdFlag(),
-        dirty: this.dirtyFlag(),
-      }),
-    );
-  }
 
   setTitle(title: string): void {
     this.mutate(s => ({ ...s, title }));
@@ -171,11 +125,6 @@ export class SongStore {
     this.mutate(s => ({ ...s }));
   }
 
-  /** Vacía el contenido sin soltar la canción abierta: sigue siendo esa. */
-  clear(): void {
-    this.mutate(() => emptySong());
-  }
-
   /** Empieza una canción nueva, desligada de la biblioteca. */
   startNew(): void {
     this.set(emptySong(), null);
@@ -185,9 +134,13 @@ export class SongStore {
   open(id: string): boolean {
     const saved = this.library.get(id);
     if (saved === null) return false;
-    // Misma tolerancia que con el borrador: la entrada guardada es JSON crudo
-    // que pudo escribir una versión anterior del cliente.
-    this.set(normalizeDraft(saved.song), id);
+    // `library.get` devuelve la referencia real de la biblioteca, no una
+    // copia: sin `structuredClone` el borrador compartiría sus objetos
+    // anidados (versos, marcadores), y una mutación en el sitio —como el
+    // toggle de alteraciones— corrompería lo guardado sin pasar por `save()`.
+    // La tolerancia de forma (JSON de una versión anterior del cliente) sigue
+    // en `normalizeDraft`.
+    this.set(normalizeDraft(structuredClone(saved.song)), id);
     return true;
   }
 
@@ -195,9 +148,13 @@ export class SongStore {
    * Escribe la canción en la biblioteca y devuelve su id. Puede lanzar si el
    * almacenamiento está lleno; por eso el estado se actualiza después del
    * `put`, para no quedar marcado como guardado sin estarlo.
+   *
+   * `targetId` reemplaza otra entrada de la biblioteca en vez de la actual —
+   * lo usa el editor cuando el usuario elige "reemplazar" ante un choque de
+   * metadata con una canción distinta a la que tenía abierta.
    */
-  save(): string {
-    const id = this.currentIdFlag() ?? crypto.randomUUID();
+  save(targetId?: string): string {
+    const id = targetId ?? this.currentIdFlag() ?? randomUuid();
     this.library.put(id, this.song());
     this.currentIdFlag.set(id);
     this.dirtyFlag.set(false);

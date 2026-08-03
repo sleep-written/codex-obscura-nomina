@@ -45,6 +45,8 @@ export class SongMetadataCard {
     ).length;
   });
 
+  protected readonly titleMissing = computed(() => this.title().trim() === '');
+
   protected onText(key: 'artist' | 'album' | 'albumArtist', value: string): void {
     this.changed.emit({ [key]: value });
   }

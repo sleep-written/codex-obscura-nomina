@@ -1,5 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { JsonStorage } from '../services/json-storage';
+import { randomUuid } from '../services/random-uuid';
 import { isSameSong } from './song-file';
 import type { SongVm } from './song-vm';
 
@@ -62,8 +63,8 @@ export class SongLibrary {
     song.title = `${song.title.trim() || 'Canción sin nombre'} (copia)`;
     // Los ids de estrofa son solo para `@for ... track`, pero se regeneran
     // igual: dos documentos distintos no deben compartir identidad de nada.
-    song.stanzas = song.stanzas.map(stanza => ({ ...stanza, id: crypto.randomUUID() }));
-    return this.put(crypto.randomUUID(), song).id;
+    song.stanzas = song.stanzas.map(stanza => ({ ...stanza, id: randomUuid() }));
+    return this.put(randomUuid(), song).id;
   }
 
   /**
