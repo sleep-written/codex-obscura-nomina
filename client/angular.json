@@ -30,6 +30,13 @@
               }
             ],
             "styles": [
+              "@fontsource/roboto/latin-300.css",
+              "@fontsource/roboto/latin-400.css",
+              "@fontsource/roboto/latin-500.css",
+              "@fontsource/roboto/latin-ext-300.css",
+              "@fontsource/roboto/latin-ext-400.css",
+              "@fontsource/roboto/latin-ext-500.css",
+              "material-icons/iconfont/filled.css",
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
@@ -56,6 +63,23 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "native": {
+              "baseHref": "./",
+              "outputHashing": "all",
+              "outputPath": "dist/native",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"

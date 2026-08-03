@@ -11,3 +11,4 @@
 - [Client editor state](memory/client-editor-state.md) — modelo de estado del editor: rawText vs AST, reconciliación por verso que preserva las alteraciones, y por qué el printer tolera estrofas parseadas por separado
 - [Client song library](memory/client-song-library.md) — varias canciones en el navegador: biblioteca vs. borrador (dos claves de localStorage), guardado explícito con `currentId`/`dirty`, y duplicados al importar
 - [Client notes UI](memory/client-notes-ui.md) — lenguaje visual del editor: ficha por nota, ligadura/`~` para las alteraciones, barra de elasticidad por verso y objetivo por estrofa
+- [Native packaging](memory/native-packaging.md) — APK y .exe desde ./shell: Capacitor solo para Android y Electron puro para Windows, detección de plataforma, y por qué el web no se ve afectado

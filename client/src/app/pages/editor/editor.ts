@@ -2,8 +2,10 @@ import { ChangeDetectionStrategy, Component, effect, inject, untracked } from '@
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppBar } from '../../shared/app-bar/app-bar';
+import { UNNAMED_SONG, formatAppTitle } from '../../shared/services/app-title';
 import { FileIo } from '../../shared/services/file-io';
 import { lyricsFileName } from '../../shared/song/song-file';
 import { SongStore } from '../../shared/song/song-store';
@@ -24,6 +26,7 @@ export class Editor {
   private readonly fileIo = inject(FileIo);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly title = inject(Title);
 
   private readonly params = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
@@ -39,6 +42,15 @@ export class Editor {
       if (!this.store.open(id)) {
         void this.router.navigate(['/songs']);
       }
+    });
+
+    // El título sigue a la canción mientras se edita, no solo al abrirla: si
+    // cambias el nombre o el artista, la ventana se actualiza al instante.
+    effect(() => {
+      const song = this.song();
+      const name = song.title.trim() || UNNAMED_SONG;
+      const artist = song.metadata.artist.trim();
+      this.title.setTitle(formatAppTitle(artist ? `${name} - ${artist}` : name));
     });
   }
 
@@ -68,7 +80,11 @@ export class Editor {
     }
   }
 
-  protected onExport(): void {
-    this.fileIo.downloadText(this.store.toLyricsText(), lyricsFileName(this.song().title));
+  protected async onExport(): Promise<void> {
+    try {
+      await this.fileIo.downloadText(this.store.toLyricsText(), lyricsFileName(this.song().title));
+    } catch (error) {
+      alert(`No se pudo exportar la canción: ${String(error)}`);
+    }
   }
 }

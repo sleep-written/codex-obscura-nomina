@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Codex Obscura Nomina</string>
+    <string name="title_activity_main">Codex Obscura Nomina</string>
+    <string name="package_name">com.codexobscuranomina.app</string>
+    <string name="custom_url_scheme">com.codexobscuranomina.app</string>
+</resources>

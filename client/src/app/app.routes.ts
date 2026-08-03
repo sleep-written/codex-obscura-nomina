@@ -4,7 +4,7 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'songs' },
   {
     path: 'songs',
-    title: 'Mis canciones',
+    title: 'Canciones',
     loadComponent: () => import('./pages/songs/songs').then(m => m.Songs),
   },
   // Sin id se edita lo que haya en el borrador (una canción nueva); con id se

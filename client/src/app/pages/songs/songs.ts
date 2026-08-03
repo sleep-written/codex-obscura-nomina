@@ -105,10 +105,14 @@ export class Songs {
     }
   }
 
-  protected onExport(id: string): void {
+  protected async onExport(id: string): Promise<void> {
     const saved = this.library.get(id);
     if (saved === null) return;
-    this.fileIo.downloadText(toLyricsText(saved.song), lyricsFileName(saved.song.title));
+    try {
+      await this.fileIo.downloadText(toLyricsText(saved.song), lyricsFileName(saved.song.title));
+    } catch (error) {
+      alert(`No se pudo exportar la canción: ${String(error)}`);
+    }
   }
 
   protected onDuplicate(id: string): void {

@@ -1,0 +1,26 @@
+{
+  "name": "@codex-obscura-nomina/shell",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Empaquetado nativo del cliente Angular: Android via Capacitor, Windows via Electron.",
+  "scripts": {
+    "build:web": "npm --prefix ../client run build:native",
+    "sync": "npm run build:web && cap sync android && npm run electron:copy",
+    "electron:copy": "node scripts/copy-web.mjs",
+    "android:run": "npm run sync && cap run android",
+    "android:build": "npm run sync && cap build android",
+    "android:open": "cap open android",
+    "electron:start": "npm run sync && npm --prefix electron start"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.0",
+    "@capacitor/app": "8.1.1",
+    "@capacitor/core": "8.5.0",
+    "@capacitor/filesystem": "8.1.2",
+    "@capacitor/share": "8.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.0",
+    "typescript": "6.0.2"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "codex-obscura-nomina-desktop",
+  "productName": "Codex Obscura Nomina",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Editor de canciones .lyrics",
+  "author": "sleep-written",
+  "main": "main.js",
+  "scripts": {
+    "postinstall": "install-electron",
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "dist:dir": "electron-builder --win --dir"
+  },
+  "devDependencies": {
+    "electron": "^43.2.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.codexobscuranomina.app",
+    "productName": "Codex Obscura Nomina",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "app/**/*"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

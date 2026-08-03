@@ -1,9 +1,10 @@
 {
     "folders": [
         { "path": "." },
-        { "path": "./memory" },
+        { "path": "./shell" },
         { "path": "./client" },
         { "path": "./lyrics-language" },
-        { "path": "./vscode-extension" }
+        { "path": "./vscode-extension" },
+        { "path": "./memory" }
     ]
 }

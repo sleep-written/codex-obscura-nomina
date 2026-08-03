@@ -1,0 +1,13 @@
+node_modules/
+
+# Copia del build web; se regenera con `npm run sync`.
+electron/app/
+electron/dist/
+
+# Artefactos de Gradle. El proyecto android/ SI se versiona.
+android/build/
+android/app/build/
+android/.gradle/
+android/local.properties
+android/captures/
+android/.idea/

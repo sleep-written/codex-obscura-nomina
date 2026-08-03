@@ -11,6 +11,9 @@
   row-gap: 0.25rem;
   height: auto;
   padding-block: 0.5rem;
+  // Empaquetada en Android la app va edge-to-edge y la barra quedaría bajo la
+  // barra de estado. Fuera de ahí `env()` resuelve a 0 y esto no cambia nada.
+  padding-top: calc(0.5rem + env(safe-area-inset-top));
   border-bottom: 1px solid var(--mat-sys-outline-variant);
   background-color: var(--mat-sys-surface-container);
 }
