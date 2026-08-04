@@ -14,7 +14,16 @@
       nativo o sin conexion.
     -->
   </head>
-  <body>
+  <!--
+    spellcheck se hereda: apagarlo aqui cubre todos los campos de la app (letra,
+    titulos, artista, album) sin repetir el atributo por plantilla. La letra de
+    una cancion y los nombres propios no estan en ningun diccionario, asi que el
+    corrector del navegador solo subraya en rojo texto correcto.
+
+    Va en el HTML y no en el shell nativo a proposito: asi vale igual en web,
+    Android y Windows, y sobrevive a un cambio de empaquetador.
+  -->
+  <body spellcheck="false">
     <app-root></app-root>
   </body>
 </html>
