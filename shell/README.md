@@ -60,6 +60,13 @@ npm run android:open    # abre el proyecto en Android Studio, si lo tienes
 Para un dispositivo físico desde WSL: depuración inalámbrica (`adb pair` +
 `adb connect`) o `usbipd-win` para pasar el USB.
 
+El APK se registra como app capaz de abrir archivos `.lyrics`: los
+`intent-filter` están en `android/app/src/main/AndroidManifest.xml` (que `cap
+sync` no reescribe) y quien los atiende es
+`client/src/app/shared/native/lyrics-intent.ts`. Ver
+[../memory/native-packaging.md](../memory/native-packaging.md) para el porqué de
+cada filtro.
+
 ### Windows
 
 El paso pesado se hace en WSL y el empaquetado en Windows, porque

@@ -50,7 +50,10 @@ sí: no hay identidad que comparar. Las dos rutas comparten el mismo diálogo,
 `shared/song-conflict-dialog/` (antes vivía en `pages/songs/import-conflict-dialog/` y se llamaba
 `ImportConflictDialog`; se movió y renombró a `SongConflictDialog` cuando `Editor.onSave` empezó a
 usarlo también). Ofrece reemplazar o guardar como copia, y cerrarlo cancela la acción en curso —
-importar o guardar, según quien lo abrió.
+importar o guardar, según quien lo abrió. Desde el 2026-08-07 el lado de importar
+no vive en `Songs` sino en `shared/song/song-import.ts`, porque tiene dos entradas:
+el `<input type="file">` de `/songs` y el intent de Android que abre un `.lyrics`
+desde otra app (ver [[native-packaging]]).
 
 **`Editor.onSave` (desde 2026-08-03) exige título y revisa choques antes de guardar:**
 - Con `song.title.trim() === ''` no llega a tocar la biblioteca — `alert` y corta. El botón de

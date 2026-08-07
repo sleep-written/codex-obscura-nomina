@@ -58,6 +58,48 @@ Detalles que no son obvios:
   bajo `file://` no dispara la navegación del router de Angular, y parece un bug
   de la app cuando no lo es. Hay que conducir la UI con clics reales.
 
+## Abrir un `.lyrics` desde otra app (Android)
+
+Desde el 2026-08-07 el APK aparece en el «Abrir con» de Android para archivos
+`.lyrics`. El intent entra por el **mismo flujo que el botón «Importar
+.lyrics»**: el archivo se guarda en la biblioteca (con su diálogo de choque si
+ya existe) y se abre en el editor. Fue el pedido explícito del usuario — no una
+vista aparte de solo lectura.
+
+Por eso `Songs.onImport` se vació: el flujo entero vive ahora en
+`client/src/app/shared/song/song-import.ts` (`SongImport.fromLyricsText`), junto
+con `confirmDiscard()`. **Cualquier entrada nueva de un `.lyrics` de fuera debe
+pasar por ahí**, o las dos rutas divergen en qué preguntan y en qué orden.
+
+Tres cosas que no son obvias:
+
+- **Hacen falta dos `intent-filter`, y ninguno cubre al otro.** El primero
+  reconoce el archivo por la extensión de la ruta (`pathPattern` +
+  `pathSuffix`), que es lo preciso y sirve para los exploradores de archivos,
+  cuyo `content://` conserva el nombre. El segundo lo reconoce por MIME
+  (`text/plain`, `application/octet-stream`), que es lo único que sirve para
+  WhatsApp y el correo: entregan URIs opacas (`content://…/item/1234`) sin
+  nombre que mirar. El precio del segundo es que la app sale en «Abrir con» para
+  cualquier archivo de esos dos tipos; borrarlo la deja sin WhatsApp.
+- **`pathPattern` no es glotón**: `.*\.lyrics` no matchea `mi.cancion.lyrics`.
+  De ahí los cuatro patrones escalonados. `pathSuffix` lo resuelve de una, pero
+  solo desde API 31 y el `minSdk` es 24, así que van los dos. Y sin
+  `android:host="*"` el filtro con path no llega a evaluarse.
+- **La URI se lee con `Filesystem.readFile` *sin* `directory`.** Eso es lo que
+  hace que el `path` se interprete como URI absoluta y se abra por el
+  ContentResolver; con `directory` se trataría como ruta relativa y fallaría.
+
+Android entrega el ACTION_VIEW por **dos caminos según el estado de la app**, y
+`LyricsIntent` cubre los dos: arranque en frío → la URI ya viene en
+`App.getLaunchUrl()` y no se emite ningún evento; app ya viva (`launchMode`
+`singleTask`) → llega como evento `appUrlOpen`. Nunca ocurren los dos para el
+mismo intent. El listener se ata desde el componente raíz y no antes: importar
+termina en una navegación, y el router tiene que existir.
+
+El permiso de lectura sobre la URI se concede junto con el intent y muere con
+él — un intent viejo reentregado ya no la puede abrir, de ahí el `alert` de «no
+se pudo leer» en vez de asumir que la lectura siempre funciona.
+
 ## Título de la ventana
 
 `BrandedTitleStrategy` (`client/src/app/shared/services/app-title.ts`) antepone

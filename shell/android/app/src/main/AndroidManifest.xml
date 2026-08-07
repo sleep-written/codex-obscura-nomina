@@ -22,6 +22,53 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!--
+                Abrir un .lyrics desde otra app. Hacen falta dos filtros porque
+                hay dos formas de reconocer el archivo y ninguna cubre a la otra.
+
+                Por la extension de la ruta: es lo preciso, y basta para los
+                exploradores de archivos, cuyo content:// conserva el nombre.
+                pathPattern no es glotón — un nombre con puntos de mas necesita
+                un patron por cada punto extra. pathSuffix lo resuelve de una
+                sola vez, pero solo existe desde API 31; se deja junto a los
+                patrones para que las dos mitades del parque queden cubiertas.
+
+                android:host="*" no es decorativo: sin autoridad declarada, un
+                filtro con path no llega a evaluarse.
+            -->
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathSuffix=".lyrics" />
+                <data android:pathPattern=".*\\.lyrics" />
+                <data android:pathPattern=".*\\..*\\.lyrics" />
+                <data android:pathPattern=".*\\..*\\..*\\.lyrics" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.lyrics" />
+            </intent-filter>
+
+            <!--
+                Por tipo MIME: es lo unico que sirve para WhatsApp y el correo,
+                que entregan URIs opacas (content://…/item/1234) sin nombre que
+                mirar. Como .lyrics no es una extension conocida, esos adjuntos
+                viajan como text/plain o application/octet-stream.
+
+                El precio es que la app aparece en «Abrir con» para cualquier
+                archivo de esos dos tipos. Borrar este filtro la deja solo con
+                el caso de arriba — y sin WhatsApp.
+            -->
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="application/octet-stream" />
+            </intent-filter>
+
         </activity>
 
         <provider

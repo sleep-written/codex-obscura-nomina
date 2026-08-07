@@ -43,6 +43,20 @@ export interface FilesystemPlugin {
     encoding?: string;
     recursive?: boolean;
   }): Promise<{ uri: string }>;
+
+  /**
+   * Omitir `directory` es lo que hace que `path` se lea como URI absoluta —
+   * la unica via para abrir un `content://` que llega de otra app, que el
+   * plugin resuelve por el ContentResolver.
+   *
+   * Con `encoding` el puente de Android devuelve texto ya decodificado; sin el
+   * devuelve base64. Aqui siempre se pide UTF-8.
+   */
+  readFile(options: {
+    path: string;
+    directory?: string;
+    encoding?: string;
+  }): Promise<{ data: string }>;
 }
 
 export const Filesystem = registerPlugin<FilesystemPlugin>('Filesystem');
@@ -68,6 +82,22 @@ export interface AppPlugin {
     eventName: 'backButton',
     listener: (event: { canGoBack: boolean }) => void
   ): Promise<PluginListenerHandle>;
+
+  /**
+   * Un ACTION_VIEW recibido con la app ya viva. Es la mitad "en caliente" de
+   * abrir un archivo desde otra app; la mitad en frio es `getLaunchUrl`.
+   */
+  addListener(
+    eventName: 'appUrlOpen',
+    listener: (event: { url: string }) => void
+  ): Promise<PluginListenerHandle>;
+
+  /**
+   * URI del intent que abrio la app en este arranque. El plugin resuelve sin
+   * datos cuando se abrio desde el launcher, asi que `url` puede faltar.
+   */
+  getLaunchUrl(): Promise<{ url?: string } | undefined>;
+
   exitApp(): Promise<void>;
 }
 

@@ -2,6 +2,7 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 
+import { LyricsIntent } from './shared/native/lyrics-intent';
 import { App as CapacitorApp, PluginListenerHandle } from './shared/native/plugins';
 import { isAndroid } from './shared/native/platform';
 
@@ -18,9 +19,15 @@ export class App {
   private readonly location = inject(Location);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly lyricsIntent = inject(LyricsIntent);
 
   constructor() {
-    if (isAndroid()) this.bindHardwareBackButton();
+    if (isAndroid()) {
+      this.bindHardwareBackButton();
+      // Aqui y no en el arranque de la app: abrir un `.lyrics` termina en una
+      // navegacion, y el router tiene que existir antes.
+      this.lyricsIntent.bind();
+    }
   }
 
   /**

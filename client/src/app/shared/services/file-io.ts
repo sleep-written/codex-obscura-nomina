@@ -10,6 +10,18 @@ export class FileIo {
   }
 
   /**
+   * Un archivo que llega desde otra app de Android (`content://` casi siempre,
+   * `file://` en apps viejas). No hay `File` que leer: solo la URI del intent,
+   * y el permiso de lectura que Android concede junto con el.
+   *
+   * Se pasa sin `directory` a proposito — ver `FilesystemPlugin.readFile`.
+   */
+  async readTextFileFromUri(uri: string): Promise<string> {
+    const { data } = await Filesystem.readFile({ path: uri, encoding: Encoding.UTF8 });
+    return data;
+  }
+
+  /**
    * En web y en Electron basta con `<a download>`: Chromium abre su diálogo de
    * guardado. El WebView de Android, en cambio, lo ignora en silencio — ni
    * descarga ni lanza error — así que allí hay que escribir el archivo y
